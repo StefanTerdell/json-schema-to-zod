@@ -1,20 +1,38 @@
 {
   "name": "json-schema-to-zod",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.0",
+  "description": "Converts JSON schema objects or files into Zod schemas",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rimraf ./dist && tsc && copyfiles package.json ./dist && copyfiles LICENSE ./dist && copyfiles readme.md ./dist"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "zod",
+    "json",
+    "schema",
+    "converter",
+    "cli"
+  ],
+  "author": "Stefan Terdell",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/StefanTerdell/json-schema-to-zod"
+  },
+  "bin": {
+    "json-schema-to-zod": "./src/cli.js"
+  },
   "dependencies": {
+    "prettier": "^2.4.1"
+  },
+  "devDependencies": {
     "@types/json-schema": "^7.0.9",
-    "@types/node": "^16.6.1",
-    "@types/prettier": "^2.3.2",
-    "prettier": "^2.3.2",
-    "typescript": "^4.3.5",
-    "zod": "^3.11.3"
-  }
+    "@types/node": "^16.11.4",
+    "@types/prettier": "^2.4.1",
+    "copyfiles": "^2.4.1",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.4.4",
+    "zod": "^3.11.4"
+  },
+  "types": "index.d.ts"
 }
