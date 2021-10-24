@@ -4,6 +4,9 @@ import { parseNumber } from "./parsers/parseNumber";
 import { parseObject } from "./parsers/parseObject";
 import { parseAllOf } from "./parsers/parseAllOf";
 import { parseString } from "./parsers/parseString";
+import { parseIfThenElse } from "./parsers/parseIfThenElse";
+
+//TODO: const
 
 export const parseSchema = (schema: any): string => {
   if (schema.type === "object") {
@@ -28,6 +31,8 @@ export const parseSchema = (schema: any): string => {
     return "z.boolean()";
   } else if (schema.type === "null") {
     return "z.null()";
+  } else if (schema.if && schema.then && schema.else) {
+    return parseIfThenElse(schema);
   } else {
     return "z.any()";
   }
