@@ -1,13 +1,18 @@
-import { half } from "../utils/half";
+import { JSONSchema7, JSONSchema7Definition } from "json-schema";
 import { parseSchema } from "../parseSchema";
+import { half } from "../utils/half";
 
-export const parseAllOf = (allOf: any[]): string => {
-  if (allOf.length === 0) {
+export function parseAllOf(
+  schema: JSONSchema7 & { allOf: JSONSchema7Definition[] }
+): string {
+  if (schema.allOf.length === 0) {
     return "z.any()";
-  } else if (allOf.length === 1) {
-    return parseSchema(allOf[0]);
+  } else if (schema.allOf.length === 1) {
+    return parseSchema(schema.allOf[0]);
   } else {
-    const [left, right] = half(allOf);
-    return `z.intersection(${parseAllOf(left)},${parseAllOf(right)})`;
+    const [left, right] = half(schema.allOf);
+    return `z.intersection(${parseAllOf({ allOf: left })},${parseAllOf({
+      allOf: right,
+    })})`;
   }
-};
+}

@@ -1,6 +1,6 @@
 import { JSONSchema7 } from "json-schema";
 
-export const parseNumber = (schema: JSONSchema7) => {
+export const parseNumber = (schema: JSONSchema7 & { type: "number" }) => {
   let r = "z.number()";
   if (schema.format === "int64" || schema.multipleOf === 1) r += ".int()";
   if (schema.multipleOf !== undefined && schema.multipleOf !== 1) {

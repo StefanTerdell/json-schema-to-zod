@@ -1,6 +1,13 @@
+import { JSONSchema7, JSONSchema7Definition } from "json-schema";
 import { parseSchema } from "../parseSchema";
 
-export const parseIfThenElse = (schema: any): string => {
+export const parseIfThenElse = (
+  schema: JSONSchema7 & {
+    if: JSONSchema7Definition;
+    then: JSONSchema7Definition;
+    else: JSONSchema7Definition;
+  }
+): string => {
   const $if = parseSchema(schema.if);
   const $then = parseSchema(schema.then);
   const $else = parseSchema(schema.else);
