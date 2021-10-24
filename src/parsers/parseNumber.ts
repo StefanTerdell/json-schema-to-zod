@@ -1,8 +1,15 @@
 import { JSONSchema7 } from "json-schema";
 
-export const parseNumber = (schema: JSONSchema7 & { type: "number" }) => {
+export const parseNumber = (
+  schema: JSONSchema7 & { type: "number" | "integer" }
+) => {
   let r = "z.number()";
-  if (schema.format === "int64" || schema.multipleOf === 1) r += ".int()";
+  if (
+    schema.format === "int64" ||
+    schema.multipleOf === 1 ||
+    schema.type === "integer"
+  )
+    r += ".int()";
   if (schema.multipleOf !== undefined && schema.multipleOf !== 1) {
     r += `.multipleOf(${schema.multipleOf})`;
   }
