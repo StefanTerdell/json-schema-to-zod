@@ -6,5 +6,7 @@ export const parseString = (schema: JSONSchema7 & { type: "string" }) => {
   if (schema.format === "email") r += ".email()";
   else if (schema.format === "uri") r += ".url()";
   else if (schema.format === "uuid") r += ".uuid()";
+  if (schema.minLength !== undefined) r += `.min(${schema.minLength})`;
+  if (schema.maxLength !== undefined) r += `.min(${schema.maxLength})`;
   return r;
 };
