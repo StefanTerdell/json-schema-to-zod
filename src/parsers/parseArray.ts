@@ -1,5 +1,5 @@
 import { JSONSchema7 } from "json-schema";
-import { parseSchema } from "../parseSchema";
+import { parseSchema } from "./parseSchema";
 
 export const parseArray = (schema: JSONSchema7 & { type: "array" }) => {
   let r = !schema.items

@@ -1,5 +1,5 @@
 import { JSONSchema7, JSONSchema7Definition } from "json-schema";
-import { parseSchema } from "../parseSchema";
+import { parseSchema } from "./parseSchema";
 import { half } from "../utils/half";
 
 export function parseAllOf(

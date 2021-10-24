@@ -1,5 +1,5 @@
 import { JSONSchema7, JSONSchema7Definition } from "json-schema";
-import { parseSchema } from "../parseSchema";
+import { parseSchema } from "./parseSchema";
 
 export const parseIfThenElse = (
   schema: JSONSchema7 & {

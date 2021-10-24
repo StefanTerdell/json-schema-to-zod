@@ -1,5 +1,5 @@
 import { JSONSchema7 } from "json-schema";
-import { parseSchema } from "../parseSchema";
+import { parseSchema } from "./parseSchema";
 
 const requiredFlag = ""; //".required()"
 const defaultAdditionalFlag = ""; //".strip()"

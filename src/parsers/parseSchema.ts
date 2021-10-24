@@ -1,17 +1,17 @@
-import { parseAnyOf } from "./parsers/parseAnyOf";
-import { parseBoolean } from "./parsers/parseBoolean";
-import { parseDefault } from "./parsers/parseDefault";
-import { parseMultipleType } from "./parsers/parseMultipleType";
-import { parseNot } from "./parsers/parseNot";
-import { parseNull } from "./parsers/parseNull";
-import { parseAllOf } from "./parsers/parseAllOf";
-import { parseArray } from "./parsers/parseArray";
-import { parseConst } from "./parsers/parseConst";
-import { parseEnum } from "./parsers/parseEnum";
-import { parseIfThenElse } from "./parsers/parseIfThenElse";
-import { parseNumber } from "./parsers/parseNumber";
-import { parseObject } from "./parsers/parseObject";
-import { parseString } from "./parsers/parseString";
+import { parseAnyOf } from "./parseAnyOf";
+import { parseBoolean } from "./parseBoolean";
+import { parseDefault } from "./parseDefault";
+import { parseMultipleType } from "./parseMultipleType";
+import { parseNot } from "./parseNot";
+import { parseNull } from "./parseNull";
+import { parseAllOf } from "./parseAllOf";
+import { parseArray } from "./parseArray";
+import { parseConst } from "./parseConst";
+import { parseEnum } from "./parseEnum";
+import { parseIfThenElse } from "./parseIfThenElse";
+import { parseNumber } from "./parseNumber";
+import { parseObject } from "./parseObject";
+import { parseString } from "./parseString";
 
 export const parseSchema = (schema: any): string => {
   if (schema.type === "object") {
