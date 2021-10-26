@@ -1,6 +1,6 @@
 {
   "name": "json-schema-to-zod",
-  "version": "0.0.0",
+  "version": "0.0.0-beta.0",
   "description": "Converts JSON schema objects or files into Zod schemas",
   "main": "index.js",
   "scripts": {
@@ -23,10 +23,10 @@
     "json-schema-to-zod": "./cli.js"
   },
   "dependencies": {
+    "@types/json-schema": "^7.0.9",
     "prettier": "^2.4.1"
   },
   "devDependencies": {
-    "@types/json-schema": "^7.0.9",
     "@types/node": "^16.11.4",
     "@types/prettier": "^2.4.1",
     "copyfiles": "^2.4.1",
