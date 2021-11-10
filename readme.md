@@ -8,6 +8,10 @@ A very simple CLI tool to convert JSON schema objects or files into Zod schemas.
 
 ## Usage
 
+### Online
+
+[Paste your schemas here](https://stefanterdell.github.io/json-schema-to-zod-react/)
+
 ### CLI
 
 `json-schema-to-zod -s myJson.json -t mySchema.ts`
