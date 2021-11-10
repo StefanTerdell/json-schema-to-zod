@@ -1,10 +1,10 @@
 {
   "name": "json-schema-to-zod",
-  "version": "0.0.0-beta.0",
+  "version": "0.0.0-beta.1",
   "description": "Converts JSON schema objects or files into Zod schemas",
   "main": "index.js",
   "scripts": {
-    "build": "rimraf ./dist && tsc && copyfiles package.json ./dist && copyfiles LICENSE ./dist && copyfiles readme.md ./dist"
+    "build": "rimraf ./dist && tsc && copyfiles package.json LICENSE readme.md ./dist"
   },
   "keywords": [
     "zod",
