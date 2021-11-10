@@ -1,5 +1,7 @@
 # Json-Schema-to-Zod
 
+[![NPM Version](https://img.shields.io/npm/v/json-schema-to-zod.svg)](https://npmjs.org/package/json-schema-to-zod)
+
 ## Summary
 
 A very simple CLI tool to convert JSON schema objects or files into Zod schemas. Uses Prettier for formatting for now.
