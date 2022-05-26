@@ -50,7 +50,7 @@ const selectParser = (schema: JSONSchema7): string => {
     return parseConst(schema);
   } else if (its.a.primitive(schema, "string")) {
     return parseString(schema);
-  } else if (its.a.primitive(schema, "number")) {
+  } else if (its.a.primitive(schema, "number") || its.a.primitive(schema, "integer")) {
     return parseNumber(schema);
   } else if (its.a.primitive(schema, "boolean")) {
     return parseBoolean(schema);
