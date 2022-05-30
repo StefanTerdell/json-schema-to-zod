@@ -18,6 +18,7 @@ import {
   JSONSchema7Type,
   JSONSchema7TypeName,
 } from "json-schema";
+import { parseOneOf } from "./parseOneOf";
 
 export const parseSchema = (schema: JSONSchema7 | boolean): string => {
   if (typeof schema !== "object") return "z.unknown()";
@@ -42,6 +43,8 @@ const selectParser = (schema: JSONSchema7): string => {
     return parseAnyOf(schema);
   } else if (its.an.allOf(schema)) {
     return parseAllOf(schema);
+  } else if (its.a.oneOf(schema)) {
+    return parseOneOf(schema);
   } else if (its.a.not(schema)) {
     return parseNot(schema);
   } else if (its.an.enum(schema)) {
@@ -50,7 +53,10 @@ const selectParser = (schema: JSONSchema7): string => {
     return parseConst(schema);
   } else if (its.a.primitive(schema, "string")) {
     return parseString(schema);
-  } else if (its.a.primitive(schema, "number") || its.a.primitive(schema, "integer")) {
+  } else if (
+    its.a.primitive(schema, "number") ||
+    its.a.primitive(schema, "integer")
+  ) {
     return parseNumber(schema);
   } else if (its.a.primitive(schema, "boolean")) {
     return parseBoolean(schema);
@@ -111,5 +117,10 @@ const its = {
       then: JSONSchema7Definition;
       else: JSONSchema7Definition;
     } => Boolean(x.if && x.then && x.else),
+    oneOf: (
+      x: JSONSchema7
+    ): x is JSONSchema7 & {
+      oneOf: JSONSchema7Definition[];
+    } => !!x.oneOf,
   },
 };
