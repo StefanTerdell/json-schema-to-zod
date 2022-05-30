@@ -67,7 +67,8 @@ if (nameArgumentIndex !== -1) {
     process.exit(1);
   }
 }
-let deref = process.argv.indexOf("--deref") !== 1 || process.argv.indexOf("-d") !== 1;
+let deref =
+  process.argv.indexOf("--deref") !== -1 || process.argv.indexOf("-d") !== -1;
 if (targetFilePath) {
   if (deref) {
     jsonSchemaToZodDereffed(sourceFileData, name, true)
@@ -104,13 +105,25 @@ if (targetFilePath) {
     }
   }
 } else {
-  let result: string;
-  try {
-    result = jsonSchemaToZod(sourceFileData, name, false);
-  } catch (e) {
-    console.error("Failed to parse sourcefile content to Zod schema");
-    console.error(e);
-    process.exit(1);
+  if (deref) {
+    jsonSchemaToZodDereffed(sourceFileData, name, false)
+      .catch((e) => {
+        console.error("Failed to parse sourcefile content to Zod schema");
+        console.error(e);
+        process.exit(1);
+      })
+      .then((result) => {
+        console.log(result);
+      });
+  } else {
+    let result: string;
+    try {
+      result = jsonSchemaToZod(sourceFileData, name, false);
+    } catch (e) {
+      console.error("Failed to parse sourcefile content to Zod schema");
+      console.error(e);
+      process.exit(1);
+    }
+    console.log(result);
   }
-  console.log(result);
 }
