@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@types/json-schema": "^7.0.9",
+    "json-schema-ref-parser": "^9.0.9",
     "prettier": "^2.4.1"
   },
   "devDependencies": {

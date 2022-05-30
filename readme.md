@@ -21,6 +21,7 @@ Options:
 - --source/-s [source file name]
 - --target/-t [(optional) target file name]
 - --name/-n [(optional) schema name in output]
+- --deref/-d [(optional) deref schemas before parsing]
 
 ### Programmatic
 

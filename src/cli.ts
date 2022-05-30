@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { jsonSchemaToZod } from "./jsonSchemaToZod";
+import { jsonSchemaToZod, jsonSchemaToZodDereffed } from "./jsonSchemaToZod";
 import { readFileSync, writeFileSync, existsSync } from "fs";
 let sourceArgumentIndex = process.argv.indexOf("--source");
 if (sourceArgumentIndex === -1) {
@@ -67,22 +67,41 @@ if (nameArgumentIndex !== -1) {
     process.exit(1);
   }
 }
+let deref = process.argv.indexOf("--deref") !== 1 || process.argv.indexOf("-d") !== 1;
 if (targetFilePath) {
-  let result: string;
-  try {
-    result = jsonSchemaToZod(sourceFileData, name, true);
-  } catch (e) {
-    console.error("Failed to parse sourcefile content to Zod schema");
-    console.error(e);
-    process.exit(1);
-  }
+  if (deref) {
+    jsonSchemaToZodDereffed(sourceFileData, name, true)
+      .catch((e) => {
+        console.error("Failed to parse sourcefile content to Zod schema");
+        console.error(e);
+        process.exit(1);
+      })
+      .then((result) => {
+        try {
+          writeFileSync(targetFilePath, result);
+        } catch (e) {
+          console.error(`Failed to write result to ${targetFilePath}`);
+          console.error(e);
+          process.exit(1);
+        }
+      });
+  } else {
+    let result: string;
+    try {
+      result = jsonSchemaToZod(sourceFileData, name, true);
+    } catch (e) {
+      console.error("Failed to parse sourcefile content to Zod schema");
+      console.error(e);
+      process.exit(1);
+    }
 
-  try {
-    writeFileSync(targetFilePath, result);
-  } catch (e) {
-    console.error(`Failed to result to ${targetFilePath}`);
-    console.error(e);
-    process.exit(1);
+    try {
+      writeFileSync(targetFilePath, result);
+    } catch (e) {
+      console.error(`Failed to write result to ${targetFilePath}`);
+      console.error(e);
+      process.exit(1);
+    }
   }
 } else {
   let result: string;
