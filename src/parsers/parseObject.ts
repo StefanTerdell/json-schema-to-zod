@@ -9,9 +9,9 @@ export const parseObject = (schema: JSONSchema7 & { type: "object" }) => {
     ? typeof schema.additionalProperties === "object"
       ? `z.record(${parseSchema(schema.additionalProperties)})`
       : "z.object({}).catchall(z.any())"
-    : `z.object({${Object.entries(schema?.properties).map(
+    : `z.object({${Object.entries(schema?.properties ?? {}).map(
         ([k, v]) =>
-          `'${k}':${parseSchema(v)}${
+          `${JSON.stringify(k)}:${parseSchema(v)}${
             schema.required?.includes(k) ? requiredFlag : ".optional()"
           }`
       )}})${

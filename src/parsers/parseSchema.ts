@@ -28,7 +28,7 @@ export const parseSchema = (schema: JSONSchema7 | boolean): string => {
 };
 
 const addMeta = (schema: JSONSchema7, parsed: string): string => {
-  if (schema.description) parsed += `.describe("${schema.description}")`;
+  if (schema.description) parsed += `.describe(${JSON.stringify(schema.description)})`;
   return parsed;
 };
 

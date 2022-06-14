@@ -7,7 +7,7 @@ export const parseArray = (schema: JSONSchema7 & { type: "array" }) => {
     : Array.isArray(schema.items)
     ? `z.tuple([${schema.items.map(parseSchema)}])`
     : `z.array(${parseSchema(schema.items)})`;
-  if (schema.minItems !== undefined) r += `.min(${schema.minItems})`;
-  if (schema.maxItems !== undefined) r += `.max(${schema.maxItems})`;
+  if (typeof schema.minItems === "number") r += `.min(${schema.minItems})`;
+  if (typeof schema.maxItems === "number") r += `.max(${schema.maxItems})`;
   return r;
 };
