@@ -28,7 +28,8 @@ export const parseSchema = (schema: JSONSchema7 | boolean): string => {
 };
 
 const addMeta = (schema: JSONSchema7, parsed: string): string => {
-  if (schema.description) parsed += `.describe(${JSON.stringify(schema.description)})`;
+  if (schema.description)
+    parsed += `.describe(${JSON.stringify(schema.description)})`;
   return parsed;
 };
 
@@ -37,8 +38,6 @@ const selectParser = (schema: JSONSchema7): string => {
     return parseObject(schema);
   } else if (its.an.array(schema)) {
     return parseArray(schema);
-  } else if (its.a.multipleType(schema)) {
-    return parseMultipleType(schema);
   } else if (its.an.anyOf(schema)) {
     return parseAnyOf(schema);
   } else if (its.an.allOf(schema)) {
@@ -51,6 +50,8 @@ const selectParser = (schema: JSONSchema7): string => {
     return parseEnum(schema); //<-- needs to come before primitives
   } else if (its.a.const(schema)) {
     return parseConst(schema);
+  } else if (its.a.multipleType(schema)) {
+    return parseMultipleType(schema);
   } else if (its.a.primitive(schema, "string")) {
     return parseString(schema);
   } else if (
