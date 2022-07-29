@@ -16,9 +16,13 @@ export const jsonSchemaToZod = (
   schema: JSONSchema7,
   name?: string,
   module = true
-): string =>
-  format(
-    `${module ? `import {z} from 'zod'\n\nexport ` : ""}${
+): string => {
+  
+  const ctx = {
+    editingResult: `${module ? `import {z} from 'zod'\n\nexport ` : ""}${
       name ? `const ${name}=` : module ? "default " : "const schema="
-    }${parseSchema(schema)}`
-  );
+    }`
+  }
+  const result = parseSchema(schema, ctx)
+  return format(ctx.editingResult + result);
+}

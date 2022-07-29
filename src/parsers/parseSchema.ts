@@ -20,9 +20,14 @@ import {
 } from "json-schema";
 import { parseOneOf } from "./parseOneOf";
 
-export const parseSchema = (schema: JSONSchema7 | boolean): string => {
+export interface ParseSchemaContext {
+  editingResult: string
+  currentPropertyKey?: string
+}
+
+export const parseSchema = (schema: JSONSchema7 | boolean, ctx: ParseSchemaContext) => {
   if (typeof schema !== "object") return "z.unknown()";
-  let parsed = selectParser(schema);
+  let parsed = selectParser(schema, ctx);
   parsed = addMeta(schema, parsed);
   return parsed;
 };
@@ -32,23 +37,23 @@ const addMeta = (schema: JSONSchema7, parsed: string): string => {
   return parsed;
 };
 
-const selectParser = (schema: JSONSchema7): string => {
+const selectParser = (schema: JSONSchema7, ctx: ParseSchemaContext): string => {
   if (its.an.object(schema)) {
-    return parseObject(schema);
+    return parseObject(schema, ctx);
   } else if (its.an.array(schema)) {
-    return parseArray(schema);
+    return parseArray(schema, ctx);
   } else if (its.a.multipleType(schema)) {
-    return parseMultipleType(schema);
+    return parseMultipleType(schema, ctx);
   } else if (its.an.anyOf(schema)) {
-    return parseAnyOf(schema);
+    return parseAnyOf(schema, ctx);
   } else if (its.an.allOf(schema)) {
-    return parseAllOf(schema);
+    return parseAllOf(schema, ctx);
   } else if (its.a.oneOf(schema)) {
-    return parseOneOf(schema);
+    return parseOneOf(schema, ctx);
   } else if (its.a.not(schema)) {
     return parseNot(schema);
   } else if (its.an.enum(schema)) {
-    return parseEnum(schema); //<-- needs to come before primitives
+    return parseEnum(schema, ctx); //<-- needs to come before primitives
   } else if (its.a.const(schema)) {
     return parseConst(schema);
   } else if (its.a.primitive(schema, "string")) {
@@ -63,7 +68,7 @@ const selectParser = (schema: JSONSchema7): string => {
   } else if (its.a.primitive(schema, "null")) {
     return parseNull(schema);
   } else if (its.a.conditional(schema)) {
-    return parseIfThenElse(schema);
+    return parseIfThenElse(schema, ctx);
   } else {
     return parseDefault(schema);
   }
