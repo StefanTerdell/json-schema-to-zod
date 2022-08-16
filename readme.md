@@ -4,7 +4,7 @@
 
 ## Summary
 
-A very simple CLI tool to convert JSON schema objects or files into Zod schemas. Uses Prettier for formatting for now.
+A very simple CLI tool to convert JSON schema (draft 4+) objects or files into Zod schemas. Uses Prettier for formatting for now.
 
 ## Usage
 
