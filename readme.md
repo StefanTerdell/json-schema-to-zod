@@ -55,5 +55,5 @@ export default z.object({ hello: z.string().optional() });
 and
 
 ```
-z.object({hello: z:string().optional()})
+z.object({hello: z.string().optional()})
 ```
