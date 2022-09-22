@@ -26,7 +26,7 @@ Options:
 ### Programmatic
 
 ```typescript
-import { jsonSchemaToZod } from "json-schema-to-zod";
+import { jsonSchemaToZod, parseSchema } from "json-schema-to-zod";
 
 const myObject = {
   type: "object",
