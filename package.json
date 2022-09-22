@@ -14,6 +14,10 @@
     "cli"
   ],
   "author": "Stefan Terdell",
+  "contributors": [
+    "Chen (https://github.com/werifu)",
+    "Nuno Carduso (https://github.com/ncardoso-barracuda)"
+  ],
   "license": "ISC",
   "repository": {
     "type": "git",
