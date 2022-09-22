@@ -38,12 +38,22 @@ const myObject = {
 };
 
 const result = jsonSchemaToZod(myObject);
-
 console.log(result);
+
+const zodSchema = parseSchema(myObject);
+console.log(zodSchema);
 ```
 
 ### Expected output:
 
 ```
-const schema = z.object({hello: z.string()});
+import { z } from "zod";
+
+export default z.object({ hello: z.string().optional() });
+```
+
+and
+
+```
+z.object({hello: z:string().optional()})
 ```
