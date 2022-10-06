@@ -19,6 +19,7 @@ import {
   JSONSchema7TypeName,
 } from "json-schema";
 import { parseOneOf } from "./parseOneOf";
+import { parseNullable } from "./parseNullable";
 
 export const parseSchema = (schema: JSONSchema7 | boolean): string => {
   if (typeof schema !== "object") return "z.unknown()";
@@ -34,7 +35,9 @@ const addMeta = (schema: JSONSchema7, parsed: string): string => {
 };
 
 const selectParser = (schema: JSONSchema7): string => {
-  if (its.an.object(schema)) {
+  if (its.a.nullable(schema)) {
+    return parseNullable(schema);
+  } else if (its.an.object(schema)) {
     return parseObject(schema);
   } else if (its.an.array(schema)) {
     return parseArray(schema);
@@ -93,6 +96,8 @@ const its = {
     } => !!x.enum,
   },
   a: {
+    nullable: (x: JSONSchema7): x is JSONSchema7 & { nullable: true } =>
+      (x as any).nullable === true,
     multipleType: (
       x: JSONSchema7
     ): x is JSONSchema7 & { type: JSONSchema7TypeName[] } =>
