@@ -21,10 +21,13 @@ import {
 import { parseOneOf } from "./parseOneOf";
 import { parseNullable } from "./parseNullable";
 
-export const parseSchema = (schema: JSONSchema7 | boolean): string => {
+export const parseSchema = (schema: JSONSchema7 | boolean, includeDefaults: boolean): string => {
   if (typeof schema !== "object") return "z.unknown()";
-  let parsed = selectParser(schema);
+  let parsed = selectParser(schema, includeDefaults);
   parsed = addMeta(schema, parsed);
+  if (includeDefaults) {
+    parsed = addDefaults(schema, parsed)
+  }
   return parsed;
 };
 
@@ -34,19 +37,26 @@ const addMeta = (schema: JSONSchema7, parsed: string): string => {
   return parsed;
 };
 
-const selectParser = (schema: JSONSchema7): string => {
+const addDefaults = (schema: JSONSchema7, parsed: string): string => {
+  if (schema.default) {
+    parsed += `.default(${JSON.stringify(schema.default)} )`;
+  }
+  return parsed;
+}
+
+const selectParser = (schema: JSONSchema7, includeDefaults: boolean): string => {
   if (its.a.nullable(schema)) {
-    return parseNullable(schema);
+    return parseNullable(schema, includeDefaults);
   } else if (its.an.object(schema)) {
-    return parseObject(schema);
+    return parseObject(schema, includeDefaults);
   } else if (its.an.array(schema)) {
-    return parseArray(schema);
+    return parseArray(schema, includeDefaults);
   } else if (its.an.anyOf(schema)) {
-    return parseAnyOf(schema);
+    return parseAnyOf(schema, includeDefaults);
   } else if (its.an.allOf(schema)) {
-    return parseAllOf(schema);
+    return parseAllOf(schema, includeDefaults);
   } else if (its.a.oneOf(schema)) {
-    return parseOneOf(schema);
+    return parseOneOf(schema, includeDefaults);
   } else if (its.a.not(schema)) {
     return parseNot(schema);
   } else if (its.an.enum(schema)) {
@@ -54,7 +64,7 @@ const selectParser = (schema: JSONSchema7): string => {
   } else if (its.a.const(schema)) {
     return parseConst(schema);
   } else if (its.a.multipleType(schema)) {
-    return parseMultipleType(schema);
+    return parseMultipleType(schema, includeDefaults);
   } else if (its.a.primitive(schema, "string")) {
     return parseString(schema);
   } else if (
@@ -67,7 +77,7 @@ const selectParser = (schema: JSONSchema7): string => {
   } else if (its.a.primitive(schema, "null")) {
     return parseNull(schema);
   } else if (its.a.conditional(schema)) {
-    return parseIfThenElse(schema);
+    return parseIfThenElse(schema, includeDefaults);
   } else {
     return parseDefault(schema);
   }
