@@ -41,7 +41,7 @@ const myObject = {
 const result = jsonSchemaToZod(myObject);
 console.log(result);
 
-const zodSchema = parseSchema(myObject);
+const zodSchema = parseSchema(myObject, false);
 console.log(zodSchema);
 ```
 
