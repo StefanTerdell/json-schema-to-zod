@@ -7,22 +7,22 @@ export const jsonSchemaToZodDereffed = (
   schema: JSONSchema7,
   name?: string,
   module = true,
-  includeDefaults = false
+  withoutDefaults = false
 ): Promise<string> =>
   $RefParser
     .dereference(schema)
     .then((schema) =>
-      jsonSchemaToZod(schema as JSONSchema7, name, module, includeDefaults)
+      jsonSchemaToZod(schema as JSONSchema7, name, module, withoutDefaults)
     );
 
 export const jsonSchemaToZod = (
   schema: JSONSchema7,
   name?: string,
   module = true,
-  includeDefaults = false
+  withoutDefaults = false
 ): string =>
   format(
     `${module ? `import {z} from 'zod'\n\nexport ` : ""}${
       name ? `const ${name}=` : module ? "default " : "const schema="
-    }${parseSchema(schema, includeDefaults)}`
+    }${parseSchema(schema, withoutDefaults)}`
   );

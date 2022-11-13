@@ -5,7 +5,7 @@ import {
 import { parseSchema } from "./parseSchema";
 
 export const parseAnyOf = (
-  schema: JSONSchema7 & { anyOf: JSONSchema7Definition[]; },includeDefaults: boolean
+  schema: JSONSchema7 & { anyOf: JSONSchema7Definition[]; },withoutDefaults: boolean
 ) => {
-  return `z.union([${schema.anyOf.map(v => parseSchema(v, includeDefaults))}])`;
+  return `z.union([${schema.anyOf.map(v => parseSchema(v, withoutDefaults))}])`;
 };
