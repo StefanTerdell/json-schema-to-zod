@@ -73,7 +73,7 @@ const selectParser = (schema: JSONSchema7): string => {
   }
 };
 
-const its = {
+export const its = {
   an: {
     object: (x: JSONSchema7): x is JSONSchema7 & { type: "object" } =>
       x.type === "object",

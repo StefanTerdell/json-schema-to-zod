@@ -95,4 +95,38 @@ describe("parseObject", () => {
       ).toStrictEqual("z.record(z.number())");
     });
   });
+
+  describe("with nested unions", () => {
+    expect(
+      parseObject({
+        type: "object",
+        required: ["a"],
+        properties: {
+          a: {
+            type: "string",
+          },
+        },
+        anyOf: [
+          {
+            required: ["b"],
+            properties: {
+              b: {
+                type: "string",
+              },
+            },
+          },
+          {
+            required: ["c"],
+            properties: {
+              c: {
+                type: "string",
+              },
+            },
+          },
+        ],
+      })
+    ).toStrictEqual(
+      'z.object({"a":z.string()}).and(z.union([z.object({"b":z.string()}),z.object({"c":z.string()})]))'
+    );
+  });
 });

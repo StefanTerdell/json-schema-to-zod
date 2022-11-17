@@ -1,11 +1,13 @@
 import { JSONSchema7 } from "json-schema";
-import { parseSchema } from "./parseSchema";
+import { parseAnyOf } from "./parseAnyOf";
+import { parseOneOf } from "./parseOneOf";
+import { its, parseSchema } from "./parseSchema";
 
 const requiredFlag = ""; //".required()"
 const defaultAdditionalFlag = ""; //".strip()"
 
 export const parseObject = (schema: JSONSchema7 & { type: "object" }) => {
-  return !schema.properties
+  let result = !schema.properties
     ? typeof schema.additionalProperties === "object"
       ? `z.record(${parseSchema(schema.additionalProperties)})`
       : schema.additionalProperties === false
@@ -25,4 +27,32 @@ export const parseObject = (schema: JSONSchema7 & { type: "object" }) => {
           ? `.catchall(${parseSchema(schema.additionalProperties)})`
           : defaultAdditionalFlag
       }`;
+
+  if (its.an.anyOf(schema)) {
+    result += `.and(${parseAnyOf({
+      ...schema,
+      anyOf: schema.anyOf.map((x) =>
+        typeof x === "object" &&
+        !x.type &&
+        (x.properties || x.additionalProperties)
+          ? { ...x, type: "object" }
+          : x
+      ),
+    })})`;
+  }
+
+  if (its.a.oneOf(schema)) {
+    result += `.and(${parseOneOf({
+      ...schema,
+      oneOf: schema.oneOf.map((x) =>
+        typeof x === "object" &&
+        !x.type &&
+        (x.properties || x.additionalProperties)
+          ? { ...x, type: "object" }
+          : x
+      ),
+    })})`;
+  }
+
+  return result;
 };
