@@ -4,7 +4,10 @@ import { parseSchema } from "./parseSchema";
 export const parseOneOf = (
   schema: JSONSchema7 & { oneOf: JSONSchema7Definition[] }
 ) => {
-  return `z.any().superRefine((x, ctx) => {
+  return schema.oneOf.length
+    ? schema.oneOf.length === 1
+      ? parseSchema(schema.oneOf[0])
+      : `z.any().superRefine((x, ctx) => {
     const schemas = [${schema.oneOf.map(parseSchema)}];
     const errors = schemas.reduce(
       (errors: z.ZodError[], schema) =>
@@ -21,5 +24,6 @@ export const parseOneOf = (
         message: "Invalid input: Should pass single schema",
       });
     }
-  })`;
+  })`
+    : "z.any()";
 };
