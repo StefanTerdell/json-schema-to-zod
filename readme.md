@@ -22,6 +22,7 @@ Options:
 - --target/-t [(optional) target file name]
 - --name/-n [(optional) schema name in output]
 - --deref/-d [(optional) deref schemas before parsing]
+- --without-defaults [(optional) exclude default values]
 
 ### Programmatic
 
@@ -40,7 +41,7 @@ const myObject = {
 const result = jsonSchemaToZod(myObject);
 console.log(result);
 
-const zodSchema = parseSchema(myObject);
+const zodSchema = parseSchema(myObject, false);
 console.log(zodSchema);
 ```
 

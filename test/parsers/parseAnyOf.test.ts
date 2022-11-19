@@ -10,17 +10,17 @@ describe("parseAnyOf", () => {
           },
           { type: "number" },
         ],
-      })
+      }, false)
     ).toStrictEqual("z.union([z.string(),z.number()])");
   });
 
   it("should extract a single schema", () => {
-    expect(parseAnyOf({ anyOf: [{ type: "string" }] })).toStrictEqual(
+    expect(parseAnyOf({ anyOf: [{ type: "string" }] }, false)).toStrictEqual(
       "z.string()"
     );
   });
 
   it("should return z.any() if array is empty", () => {
-    expect(parseAnyOf({ anyOf: [] })).toStrictEqual("z.any()");
+    expect(parseAnyOf({ anyOf: [] }, false)).toStrictEqual("z.any()");
   });
 });

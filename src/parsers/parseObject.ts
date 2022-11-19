@@ -6,17 +6,17 @@ import { its, parseSchema } from "./parseSchema";
 const requiredFlag = ""; //".required()"
 const defaultAdditionalFlag = ""; //".strip()"
 
-export const parseObject = (schema: JSONSchema7 & { type: "object" }) => {
+export const parseObject = (schema: JSONSchema7 & { type: "object" }, withoutDefaults: boolean) => {
   let result = !schema.properties
     ? typeof schema.additionalProperties === "object"
-      ? `z.record(${parseSchema(schema.additionalProperties)})`
+      ? `z.record(${parseSchema(schema.additionalProperties, withoutDefaults)})`
       : schema.additionalProperties === false
       ? "z.object({}).strict()"
       : "z.record(z.any())"
     : `z.object({${Object.entries(schema?.properties ?? {}).map(
         ([k, v]) =>
-          `${JSON.stringify(k)}:${parseSchema(v)}${
-            schema.required?.includes(k) ? requiredFlag : ".optional()"
+          `${JSON.stringify(k)}:${parseSchema(v, withoutDefaults)}${
+            schema.required?.includes(k) || (!withoutDefaults && v.hasOwnProperty('default')) ? requiredFlag : ".optional()"
           }`
       )}})${
         schema.additionalProperties === true
@@ -24,7 +24,7 @@ export const parseObject = (schema: JSONSchema7 & { type: "object" }) => {
           : schema.additionalProperties === false
           ? ".strict()"
           : typeof schema.additionalProperties === "object"
-          ? `.catchall(${parseSchema(schema.additionalProperties)})`
+          ? `.catchall(${parseSchema(schema.additionalProperties, withoutDefaults)})`
           : defaultAdditionalFlag
       }`;
 
@@ -38,7 +38,7 @@ export const parseObject = (schema: JSONSchema7 & { type: "object" }) => {
           ? { ...x, type: "object" }
           : x
       ),
-    })})`;
+    }, withoutDefaults)})`;
   }
 
   if (its.a.oneOf(schema)) {
@@ -51,7 +51,7 @@ export const parseObject = (schema: JSONSchema7 & { type: "object" }) => {
           ? { ...x, type: "object" }
           : x
       ),
-    })})`;
+    }, withoutDefaults)})`;
   }
 
   return result;

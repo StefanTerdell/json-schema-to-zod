@@ -15,7 +15,7 @@ describe("parseObject", () => {
               type: "string",
             },
           },
-        })
+        }, false)
       ).toStrictEqual(
         'z.object({"myOptionalString":z.string().optional(),"myRequiredString":z.string()})'
       );
@@ -32,7 +32,7 @@ describe("parseObject", () => {
             },
           },
           additionalProperties: false,
-        })
+        }, false)
       ).toStrictEqual('z.object({"myString":z.string()}).strict()');
     });
 
@@ -47,7 +47,7 @@ describe("parseObject", () => {
             },
           },
           additionalProperties: true,
-        })
+        }, false)
       ).toStrictEqual('z.object({"myString":z.string()}).catchall(z.any())');
     });
 
@@ -62,7 +62,7 @@ describe("parseObject", () => {
             },
           },
           additionalProperties: { type: "number" },
-        })
+        }, false)
       ).toStrictEqual('z.object({"myString":z.string()}).catchall(z.number())');
     });
   });
@@ -73,7 +73,7 @@ describe("parseObject", () => {
         parseObject({
           type: "object",
           additionalProperties: false,
-        })
+        }, false)
       ).toStrictEqual("z.object({}).strict()");
     });
 
@@ -82,7 +82,7 @@ describe("parseObject", () => {
         parseObject({
           type: "object",
           additionalProperties: true,
-        })
+        }, false)
       ).toStrictEqual("z.record(z.any())");
     });
 
@@ -91,7 +91,7 @@ describe("parseObject", () => {
         parseObject({
           type: "object",
           additionalProperties: { type: "number" },
-        })
+        }, false)
       ).toStrictEqual("z.record(z.number())");
     });
   });
@@ -124,7 +124,7 @@ describe("parseObject", () => {
             },
           },
         ],
-      })
+      }, false)
     ).toStrictEqual(
       'z.object({"a":z.string()}).and(z.union([z.object({"b":z.string()}),z.object({"c":z.string()})]))'
     );

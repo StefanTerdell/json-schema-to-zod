@@ -6,11 +6,11 @@ export const parseIfThenElse = (
     if: JSONSchema7Definition;
     then: JSONSchema7Definition;
     else: JSONSchema7Definition;
-  }
+  },withoutDefaults: boolean
 ): string => {
-  const $if = parseSchema(schema.if);
-  const $then = parseSchema(schema.then);
-  const $else = parseSchema(schema.else);
+  const $if = parseSchema(schema.if, withoutDefaults);
+  const $then = parseSchema(schema.then, withoutDefaults);
+  const $else = parseSchema(schema.else, withoutDefaults);
   return `z.union([${$then},${$else}]).superRefine((value,ctx) => {
   const result = ${$if}.safeParse(value).success
     ? ${$then}.safeParse(value)

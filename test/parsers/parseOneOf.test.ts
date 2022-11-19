@@ -10,7 +10,7 @@ describe("parseOneOf", () => {
           },
           { type: "number" },
         ],
-      })
+      }, false)
     ).toStrictEqual(`z.any().superRefine((x, ctx) => {
     const schemas = [z.string(),z.number()];
     const errors = schemas.reduce(
@@ -32,13 +32,13 @@ describe("parseOneOf", () => {
   });
 
   it("should extract a single schema", () => {
-    expect(parseOneOf({ oneOf: [{ type: "string" }] })).toStrictEqual(
+    expect(parseOneOf({ oneOf: [{ type: "string" }] }, false)).toStrictEqual(
       "z.string()"
     );
   });
 
   it("should return z.any() if array is empty", () => {
-    expect(parseOneOf({ oneOf: [] })).toStrictEqual("z.any()");
+    expect(parseOneOf({ oneOf: [] }, false)).toStrictEqual("z.any()");
   });
 });
 
