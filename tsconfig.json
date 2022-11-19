@@ -8,5 +8,5 @@
     "skipLibCheck": true,
     "esModuleInterop": true
   },
-  "exclude": ["node_modules", "dist", "hmm.ts", "hmmm.ts"]
+  "exclude": ["node_modules", "dist", "test"]
 }
