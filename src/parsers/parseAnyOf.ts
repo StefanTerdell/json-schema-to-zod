@@ -3,7 +3,7 @@ import { parseSchema } from "./parseSchema";
 
 export const parseAnyOf = (
   schema: JSONSchema7 & { anyOf: JSONSchema7Definition[] },
-  withoutDefaults: boolean
+  withoutDefaults?: boolean
 ) => {
   return schema.anyOf.length
     ? schema.anyOf.length === 1

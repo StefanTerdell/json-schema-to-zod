@@ -22,9 +22,7 @@ export const parseNumber = (
     } else {
       r += `.gte(${schema.minimum})`;
     }
-  } else if (
-    typeof schema.exclusiveMinimum === "number"
-  ) {
+  } else if (typeof schema.exclusiveMinimum === "number") {
     r += `.gt(${schema.exclusiveMinimum})`;
   }
 
@@ -34,9 +32,7 @@ export const parseNumber = (
     } else {
       r += `.lte(${schema.maximum})`;
     }
-  } else if (
-    typeof schema.exclusiveMaximum === "number"
-  ) {
+  } else if (typeof schema.exclusiveMaximum === "number") {
     r += `.lt(${schema.exclusiveMaximum})`;
   }
   return r;

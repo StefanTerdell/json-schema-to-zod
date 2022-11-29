@@ -6,7 +6,8 @@ export const parseIfThenElse = (
     if: JSONSchema7Definition;
     then: JSONSchema7Definition;
     else: JSONSchema7Definition;
-  },withoutDefaults: boolean
+  },
+  withoutDefaults?: boolean
 ): string => {
   const $if = parseSchema(schema.if, withoutDefaults);
   const $then = parseSchema(schema.then, withoutDefaults);

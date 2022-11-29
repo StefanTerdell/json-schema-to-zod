@@ -3,13 +3,15 @@ import { parseSchema } from "./parseSchema";
 
 export const parseOneOf = (
   schema: JSONSchema7 & { oneOf: JSONSchema7Definition[] },
-  withoutDefaults: boolean
+  withoutDefaults?: boolean
 ) => {
   return schema.oneOf.length
     ? schema.oneOf.length === 1
       ? parseSchema(schema.oneOf[0], withoutDefaults)
       : `z.any().superRefine((x, ctx) => {
-    const schemas = [${schema.oneOf.map(schema => parseSchema(schema, withoutDefaults))}];
+    const schemas = [${schema.oneOf.map((schema) =>
+      parseSchema(schema, withoutDefaults)
+    )}];
     const errors = schemas.reduce(
       (errors: z.ZodError[], schema) =>
         ((result) => ("error" in result ? [...errors, result.error] : errors))(

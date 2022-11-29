@@ -21,12 +21,15 @@ import {
 import { parseOneOf } from "./parseOneOf";
 import { parseNullable } from "./parseNullable";
 
-export const parseSchema = (schema: JSONSchema7 | boolean, withoutDefaults: boolean): string => {
+export const parseSchema = (
+  schema: JSONSchema7 | boolean,
+  withoutDefaults?: boolean
+): string => {
   if (typeof schema !== "object") return "z.unknown()";
   let parsed = selectParser(schema, withoutDefaults);
   parsed = addMeta(schema, parsed);
   if (!withoutDefaults) {
-    parsed = addDefaults(schema, parsed)
+    parsed = addDefaults(schema, parsed);
   }
   return parsed;
 };
@@ -42,9 +45,12 @@ const addDefaults = (schema: JSONSchema7, parsed: string): string => {
     parsed += `.default(${JSON.stringify(schema.default)} )`;
   }
   return parsed;
-}
+};
 
-const selectParser = (schema: JSONSchema7, withoutDefaults: boolean): string => {
+const selectParser = (
+  schema: JSONSchema7,
+  withoutDefaults?: boolean
+): string => {
   if (its.a.nullable(schema)) {
     return parseNullable(schema, withoutDefaults);
   } else if (its.an.object(schema)) {
@@ -58,7 +64,7 @@ const selectParser = (schema: JSONSchema7, withoutDefaults: boolean): string => 
   } else if (its.a.oneOf(schema)) {
     return parseOneOf(schema, withoutDefaults);
   } else if (its.a.not(schema)) {
-    return parseNot(schema);
+    return parseNot(schema, withoutDefaults);
   } else if (its.an.enum(schema)) {
     return parseEnum(schema); //<-- needs to come before primitives
   } else if (its.a.const(schema)) {

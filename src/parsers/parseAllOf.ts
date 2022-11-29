@@ -3,7 +3,8 @@ import { parseSchema } from "./parseSchema";
 import { half } from "../utils/half";
 
 export function parseAllOf(
-  schema: JSONSchema7 & { allOf: JSONSchema7Definition[] },withoutDefaults: boolean
+  schema: JSONSchema7 & { allOf: JSONSchema7Definition[] },
+  withoutDefaults?: boolean
 ): string {
   if (schema.allOf.length === 0) {
     return "z.any()";
@@ -11,8 +12,14 @@ export function parseAllOf(
     return parseSchema(schema.allOf[0], withoutDefaults);
   } else {
     const [left, right] = half(schema.allOf);
-    return `z.intersection(${parseAllOf({ allOf: left }, withoutDefaults)},${parseAllOf({
-      allOf: right,
-    }, withoutDefaults)})`;
+    return `z.intersection(${parseAllOf(
+      { allOf: left },
+      withoutDefaults
+    )},${parseAllOf(
+      {
+        allOf: right,
+      },
+      withoutDefaults
+    )})`;
   }
 }
