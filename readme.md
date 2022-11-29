@@ -1,33 +1,50 @@
 # Json-Schema-to-Zod
 
 [![NPM Version](https://img.shields.io/npm/v/json-schema-to-zod.svg)](https://npmjs.org/package/json-schema-to-zod)
+[![NPM Downloads](https://img.shields.io/npm/dw/json-schema-to-zod.svg)](https://npmjs.org/package/json-schema-to-zod)
+
+_Looking for the exact opposite? Check out [zod-to-json-schema](https://npmjs.org/package/zod-to-json-schema)_
 
 ## Summary
 
-A very simple CLI tool to convert JSON schema (draft 4+) objects or files into Zod schemas. Uses Prettier for formatting for now.
+A runtime package and CLI tool to convert JSON schema (draft 4+) objects or files into Zod schemas in the form of JavaScript code. Uses Prettier for formatting, .
 
 ## Usage
 
 ### Online
 
-[Paste your schemas here](https://stefanterdell.github.io/json-schema-to-zod-react/)
+[Just paste your JSON schemas here!](https://stefanterdell.github.io/json-schema-to-zod-react/)
 
 ### CLI
 
-`json-schema-to-zod -s myJson.json -t mySchema.ts`
+Installation:
 
-Options:
+> `npm i -G json-schema-to-zod`
 
-- --source/-s [source file name]
-- --target/-t [(optional) target file name]
-- --name/-n [(optional) schema name in output]
-- --deref/-d [(optional) deref schemas before parsing]
-- --without-defaults [(optional) exclude default values]
+Example:
+
+> `json-schema-to-zod -s myJson.json -t mySchema.ts`
+
+#### Options
+
+| Flag                 | Shorthand | Function                                                |
+| -------------------- | --------- | ------------------------------------------------------- |
+| `--source`           | `-s`      | Source file name (required)                             |
+| `--target`           | `-t`      | Target file name                                        |
+| `--name`             | `-n`      | The name of the schema in the output                    |
+| `--deref`            | `-d`      | Uses `json-schema-ref-parser` to dereference the schema |
+| `--without-defaults` | `-wd`     | Ignore default values in the schema                     |
 
 ### Programmatic
 
+`jsonSchemaToZod` will output the full module code, including a Zod import. If you only need the Zod schema itself, try one of the parsers directly. If you need to deref your JSON schema, try awaiting `jsonSchemaDereffed`.
+
 ```typescript
-import { jsonSchemaToZod, parseSchema } from "json-schema-to-zod";
+import {
+  jsonSchemaToZod,
+  jsonSchemaToZodDereffed,
+  parseSchema,
+} from "json-schema-to-zod";
 
 const myObject = {
   type: "object",
@@ -38,23 +55,23 @@ const myObject = {
   },
 };
 
-const result = jsonSchemaToZod(myObject);
-console.log(result);
+const module = jsonSchemaToZod(myObject);
 
-const zodSchema = parseSchema(myObject, false);
-console.log(zodSchema);
+const dereffed = await jsonSchemaToZodDereffed(myObject);
+
+const schema = parseSchema(myObject);
 ```
 
-### Expected output:
+`module`/`dereffed` =
 
-```
+```typescript
 import { z } from "zod";
 
 export default z.object({ hello: z.string().optional() });
 ```
 
-and
+`schema` =
 
-```
-z.object({hello: z.string().optional()})
+```typescript
+z.object({ hello: z.string().optional() });
 ```
