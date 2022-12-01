@@ -59,4 +59,18 @@ export default z.string();
 export default z.object({ prop: z.string().default("def") });
 `);
   });
+
+  it("will handle falsy defaults", () => {
+    expect(
+      jsonSchemaToZod(
+        {
+          type: "boolean",
+          default: false
+        }
+      )
+    ).toStrictEqual(`import { z } from "zod";
+
+export default z.boolean().default(false);
+`);
+  });
 });
