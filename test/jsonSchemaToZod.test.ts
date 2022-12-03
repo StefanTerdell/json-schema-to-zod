@@ -73,4 +73,18 @@ export default z.object({ prop: z.string().default("def") });
 export default z.boolean().default(false);
 `);
   });
+
+  it("will ignore undefined as default", () => {
+    expect(
+      jsonSchemaToZod(
+        {
+          type: "null",
+          default: undefined
+        }
+      )
+    ).toStrictEqual(`import { z } from "zod";
+
+export default z.null();
+`);
+  });
 });
