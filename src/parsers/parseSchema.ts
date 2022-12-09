@@ -41,7 +41,7 @@ const addMeta = (schema: JSONSchema7, parsed: string): string => {
 };
 
 const addDefaults = (schema: JSONSchema7, parsed: string): string => {
-  if (schema.default) {
+  if (schema.default !== undefined) {
     parsed += `.default(${JSON.stringify(schema.default)} )`;
   }
   return parsed;
