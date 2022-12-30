@@ -36,6 +36,18 @@ export default z.string().default("");
 `);
   });
 
+  it("should include falsy defaults", () => {
+    expect(
+      jsonSchemaToZod({
+        type: "string",
+        const: "",
+      })
+    ).toStrictEqual(`import { z } from "zod";
+
+export default z.literal("");
+`);
+  });
+
   it("can exclude defaults", () => {
     expect(
       jsonSchemaToZod(
