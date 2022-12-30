@@ -24,6 +24,30 @@ export default z.string().default("foo");
 `);
   });
 
+  it("should include falsy defaults", () => {
+    expect(
+      jsonSchemaToZod({
+        type: "string",
+        default: "",
+      })
+    ).toStrictEqual(`import { z } from "zod";
+
+export default z.string().default("");
+`);
+  });
+
+  it("should include falsy defaults", () => {
+    expect(
+      jsonSchemaToZod({
+        type: "string",
+        const: "",
+      })
+    ).toStrictEqual(`import { z } from "zod";
+
+export default z.literal("");
+`);
+  });
+
   it("can exclude defaults", () => {
     expect(
       jsonSchemaToZod(
@@ -43,17 +67,15 @@ export default z.string();
 
   it("will remove optionality if default is present", () => {
     expect(
-      jsonSchemaToZod(
-        {
-          type: "object",
-          properties: {
-              prop: {
-                  type: "string",
-                  default: 'def'
-              }
-          }
-        }
-      )
+      jsonSchemaToZod({
+        type: "object",
+        properties: {
+          prop: {
+            type: "string",
+            default: "def",
+          },
+        },
+      })
     ).toStrictEqual(`import { z } from "zod";
 
 export default z.object({ prop: z.string().default("def") });
@@ -62,12 +84,10 @@ export default z.object({ prop: z.string().default("def") });
 
   it("will handle falsy defaults", () => {
     expect(
-      jsonSchemaToZod(
-        {
-          type: "boolean",
-          default: false
-        }
-      )
+      jsonSchemaToZod({
+        type: "boolean",
+        default: false,
+      })
     ).toStrictEqual(`import { z } from "zod";
 
 export default z.boolean().default(false);
@@ -76,12 +96,10 @@ export default z.boolean().default(false);
 
   it("will ignore undefined as default", () => {
     expect(
-      jsonSchemaToZod(
-        {
-          type: "null",
-          default: undefined
-        }
-      )
+      jsonSchemaToZod({
+        type: "null",
+        default: undefined,
+      })
     ).toStrictEqual(`import { z } from "zod";
 
 export default z.null();
