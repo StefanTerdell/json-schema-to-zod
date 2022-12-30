@@ -99,17 +99,17 @@ export const its = {
       x: JSONSchema7
     ): x is JSONSchema7 & {
       anyOf: JSONSchema7Definition[];
-    } => !!x.anyOf,
+    } => x.anyOf !== undefined,
     allOf: (
       x: JSONSchema7
     ): x is JSONSchema7 & {
       allOf: JSONSchema7Definition[];
-    } => !!x.allOf,
+    } => x.allOf !== undefined,
     enum: (
       x: JSONSchema7
     ): x is JSONSchema7 & {
       enum: JSONSchema7Type | JSONSchema7Type[];
-    } => !!x.enum,
+    } => x.enum !== undefined,
   },
   a: {
     nullable: (x: JSONSchema7): x is JSONSchema7 & { nullable: true } =>
@@ -122,12 +122,12 @@ export const its = {
       x: JSONSchema7
     ): x is JSONSchema7 & {
       not: JSONSchema7Definition;
-    } => !!x.not,
+    } => x.not !== undefined,
     const: (
       x: JSONSchema7
     ): x is JSONSchema7 & {
       const: JSONSchema7Type;
-    } => !!x.const,
+    } => x.const !== undefined,
     primitive: <T extends "string" | "number" | "integer" | "boolean" | "null">(
       x: JSONSchema7,
       p: T
@@ -143,6 +143,6 @@ export const its = {
       x: JSONSchema7
     ): x is JSONSchema7 & {
       oneOf: JSONSchema7Definition[];
-    } => !!x.oneOf,
+    } => x.oneOf !== undefined,
   },
 };
