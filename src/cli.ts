@@ -71,6 +71,16 @@ let deref =
   process.argv.indexOf("--deref") !== -1 || process.argv.indexOf("-d") !== -1;
 let withoutDefaults = process.argv.indexOf("--without-defaults") !== -1 && process.argv.indexOf("-wd") !== -1;
 if (targetFilePath) {
+  const targetFileDir = dirname(targetFilePath);
+  try {
+    mkdir(targetFileDir, { recursive: true }, err => {
+      if (err) throw err;
+    });
+  } catch (e) {
+    console.error('Failed to create directory for target file');
+    console.error(e);
+    process.exit(1);
+  }
   if (deref) {
     jsonSchemaToZodDereffed(sourceFileData, name, true, withoutDefaults)
       .catch((e) => {
