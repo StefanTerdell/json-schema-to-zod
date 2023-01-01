@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { jsonSchemaToZod, jsonSchemaToZodDereffed } from "./jsonSchemaToZod";
-import { readFileSync, writeFileSync, existsSync } from "fs";
+import { readFileSync, writeFileSync, existsSync, mkdir } from "fs";
+import { dirname } from "path";
 let sourceArgumentIndex = process.argv.indexOf("--source");
 if (sourceArgumentIndex === -1) {
   sourceArgumentIndex = process.argv.indexOf("-s");
