@@ -19,7 +19,7 @@ A runtime package and CLI tool to convert JSON schema (draft 4+) objects or file
 
 Installation:
 
-> `npm i -G json-schema-to-zod`
+> `npm i -g json-schema-to-zod`
 
 Example:
 
