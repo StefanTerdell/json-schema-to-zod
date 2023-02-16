@@ -1,10 +1,10 @@
 {
   "name": "json-schema-to-zod",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "Converts JSON schema objects or files into Zod schemas",
   "main": "index.js",
   "scripts": {
-    "build": "npm i && jest && rimraf ./dist && tsc && copyfiles package.json LICENSE readme.md ./dist",
+    "build": "npm i && jest && rimraf ./dist && tsc && copyfiles package.json LICENSE readme.md ./dist && prettier ./dist --write",
     "dryrun": "npm run build && npm pub ./dist/ --dry-run",
     "dev": "jest --watch",
     "test": "jest"
