@@ -3,14 +3,17 @@ import { parseAnyOf } from "../../src/parsers/parseAnyOf";
 describe("parseAnyOf", () => {
   it("should create a union from two or more schemas", () => {
     expect(
-      parseAnyOf({
-        anyOf: [
-          {
-            type: "string",
-          },
-          { type: "number" },
-        ],
-      }, false)
+      parseAnyOf(
+        {
+          anyOf: [
+            {
+              type: "string",
+            },
+            { type: "number" },
+          ],
+        },
+        false
+      )
     ).toStrictEqual("z.union([z.string(),z.number()])");
   });
 

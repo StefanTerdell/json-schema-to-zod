@@ -3,14 +3,17 @@ import { parseOneOf } from "../../src/parsers/parseOneOf";
 describe("parseOneOf", () => {
   it("should create a union from two or more schemas", () => {
     expect(
-      parseOneOf({
-        oneOf: [
-          {
-            type: "string",
-          },
-          { type: "number" },
-        ],
-      }, false)
+      parseOneOf(
+        {
+          oneOf: [
+            {
+              type: "string",
+            },
+            { type: "number" },
+          ],
+        },
+        false
+      )
     ).toStrictEqual(`z.any().superRefine((x, ctx) => {
     const schemas = [z.string(),z.number()];
     const errors = schemas.reduce(
@@ -41,4 +44,3 @@ describe("parseOneOf", () => {
     expect(parseOneOf({ oneOf: [] }, false)).toStrictEqual("z.any()");
   });
 });
-
