@@ -21,12 +21,19 @@ import {
 import { parseOneOf } from "./parseOneOf";
 import { parseNullable } from "./parseNullable";
 
+export type Parser<T = any> = (
+  schema: JSONSchema7 & T,
+  withoutDefaults?: boolean,
+  parsers?: Record<string, Parser>
+) => string
+
 export const parseSchema = (
   schema: JSONSchema7 | boolean,
-  withoutDefaults?: boolean
+  withoutDefaults?: boolean,
+  customParsers: Record<string, Parser> = {}
 ): string => {
   if (typeof schema !== "object") return "z.unknown()";
-  let parsed = selectParser(schema, withoutDefaults);
+  let parsed = selectParser(schema, withoutDefaults, customParsers);
   parsed = addMeta(schema, parsed);
   if (!withoutDefaults) {
     parsed = addDefaults(schema, parsed);
@@ -49,43 +56,66 @@ const addDefaults = (schema: JSONSchema7, parsed: string): string => {
 
 const selectParser = (
   schema: JSONSchema7,
-  withoutDefaults?: boolean
+  withoutDefaults?: boolean,
+  customParsers: Record<string, Parser> = {}
 ): string => {
+  // Must be defined within the function to avoid breakages due to circular dependencies
+  const defaultParsers: Record<string, Parser> = {
+    'allOf': parseAllOf,
+    'anyOf': parseAnyOf,
+    'array': parseArray,
+    'boolean': parseBoolean,
+    'const': parseConst,
+    'conditional': parseIfThenElse,
+    'enum': parseEnum,
+    'integer': parseNumber,
+    'multipleType': parseMultipleType,
+    'not': parseNot,
+    'null': parseNull,
+    'nullable': parseNullable,
+    'number': parseNumber,
+    'object': parseObject,
+    'oneOf': parseOneOf,
+    'string': parseString,
+    // Fallback case:
+    'default': parseDefault,
+  }
+  const parsers = { ...defaultParsers, ...customParsers }
+
   if (its.a.nullable(schema)) {
-    return parseNullable(schema, withoutDefaults);
+    return parsers.nullable(schema, withoutDefaults, customParsers);
   } else if (its.an.object(schema)) {
-    return parseObject(schema, withoutDefaults);
+    return parsers.object(schema, withoutDefaults, customParsers);
   } else if (its.an.array(schema)) {
-    return parseArray(schema, withoutDefaults);
+    return parsers.array(schema, withoutDefaults, customParsers);
   } else if (its.an.anyOf(schema)) {
-    return parseAnyOf(schema, withoutDefaults);
+    return parsers.anyOf(schema, withoutDefaults, customParsers);
   } else if (its.an.allOf(schema)) {
-    return parseAllOf(schema, withoutDefaults);
+    return parsers.allOf(schema, withoutDefaults, customParsers);
   } else if (its.a.oneOf(schema)) {
-    return parseOneOf(schema, withoutDefaults);
+    return parsers.oneOf(schema, withoutDefaults, customParsers);
   } else if (its.a.not(schema)) {
-    return parseNot(schema, withoutDefaults);
+    return parsers.not(schema, withoutDefaults, customParsers);
   } else if (its.an.enum(schema)) {
-    return parseEnum(schema); //<-- needs to come before primitives
+    return parsers.enum(schema, withoutDefaults, customParsers); //<-- needs to come before primitives
   } else if (its.a.const(schema)) {
-    return parseConst(schema);
+    return parsers.const(schema, withoutDefaults, customParsers);
   } else if (its.a.multipleType(schema)) {
-    return parseMultipleType(schema, withoutDefaults);
+    return parsers.multipleType(schema, withoutDefaults, customParsers);
   } else if (its.a.primitive(schema, "string")) {
-    return parseString(schema);
-  } else if (
-    its.a.primitive(schema, "number") ||
-    its.a.primitive(schema, "integer")
-  ) {
-    return parseNumber(schema);
+    return parsers.string(schema, withoutDefaults, customParsers);
+  } else if (its.a.primitive(schema, "number")) {
+    return parsers.number(schema, withoutDefaults, customParsers);
+  } else if (its.a.primitive(schema, "integer")) {
+    return parsers.integer(schema, withoutDefaults, customParsers);
   } else if (its.a.primitive(schema, "boolean")) {
-    return parseBoolean(schema);
+    return parsers.boolean(schema, withoutDefaults, customParsers);
   } else if (its.a.primitive(schema, "null")) {
-    return parseNull(schema);
+    return parsers.null(schema, withoutDefaults, customParsers);
   } else if (its.a.conditional(schema)) {
-    return parseIfThenElse(schema, withoutDefaults);
+    return parsers.conditional(schema, withoutDefaults, customParsers);
   } else {
-    return parseDefault(schema);
+    return parsers.default(schema, withoutDefaults, customParsers);
   }
 };
 

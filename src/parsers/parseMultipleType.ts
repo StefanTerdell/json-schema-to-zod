@@ -1,11 +1,12 @@
 import { JSONSchema7, JSONSchema7TypeName } from "json-schema";
-import { parseSchema } from "./parseSchema";
+import { Parser, parseSchema } from "./parseSchema";
 
 export const parseMultipleType = (
   schema: JSONSchema7 & { type: JSONSchema7TypeName[] },
-  withoutDefaults?: boolean
+  withoutDefaults?: boolean,
+  customParsers: Record<string, Parser> = {}
 ) => {
   return `z.union([${schema.type.map((type) =>
-    parseSchema({ ...schema, type }, withoutDefaults)
+    parseSchema({ ...schema, type }, withoutDefaults, customParsers)
   )}])`;
 };
