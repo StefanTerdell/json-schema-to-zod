@@ -71,7 +71,7 @@ if (nameArgumentIndex !== -1) {
 let deref =
   process.argv.indexOf("--deref") !== -1 || process.argv.indexOf("-d") !== -1;
 let withoutDefaults =
-  process.argv.indexOf("--without-defaults") !== -1 &&
+  process.argv.indexOf("--without-defaults") !== -1 ||
   process.argv.indexOf("-wd") !== -1;
 if (targetFilePath) {
   const targetFileDir = dirname(targetFilePath);
