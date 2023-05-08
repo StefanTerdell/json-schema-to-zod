@@ -17,7 +17,7 @@ describe("parseObject", () => {
               },
             },
           },
-          false
+          { module: false, path: [] }
         )
       ).toStrictEqual(
         'z.object({"myOptionalString":z.string().optional(),"myRequiredString":z.string()})'
@@ -37,7 +37,7 @@ describe("parseObject", () => {
             },
             additionalProperties: false,
           },
-          false
+          { module: false, path: [] }
         )
       ).toStrictEqual('z.object({"myString":z.string()}).strict()');
     });
@@ -55,7 +55,7 @@ describe("parseObject", () => {
             },
             additionalProperties: true,
           },
-          false
+          { module: false, path: [] }
         )
       ).toStrictEqual('z.object({"myString":z.string()}).catchall(z.any())');
     });
@@ -73,7 +73,7 @@ describe("parseObject", () => {
             },
             additionalProperties: { type: "number" },
           },
-          false
+          { module: false, path: [] }
         )
       ).toStrictEqual('z.object({"myString":z.string()}).catchall(z.number())');
     });
@@ -87,7 +87,7 @@ describe("parseObject", () => {
             type: "object",
             additionalProperties: false,
           },
-          false
+          { module: false, path: [] }
         )
       ).toStrictEqual("z.object({}).strict()");
     });
@@ -99,7 +99,7 @@ describe("parseObject", () => {
             type: "object",
             additionalProperties: true,
           },
-          false
+          { module: false, path: [] }
         )
       ).toStrictEqual("z.record(z.any())");
     });
@@ -111,22 +111,26 @@ describe("parseObject", () => {
             type: "object",
             additionalProperties: { type: "number" },
           },
-          false
+
+          { module: false, path: [] }
         )
       ).toStrictEqual("z.record(z.number())");
     });
 
     it("should include falsy defaults", () => {
       expect(
-        parseObject({
-          type: "object",
-          properties: {
-            s: {
-              type: "string",
-              default: "",
+        parseObject(
+          {
+            type: "object",
+            properties: {
+              s: {
+                type: "string",
+                default: "",
+              },
             },
           },
-        })
+          { module: false, path: [] }
+        )
       ).toStrictEqual(`z.object({"s":z.string().default("")})`);
     });
   });
@@ -161,7 +165,7 @@ describe("parseObject", () => {
             },
           ],
         },
-        false
+        { module: false, path: [] }
       )
     ).toStrictEqual(
       'z.object({"a":z.string()}).and(z.union([z.object({"b":z.string()}),z.object({"c":z.string()})]))'

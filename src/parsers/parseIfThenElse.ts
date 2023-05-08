@@ -1,4 +1,5 @@
 import { JSONSchema7, JSONSchema7Definition } from "json-schema";
+import { Refs } from "../Types";
 import { parseSchema } from "./parseSchema";
 
 export const parseIfThenElse = (
@@ -7,11 +8,17 @@ export const parseIfThenElse = (
     then: JSONSchema7Definition;
     else: JSONSchema7Definition;
   },
-  withoutDefaults?: boolean
+  refs: Refs
 ): string => {
-  const $if = parseSchema(schema.if, withoutDefaults);
-  const $then = parseSchema(schema.then, withoutDefaults);
-  const $else = parseSchema(schema.else, withoutDefaults);
+  const $if = parseSchema(schema.if, { ...refs, path: [...refs.path, "if"] });
+  const $then = parseSchema(schema.then, {
+    ...refs,
+    path: [...refs.path, "then"],
+  });
+  const $else = parseSchema(schema.else, {
+    ...refs,
+    path: [...refs.path, "else"],
+  });
   return `z.union([${$then},${$else}]).superRefine((value,ctx) => {
   const result = ${$if}.safeParse(value).success
     ? ${$then}.safeParse(value)

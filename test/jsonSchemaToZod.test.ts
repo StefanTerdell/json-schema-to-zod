@@ -55,9 +55,7 @@ export default z.literal("");
           type: "string",
           default: "foo",
         },
-        undefined,
-        true,
-        true
+        { module: true, withoutDefaults: true }
       )
     ).toStrictEqual(`import { z } from "zod";
 
@@ -84,10 +82,13 @@ export default z.object({ prop: z.string().default("def") });
 
   it("will handle falsy defaults", () => {
     expect(
-      jsonSchemaToZod({
-        type: "boolean",
-        default: false,
-      })
+      jsonSchemaToZod(
+        {
+          type: "boolean",
+          default: false,
+        },
+        { module: true }
+      )
     ).toStrictEqual(`import { z } from "zod";
 
 export default z.boolean().default(false);
@@ -103,6 +104,38 @@ export default z.boolean().default(false);
     ).toStrictEqual(`import { z } from "zod";
 
 export default z.null();
+`);
+  });
+
+  it("should be possible to define a custom parser", () => {
+    expect(
+      jsonSchemaToZod(
+        {
+          allOf: [
+            { type: "string" },
+            { type: "number" },
+            { type: "boolean", description: "foo" },
+          ],
+        },
+        {
+          module: false,
+          overrideParser: (schema, refs) => {
+            if (
+              refs.path.length === 2 &&
+              refs.path[0] === "allOf" &&
+              refs.path[1] === 2 &&
+              schema.type === "boolean" &&
+              schema.description === "foo"
+            ) {
+              return "myCustomZodSchema";
+            }
+          },
+        }
+      )
+    ).toStrictEqual(`const schema = z.intersection(
+  z.string(),
+  z.intersection(z.number(), myCustomZodSchema)
+);
 `);
   });
 });

@@ -1,4 +1,5 @@
 import { JSONSchema7 } from "json-schema";
+import { Refs } from "../Types";
 import { omit } from "../utils/omit";
 import { parseSchema } from "./parseSchema";
 
@@ -7,7 +8,7 @@ import { parseSchema } from "./parseSchema";
  */
 export const parseNullable = (
   schema: JSONSchema7 & { nullable: true },
-  includeDefaults?: boolean
+  refs: Refs
 ) => {
-  return `${parseSchema(omit(schema, "nullable"), includeDefaults)}.nullable()`;
+  return `${parseSchema(omit(schema, "nullable"), refs)}.nullable()`;
 };

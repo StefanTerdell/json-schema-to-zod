@@ -1,4 +1,5 @@
 import { JSONSchema7 } from "json-schema";
+import { Refs } from "../Types";
 import { parseAnyOf } from "./parseAnyOf";
 import { parseOneOf } from "./parseOneOf";
 import { its, parseSchema } from "./parseSchema";
@@ -8,19 +9,25 @@ const defaultAdditionalFlag = ""; //".strip()"
 
 export const parseObject = (
   schema: JSONSchema7 & { type: "object" },
-  withoutDefaults?: boolean
+  refs: Refs
 ) => {
   let result = !schema.properties
     ? typeof schema.additionalProperties === "object"
-      ? `z.record(${parseSchema(schema.additionalProperties, withoutDefaults)})`
+      ? `z.record(${parseSchema(schema.additionalProperties, {
+          ...refs,
+          path: [...refs.path, "additionalProperties"],
+        })})`
       : schema.additionalProperties === false
       ? "z.object({}).strict()"
       : "z.record(z.any())"
     : `z.object({${Object.entries(schema?.properties ?? {}).map(
         ([k, v]) =>
-          `${JSON.stringify(k)}:${parseSchema(v, withoutDefaults)}${
+          `${JSON.stringify(k)}:${parseSchema(v, {
+            ...refs,
+            path: [...refs.path, "properties", k],
+          })}${
             schema.required?.includes(k) ||
-            (!withoutDefaults && v.hasOwnProperty("default"))
+            (!refs.withoutDefaults && v.hasOwnProperty("default"))
               ? requiredFlag
               : ".optional()"
           }`
@@ -30,10 +37,10 @@ export const parseObject = (
           : schema.additionalProperties === false
           ? ".strict()"
           : typeof schema.additionalProperties === "object"
-          ? `.catchall(${parseSchema(
-              schema.additionalProperties,
-              withoutDefaults
-            )})`
+          ? `.catchall(${parseSchema(schema.additionalProperties, {
+              ...refs,
+              path: [...refs.path, "additionalProperties"],
+            })})`
           : defaultAdditionalFlag
       }`;
 
@@ -49,7 +56,7 @@ export const parseObject = (
             : x
         ),
       },
-      withoutDefaults
+      refs
     )})`;
   }
 
@@ -65,7 +72,7 @@ export const parseObject = (
             : x
         ),
       },
-      withoutDefaults
+      refs
     )})`;
   }
 
