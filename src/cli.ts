@@ -2,6 +2,26 @@
 import { jsonSchemaToZod, jsonSchemaToZodDereffed } from "./jsonSchemaToZod";
 import { readFileSync, writeFileSync, existsSync, mkdir } from "fs";
 import { dirname } from "path";
+
+let help = process.argv.indexOf("--help");
+if (help === -1) {
+  help = process.argv.indexOf("-h");
+}
+
+if (~help) {
+  console.log(`| Flag                 | Shorthand | Function                                                                                |
+| -------------------- | --------- | --------------------------------------------------------------------------------------- |
+| \`--source\`           | \`-s\`      | Source file name (required)                                                             |
+| \`--target\`           | \`-t\`      | Target file name                                                                        |
+| \`--name\`             | \`-n\`      | The name of the schema in the output                                                    |
+| \`--deref\`            | \`-d\`      | Uses \`json-schema-ref-parser\` to dereference the schema                                 |
+| \`--without-defaults\` | \`-wd\`     | Ignore default values in the schema                                                     |
+| \`--recursionDepth\`   | \`-rd\`     | Maximum depth of recursion in schema before falling back to \`z.any()\`. Defaults to 0. \` |
+| \`--module\`           | \`-m\`      | Force module syntax (\`"esm"\` or \`"cjs"\`)                                                |`);
+
+  process.exit(0);
+}
+
 let sourceArgumentIndex = process.argv.indexOf("--source");
 if (sourceArgumentIndex === -1) {
   sourceArgumentIndex = process.argv.indexOf("-s");
