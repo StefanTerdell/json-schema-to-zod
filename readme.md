@@ -7,7 +7,7 @@ _Looking for the exact opposite? Check out [zod-to-json-schema](https://npmjs.or
 
 ## Summary
 
-A runtime package and CLI tool to convert JSON schema (draft 4+) objects or files into Zod schemas in the form of JavaScript code. Uses Prettier for formatting, .
+A runtime package and CLI tool to convert JSON schema (draft 4+) objects or files into Zod schemas in the form of JavaScript code. Uses Prettier for formatting.
 
 ## Usage
 
@@ -27,13 +27,15 @@ Example:
 
 #### Options
 
-| Flag                 | Shorthand | Function                                                |
-| -------------------- | --------- | ------------------------------------------------------- |
-| `--source`           | `-s`      | Source file name (required)                             |
-| `--target`           | `-t`      | Target file name                                        |
-| `--name`             | `-n`      | The name of the schema in the output                    |
-| `--deref`            | `-d`      | Uses `json-schema-ref-parser` to dereference the schema |
-| `--without-defaults` | `-wd`     | Ignore default values in the schema                     |
+| Flag                 | Shorthand | Function                                                                                |
+| -------------------- | --------- | --------------------------------------------------------------------------------------- |
+| `--source`           | `-s`      | Source file name (required)                                                             |
+| `--target`           | `-t`      | Target file name                                                                        |
+| `--name`             | `-n`      | The name of the schema in the output                                                    |
+| `--deref`            | `-d`      | Uses `json-schema-ref-parser` to dereference the schema                                 |
+| `--without-defaults` | `-wd`     | Ignore default values in the schema                                                     |
+| `--recursionDepth`   | `-rd`     | Maximum depth of recursion in schema before falling back to `z.any()`. Defaults to 0. ` |
+| `--module`           | `-m`      | Force module syntax (`"esm"` or `"cjs"`)                                                |
 
 ### Programmatic
 
@@ -74,4 +76,16 @@ export default z.object({ hello: z.string().optional() });
 
 ```typescript
 z.object({ hello: z.string().optional() });
+```
+
+### At Runtime
+
+The output of this package is not meant to be used at runtime. JSON Schema and Zod does not overlap 100% and the scope of the parsers are purposefully limited in order to help the author avoid a permanent state of chaotic insanity. As this may cause some details of the original schema to be lost in translation, it is instead recommended to use tools such as (Ajv)[https://ajv.js.org/] to validate your runtime values directly against the original JSON Schema.
+
+That said, it's possible to use `eval`. Here's an example that you shouldn't use:
+
+```typescript
+const zodSchema = eval(jsonSchemaToZod({ type: "string" }, { module: "cjs" }));
+
+zodSchema.safeParse("Please just use Ajv instead");
 ```

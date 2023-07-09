@@ -20,23 +20,57 @@ import {
 } from "json-schema";
 import { parseOneOf } from "./parseOneOf";
 import { parseNullable } from "./parseNullable";
+import { ParserSelector, Refs } from "../Types";
 
 export const parseSchema = (
   schema: JSONSchema7 | boolean,
-  withoutDefaults?: boolean
+  refs: Refs
 ): string => {
-  if (typeof schema !== "object") return "z.unknown()";
-  let parsed = selectParser(schema, withoutDefaults);
+  if (typeof schema !== "object") return schema ? "z.any()" : "z.never()";
+
+  if (refs.overrideParser) {
+    const custom = refs.overrideParser(schema, refs);
+
+    if (typeof custom === "string") {
+      return custom;
+    }
+  }
+
+  let seen = refs.seen.get(schema);
+
+  if (seen) {
+    if (seen.r !== undefined) {
+      return seen.r;
+    }
+
+    if (refs.recursionDepth === undefined || seen.n >= refs.recursionDepth) {
+      return "z.any()";
+    }
+
+    seen.n += 1;
+  } else {
+    seen = { r: undefined, n: 0 };
+    refs.seen.set(schema, seen);
+  }
+
+  let parsed = selectParser(schema, refs);
+
   parsed = addMeta(schema, parsed);
-  if (!withoutDefaults) {
+
+  if (!refs.withoutDefaults) {
     parsed = addDefaults(schema, parsed);
   }
+
+  seen.r = parsed;
+
   return parsed;
 };
 
 const addMeta = (schema: JSONSchema7, parsed: string): string => {
-  if (schema.description)
+  if (schema.description) {
     parsed += `.describe(${JSON.stringify(schema.description)})`;
+  }
+
   return parsed;
 };
 
@@ -44,33 +78,31 @@ const addDefaults = (schema: JSONSchema7, parsed: string): string => {
   if (schema.default !== undefined) {
     parsed += `.default(${JSON.stringify(schema.default)})`;
   }
+
   return parsed;
 };
 
-const selectParser = (
-  schema: JSONSchema7,
-  withoutDefaults?: boolean
-): string => {
+const selectParser: ParserSelector = (schema, refs) => {
   if (its.a.nullable(schema)) {
-    return parseNullable(schema, withoutDefaults);
+    return parseNullable(schema, refs);
   } else if (its.an.object(schema)) {
-    return parseObject(schema, withoutDefaults);
+    return parseObject(schema, refs);
   } else if (its.an.array(schema)) {
-    return parseArray(schema, withoutDefaults);
+    return parseArray(schema, refs);
   } else if (its.an.anyOf(schema)) {
-    return parseAnyOf(schema, withoutDefaults);
+    return parseAnyOf(schema, refs);
   } else if (its.an.allOf(schema)) {
-    return parseAllOf(schema, withoutDefaults);
+    return parseAllOf(schema, refs);
   } else if (its.a.oneOf(schema)) {
-    return parseOneOf(schema, withoutDefaults);
+    return parseOneOf(schema, refs);
   } else if (its.a.not(schema)) {
-    return parseNot(schema, withoutDefaults);
+    return parseNot(schema, refs);
   } else if (its.an.enum(schema)) {
     return parseEnum(schema); //<-- needs to come before primitives
   } else if (its.a.const(schema)) {
     return parseConst(schema);
   } else if (its.a.multipleType(schema)) {
-    return parseMultipleType(schema, withoutDefaults);
+    return parseMultipleType(schema, refs);
   } else if (its.a.primitive(schema, "string")) {
     return parseString(schema);
   } else if (
@@ -83,7 +115,7 @@ const selectParser = (
   } else if (its.a.primitive(schema, "null")) {
     return parseNull(schema);
   } else if (its.a.conditional(schema)) {
-    return parseIfThenElse(schema, withoutDefaults);
+    return parseIfThenElse(schema, refs);
   } else {
     return parseDefault(schema);
   }

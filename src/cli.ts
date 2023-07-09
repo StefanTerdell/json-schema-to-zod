@@ -2,6 +2,26 @@
 import { jsonSchemaToZod, jsonSchemaToZodDereffed } from "./jsonSchemaToZod";
 import { readFileSync, writeFileSync, existsSync, mkdir } from "fs";
 import { dirname } from "path";
+
+let help = process.argv.indexOf("--help");
+if (help === -1) {
+  help = process.argv.indexOf("-h");
+}
+
+if (~help) {
+  console.log(`| Flag                 | Shorthand | Function                                                                                |
+| -------------------- | --------- | --------------------------------------------------------------------------------------- |
+| \`--source\`           | \`-s\`      | Source file name (required)                                                             |
+| \`--target\`           | \`-t\`      | Target file name                                                                        |
+| \`--name\`             | \`-n\`      | The name of the schema in the output                                                    |
+| \`--deref\`            | \`-d\`      | Uses \`json-schema-ref-parser\` to dereference the schema                                 |
+| \`--without-defaults\` | \`-wd\`     | Ignore default values in the schema                                                     |
+| \`--recursionDepth\`   | \`-rd\`     | Maximum depth of recursion in schema before falling back to \`z.any()\`. Defaults to 0. \` |
+| \`--module\`           | \`-m\`      | Force module syntax (\`"esm"\` or \`"cjs"\`)                                                |`);
+
+  process.exit(0);
+}
+
 let sourceArgumentIndex = process.argv.indexOf("--source");
 if (sourceArgumentIndex === -1) {
   sourceArgumentIndex = process.argv.indexOf("-s");
@@ -73,6 +93,34 @@ let deref =
 let withoutDefaults =
   process.argv.indexOf("--without-defaults") !== -1 ||
   process.argv.indexOf("-wd") !== -1;
+let recursionDepthArgIndex = process.argv.indexOf("--recursionDepth");
+if (recursionDepthArgIndex === -1) {
+  recursionDepthArgIndex = process.argv.indexOf("-rd");
+}
+let recursionDepth: number = 0;
+if (recursionDepthArgIndex !== -1) {
+  recursionDepth = Number(process.argv[recursionDepthArgIndex + 1]);
+  if (isNaN(recursionDepth)) {
+    console.error(
+      `No number was provided after after ${process.argv[recursionDepthArgIndex]}`
+    );
+    process.exit(1);
+  }
+}
+let modArgumentIndex = process.argv.indexOf("--module");
+if (modArgumentIndex === -1) {
+  modArgumentIndex = process.argv.indexOf("-m");
+}
+let mod: undefined | string = undefined;
+if (modArgumentIndex !== -1) {
+  mod = process.argv[modArgumentIndex + 1];
+  if (!mod || (mod !== "cjs" && mod !== "esm")) {
+    console.error(
+      `Provided either 'cjs' or 'mod' after ${process.argv[modArgumentIndex]}`
+    );
+    process.exit(1);
+  }
+}
 if (targetFilePath) {
   const targetFileDir = dirname(targetFilePath);
   try {
@@ -85,7 +133,12 @@ if (targetFilePath) {
     process.exit(1);
   }
   if (deref) {
-    jsonSchemaToZodDereffed(sourceFileData, name, true, withoutDefaults)
+    jsonSchemaToZodDereffed(sourceFileData, {
+      name,
+      module: mod ?? true,
+      withoutDefaults,
+      recursionDepth,
+    })
       .catch((e) => {
         console.error("Failed to parse sourcefile content to Zod schema");
         console.error(e);
@@ -103,7 +156,12 @@ if (targetFilePath) {
   } else {
     let result: string;
     try {
-      result = jsonSchemaToZod(sourceFileData, name, true, withoutDefaults);
+      result = jsonSchemaToZod(sourceFileData, {
+        name,
+        module: mod ?? true,
+        withoutDefaults,
+        recursionDepth,
+      });
     } catch (e) {
       console.error("Failed to parse sourcefile content to Zod schema");
       console.error(e);
@@ -120,7 +178,11 @@ if (targetFilePath) {
   }
 } else {
   if (deref) {
-    jsonSchemaToZodDereffed(sourceFileData, name, false, withoutDefaults)
+    jsonSchemaToZodDereffed(sourceFileData, {
+      name,
+      module: mod ?? false,
+      withoutDefaults,
+    })
       .catch((e) => {
         console.error("Failed to parse sourcefile content to Zod schema");
         console.error(e);
@@ -132,7 +194,11 @@ if (targetFilePath) {
   } else {
     let result: string;
     try {
-      result = jsonSchemaToZod(sourceFileData, name, false, withoutDefaults);
+      result = jsonSchemaToZod(sourceFileData, {
+        name,
+        module: mod ?? false,
+        withoutDefaults,
+      });
     } catch (e) {
       console.error("Failed to parse sourcefile content to Zod schema");
       console.error(e);

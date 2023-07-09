@@ -1,25 +1,57 @@
 import { JSONSchema7, JSONSchema7Definition } from "json-schema";
 import { parseSchema } from "./parseSchema";
 import { half } from "../utils/half";
+import { Refs } from "../Types";
+
+const originalIndex = Symbol("Original index");
+
+const ensureOriginalIndex = (arr: JSONSchema7Definition[]) => {
+  let newArr = [];
+
+  for (let i = 0; i < arr.length; i++) {
+    const item = arr[i];
+    if (typeof item === "boolean") {
+      newArr.push(
+        item ? { [originalIndex]: i } : { [originalIndex]: i, not: {} }
+      );
+    } else if (originalIndex in item) {
+      return arr;
+    } else {
+      newArr.push({ ...item, [originalIndex]: i });
+    }
+  }
+
+  return newArr;
+};
 
 export function parseAllOf(
   schema: JSONSchema7 & { allOf: JSONSchema7Definition[] },
-  withoutDefaults?: boolean
+  refs: Refs
 ): string {
   if (schema.allOf.length === 0) {
-    return "z.any()";
+    return "z.never()";
   } else if (schema.allOf.length === 1) {
-    return parseSchema(schema.allOf[0], withoutDefaults);
+    const item = schema.allOf[0]
+      // typeof schema.allOf[0] === "boolean"
+      //   ? schema.allOf[0]
+      //     ? { [originalIndex]: 0 }
+      //     : { [originalIndex]: 0, not: {} }
+      //   : originalIndex in schema.allOf[0]
+      //   ? schema.allOf[0]
+      //   : { ...schema.allOf[0], [originalIndex]: 0 };
+
+    return parseSchema(item, {
+      ...refs,
+      path: [...refs.path, "allOf", (item as any)[originalIndex]],
+    });
   } else {
-    const [left, right] = half(schema.allOf);
-    return `z.intersection(${parseAllOf(
-      { allOf: left },
-      withoutDefaults
-    )},${parseAllOf(
+    const [left, right] = half(ensureOriginalIndex(schema.allOf));
+
+    return `z.intersection(${parseAllOf({ allOf: left }, refs)},${parseAllOf(
       {
         allOf: right,
       },
-      withoutDefaults
+      refs
     )})`;
   }
 }
