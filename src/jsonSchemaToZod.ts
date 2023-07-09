@@ -1,17 +1,18 @@
+import { JsonRefsOptions, resolveRefs } from "json-refs";
 import { JSONSchema7 } from "json-schema";
+import { Options } from "./Types";
 import { parseSchema } from "./parsers/parseSchema";
 import { format } from "./utils/format";
-import $RefParser from "@apidevtools/json-schema-ref-parser";
-import { Options } from "./Types";
 
 export const jsonSchemaToZodDereffed = (
   schema: JSONSchema7,
-  options?: Options
+  options?: Options & { jsonRefsOptions?: JsonRefsOptions }
 ): Promise<string> => {
-  return $RefParser
-    .dereference(schema)
-    .then((schema) => jsonSchemaToZod(schema as JSONSchema7, options));
+  return resolveRefs(schema, options?.jsonRefsOptions).then(({ resolved }) =>
+    jsonSchemaToZod(resolved as JSONSchema7, options)
+  );
 };
+
 export const jsonSchemaToZod = (
   schema: JSONSchema7,
   { module = true, name, ...rest }: Options = {}

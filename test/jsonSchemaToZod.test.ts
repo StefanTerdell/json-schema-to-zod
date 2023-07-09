@@ -1,4 +1,4 @@
-import jsonSchemaToZod from "../src";
+import jsonSchemaToZod, { jsonSchemaToZodDereffed } from "../src";
 
 describe("jsonSchemaToZod", () => {
   it("should produce a string of JS code creating a Zod schema from a simple JSON schema", () => {
@@ -136,6 +136,22 @@ export default z.null();
   z.string(),
   z.intersection(z.number(), myCustomZodSchema)
 );
+`);
+  });
+
+  it("should handle the $ref structure from zod-to-json-schema", async () => {
+    expect(
+      await jsonSchemaToZodDereffed({
+        $ref: "#/definitions/hello",
+        definitions: {
+          hello: {
+            type: "string",
+          },
+        },
+      })
+    ).toStrictEqual(`import { z } from "zod";
+
+export default z.string();
 `);
   });
 });

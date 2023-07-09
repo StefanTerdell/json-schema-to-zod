@@ -34,8 +34,8 @@
     "json-schema-to-zod": "./cli.js"
   },
   "dependencies": {
-    "@apidevtools/json-schema-ref-parser": "^9.1.0",
     "@types/json-schema": "^7.0.9",
+    "json-refs": "^3.0.15",
     "prettier": "^2.4.1"
   },
   "devDependencies": {
