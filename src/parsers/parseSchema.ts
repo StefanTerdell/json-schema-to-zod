@@ -36,6 +36,23 @@ export const parseSchema = (
     }
   }
 
+  let seen = refs.seen.get(schema);
+
+  if (seen) {
+    if (seen.r !== undefined) {
+      return seen.r;
+    }
+
+    if (refs.recursionDepth === undefined || seen.n >= refs.recursionDepth) {
+      return 'z.any()';
+    }
+
+    seen.n += 1;
+  } else {
+    seen = { r: undefined, n: 0 };
+    refs.seen.set(schema, seen);
+  }
+
   let parsed = selectParser(schema, refs);
 
   parsed = addMeta(schema, parsed);
@@ -43,6 +60,8 @@ export const parseSchema = (
   if (!refs.withoutDefaults) {
     parsed = addDefaults(schema, parsed);
   }
+
+  seen.r = parsed;
 
   return parsed;
 };
