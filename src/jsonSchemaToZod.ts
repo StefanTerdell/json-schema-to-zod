@@ -19,15 +19,31 @@ export const jsonSchemaToZod = (
   schema: JSONSchema7,
   { module = true, name, ...rest }: Options = {}
 ): string => {
-  return format(
-    `${module ? `import {z} from 'zod'\n\nexport ` : ""}${
-      name ? `const ${name}=` : module ? "default " : "const schema="
-    }${parseSchema(schema, {
-      module,
-      name,
-      ...rest,
-      path: [],
-      seen: new Map(),
-    })}`
-  );
+  let result = parseSchema(schema, {
+    module,
+    name,
+    path: [],
+    seen: new Map(),
+    ...rest,
+  });
+
+  if (module) {
+    if (module === "cjs") {
+      result = `
+        const { z } = require('zod')
+        module.exports = ${
+          name ? `{ ${JSON.stringify(name)}: ${result} }` : result
+        }
+      `;
+    } else {
+      result = `
+        import { z } from 'zod'
+        export ${name ? `const ${name} =` : `default`} ${result}
+      `;
+    }
+  } else {
+    result = `const ${name || "schema"} = ${result}`;
+  }
+
+  return format(result);
 };

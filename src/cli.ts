@@ -87,6 +87,20 @@ if (recursionDepthArgIndex !== -1) {
     process.exit(1);
   }
 }
+let modArgumentIndex = process.argv.indexOf("--module");
+if (modArgumentIndex === -1) {
+  modArgumentIndex = process.argv.indexOf("-m");
+}
+let mod: undefined | string = undefined;
+if (modArgumentIndex !== -1) {
+  mod = process.argv[modArgumentIndex + 1];
+  if (!mod || (mod !== "cjs" && mod !== "esm")) {
+    console.error(
+      `Provided either 'cjs' or 'mod' after ${process.argv[modArgumentIndex]}`
+    );
+    process.exit(1);
+  }
+}
 if (targetFilePath) {
   const targetFileDir = dirname(targetFilePath);
   try {
@@ -101,7 +115,7 @@ if (targetFilePath) {
   if (deref) {
     jsonSchemaToZodDereffed(sourceFileData, {
       name,
-      module: true,
+      module: mod ?? true,
       withoutDefaults,
       recursionDepth,
     })
@@ -124,7 +138,7 @@ if (targetFilePath) {
     try {
       result = jsonSchemaToZod(sourceFileData, {
         name,
-        module: true,
+        module: mod ?? true,
         withoutDefaults,
         recursionDepth,
       });
@@ -146,7 +160,7 @@ if (targetFilePath) {
   if (deref) {
     jsonSchemaToZodDereffed(sourceFileData, {
       name,
-      module: false,
+      module: mod ?? false,
       withoutDefaults,
     })
       .catch((e) => {
@@ -162,7 +176,7 @@ if (targetFilePath) {
     try {
       result = jsonSchemaToZod(sourceFileData, {
         name,
-        module: false,
+        module: mod ?? false,
         withoutDefaults,
       });
     } catch (e) {

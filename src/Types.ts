@@ -5,7 +5,7 @@ export type ParserOverride = (schema: JSONSchema7, refs: Refs) => string | void;
 
 export type Options = {
   name?: string;
-  module?: boolean;
+  module?: boolean | "cjs" | "esm";
   withoutDefaults?: boolean;
   overrideParser?: ParserOverride;
   recursionDepth?: number;
