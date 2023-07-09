@@ -44,7 +44,7 @@ export const parseSchema = (
     }
 
     if (refs.recursionDepth === undefined || seen.n >= refs.recursionDepth) {
-      return 'z.any()';
+      return "z.any()";
     }
 
     seen.n += 1;
