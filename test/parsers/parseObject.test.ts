@@ -19,7 +19,7 @@ describe("parseObject", () => {
               },
             },
           },
-          { module: false, path: [] }
+          { module: false, path: [], seen: new Map() }
         )
       ).toStrictEqual(
         'z.object({"myOptionalString":z.string().optional(),"myRequiredString":z.string()})'
@@ -39,7 +39,7 @@ describe("parseObject", () => {
             },
             additionalProperties: false,
           },
-          { module: false, path: [] }
+          { module: false, path: [], seen: new Map() }
         )
       ).toStrictEqual('z.object({"myString":z.string()}).catchall(z.never())');
     });
@@ -57,7 +57,7 @@ describe("parseObject", () => {
             },
             additionalProperties: true,
           },
-          { module: false, path: [] }
+          { module: false, path: [], seen: new Map() }
         )
       ).toStrictEqual('z.object({"myString":z.string()}).catchall(z.any())');
     });
@@ -75,7 +75,7 @@ describe("parseObject", () => {
             },
             additionalProperties: { type: "number" },
           },
-          { module: false, path: [] }
+          { module: false, path: [], seen: new Map() }
         )
       ).toStrictEqual('z.object({"myString":z.string()}).catchall(z.number())');
     });
@@ -89,7 +89,7 @@ describe("parseObject", () => {
             type: "object",
             additionalProperties: false,
           },
-          { module: false, path: [] }
+          { module: false, path: [], seen: new Map() }
         )
       ).toStrictEqual("z.record(z.never())");
     });
@@ -101,7 +101,7 @@ describe("parseObject", () => {
             type: "object",
             additionalProperties: true,
           },
-          { module: false, path: [] }
+          { module: false, path: [], seen: new Map() }
         )
       ).toStrictEqual("z.record(z.any())");
     });
@@ -114,7 +114,7 @@ describe("parseObject", () => {
             additionalProperties: { type: "number" },
           },
 
-          { module: false, path: [] }
+          { module: false, path: [], seen: new Map() }
         )
       ).toStrictEqual("z.record(z.number())");
     });
@@ -131,7 +131,7 @@ describe("parseObject", () => {
               },
             },
           },
-          { module: false, path: [] }
+          { module: false, path: [], seen: new Map() }
         )
       ).toStrictEqual(`z.object({"s":z.string().default("")})`);
     });
@@ -167,7 +167,7 @@ describe("parseObject", () => {
             },
           ],
         },
-        { module: false, path: [] }
+        { module: false, path: [], seen: new Map() }
       )
     ).toStrictEqual(
       'z.object({"a":z.string()}).and(z.union([z.object({"b":z.string()}),z.object({"c":z.string()})]))'
@@ -202,7 +202,7 @@ describe("parseObject", () => {
             },
           ],
         },
-        { module: false, path: [] }
+        { module: false, path: [], seen: new Map() }
       )
     ).toStrictEqual(
       `z.object({"a":z.string()}).and(z.any().superRefine((x, ctx) => {
@@ -254,7 +254,7 @@ describe("parseObject", () => {
             },
           ],
         },
-        { module: false, path: [] }
+        { module: false, path: [], seen: new Map() }
       )
     ).toStrictEqual(
       'z.object({"a":z.string()}).and(z.intersection(z.object({"b":z.string()}),z.object({"c":z.string()})))'
@@ -292,7 +292,7 @@ describe("parseObject", () => {
 
       const expected = 'z.object({"a":z.string(),"b":z.number().optional()})';
 
-      const result = parseObject(schema, { path: [] });
+      const result = parseObject(schema, { path: [], seen: new Map() });
 
       expect(result).toStrictEqual(expected);
 
@@ -350,7 +350,7 @@ describe("parseObject", () => {
       const expected =
         'z.object({"a":z.string(),"b":z.number().optional()}).catchall(z.boolean())';
 
-      const result = parseObject(schema, { path: [] });
+      const result = parseObject(schema, { path: [], seen: new Map() });
 
       expect(result).toStrictEqual(expected);
 
@@ -448,7 +448,7 @@ ctx.addIssue({
 }
 })`;
 
-      const result = parseObject(schema, { path: [] });
+      const result = parseObject(schema, { path: [], seen: new Map() });
 
       expect(result).toStrictEqual(expected);
     });
@@ -461,7 +461,7 @@ ctx.addIssue({
 
       const expected = "z.record(z.boolean())";
 
-      const result = parseObject(schema, { path: [] });
+      const result = parseObject(schema, { path: [], seen: new Map() });
 
       expect(result).toStrictEqual(expected);
     });
@@ -523,7 +523,7 @@ ctx.addIssue({
 }
 })`;
 
-      const result = parseObject(schema, { path: [] });
+      const result = parseObject(schema, { path: [], seen: new Map() });
 
       expect(result).toStrictEqual(expected);
 
@@ -591,7 +591,7 @@ ctx.addIssue({
 }
 })`;
 
-      const result = parseObject(schema, { path: [] });
+      const result = parseObject(schema, { path: [], seen: new Map() });
 
       expect(run(result, { ".": [] })).toStrictEqual({
         success: true,
@@ -673,7 +673,7 @@ ctx.addIssue({
 }
 })`;
 
-      const result = parseObject(schema, { path: [] });
+      const result = parseObject(schema, { path: [], seen: new Map() });
 
       expect(result).toStrictEqual(expected);
     });

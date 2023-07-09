@@ -8,9 +8,11 @@ export const jsonSchemaToZodDereffed = (
   schema: JSONSchema7,
   options?: Options & { jsonRefsOptions?: JsonRefsOptions }
 ): Promise<string> => {
-  return resolveRefs(schema, options?.jsonRefsOptions).then(({ resolved }) =>
-    jsonSchemaToZod(resolved as JSONSchema7, options)
-  );
+  return resolveRefs(
+    schema,
+    options?.jsonRefsOptions ??
+      (options?.recursionDepth ? { resolveCirculars: true } : undefined)
+  ).then(({ resolved }) => jsonSchemaToZod(resolved as JSONSchema7, options));
 };
 
 export const jsonSchemaToZod = (
@@ -20,6 +22,12 @@ export const jsonSchemaToZod = (
   return format(
     `${module ? `import {z} from 'zod'\n\nexport ` : ""}${
       name ? `const ${name}=` : module ? "default " : "const schema="
-    }${parseSchema(schema, { module, name, ...rest, path: [] })}`
+    }${parseSchema(schema, {
+      module,
+      name,
+      ...rest,
+      path: [],
+      seen: new Map(),
+    })}`
   );
 };

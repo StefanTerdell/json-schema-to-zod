@@ -73,6 +73,20 @@ let deref =
 let withoutDefaults =
   process.argv.indexOf("--without-defaults") !== -1 ||
   process.argv.indexOf("-wd") !== -1;
+let recursionDepthArgIndex = process.argv.indexOf("--recursionDepth");
+if (recursionDepthArgIndex === -1) {
+  recursionDepthArgIndex = process.argv.indexOf("-rd");
+}
+let recursionDepth: number = 0;
+if (recursionDepthArgIndex !== -1) {
+  recursionDepth = Number(process.argv[recursionDepthArgIndex + 1]);
+  if (isNaN(recursionDepth)) {
+    console.error(
+      `No number was provided after after ${process.argv[recursionDepthArgIndex]}`
+    );
+    process.exit(1);
+  }
+}
 if (targetFilePath) {
   const targetFileDir = dirname(targetFilePath);
   try {
@@ -89,6 +103,7 @@ if (targetFilePath) {
       name,
       module: true,
       withoutDefaults,
+      recursionDepth,
     })
       .catch((e) => {
         console.error("Failed to parse sourcefile content to Zod schema");
@@ -111,6 +126,7 @@ if (targetFilePath) {
         name,
         module: true,
         withoutDefaults,
+        recursionDepth,
       });
     } catch (e) {
       console.error("Failed to parse sourcefile content to Zod schema");

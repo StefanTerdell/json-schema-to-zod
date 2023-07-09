@@ -8,8 +8,10 @@ export type Options = {
   module?: boolean;
   withoutDefaults?: boolean;
   overrideParser?: ParserOverride;
+  recursionDepth?: number;
 };
 
 export type Refs = Options & {
   path: (string | number)[];
+  seen: Map<object | boolean, { n: number; r: string | undefined }>;
 };

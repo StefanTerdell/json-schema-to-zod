@@ -154,4 +154,28 @@ export default z.null();
 export default z.string();
 `);
   });
+
+  it("should deal with some basic recursive schemas", async () => {
+    expect(
+      await jsonSchemaToZodDereffed(
+        {
+          type: "object",
+          properties: { rec1: { $ref: "#" }, rec2: { $ref: "#" } },
+        },
+        { recursionDepth: 1 }
+      )
+    ).toStrictEqual(
+      `import { z } from "zod";
+
+export default z.object({
+  rec1: z
+    .object({ rec1: z.any().optional(), rec2: z.any().optional() })
+    .optional(),
+  rec2: z
+    .object({ rec1: z.any().optional(), rec2: z.any().optional() })
+    .optional(),
+});
+`
+    );
+  });
 });
