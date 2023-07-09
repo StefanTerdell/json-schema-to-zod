@@ -31,6 +31,7 @@ export const jsonSchemaToZod = (
     if (module === "cjs") {
       result = `
         const { z } = require('zod')
+
         module.exports = ${
           name ? `{ ${JSON.stringify(name)}: ${result} }` : result
         }
@@ -38,6 +39,7 @@ export const jsonSchemaToZod = (
     } else {
       result = `
         import { z } from 'zod'
+
         export ${name ? `const ${name} =` : `default`} ${result}
       `;
     }

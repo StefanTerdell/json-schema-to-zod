@@ -9,7 +9,7 @@ describe("parseNot", () => {
             type: "string",
           },
         },
-        { module: false, path: [] }
+        { module: false, path: [], seen: new Map() }
       )
     ).toStrictEqual(
       'z.any().refine((value) => !z.string().safeParse(value).success, "Invalid input: Should NOT be valid against schema")'
