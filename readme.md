@@ -7,7 +7,7 @@ _Looking for the exact opposite? Check out [zod-to-json-schema](https://npmjs.or
 
 ## Summary
 
-A runtime package and CLI tool to convert JSON schema (draft 4+) objects or files into Zod schemas in the form of JavaScript code. Uses Prettier for formatting, .
+A runtime package and CLI tool to convert JSON schema (draft 4+) objects or files into Zod schemas in the form of JavaScript code. Uses Prettier for formatting.
 
 ## Usage
 
