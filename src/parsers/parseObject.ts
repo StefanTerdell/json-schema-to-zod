@@ -1,12 +1,11 @@
-import { JSONSchema7 } from "json-schema";
-import { Refs } from "../Types";
+import { JSONSchema7Extended, Refs } from "../Types";
 import { parseAnyOf } from "./parseAnyOf";
 import { parseOneOf } from "./parseOneOf";
 import { its, parseSchema } from "./parseSchema";
 import { parseAllOf } from "./parseAllOf";
 
 export function parseObject(
-  objectSchema: JSONSchema7 & { type: "object" },
+  objectSchema: JSONSchema7Extended & { type: "object" },
   refs: Refs
 ): string {
   let properties: string | undefined = undefined;

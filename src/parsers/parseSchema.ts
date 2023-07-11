@@ -20,10 +20,11 @@ import {
 } from "json-schema";
 import { parseOneOf } from "./parseOneOf";
 import { parseNullable } from "./parseNullable";
-import { ParserSelector, Refs } from "../Types";
+import { JSONSchema7Extended, ParserSelector, Refs } from "../Types";
+import { parseDiscriminator } from "./parseDiscriminator";
 
 export const parseSchema = (
-  schema: JSONSchema7 | boolean,
+  schema: JSONSchema7Extended | boolean,
   refs: Refs
 ): string => {
   if (typeof schema !== "object") return schema ? "z.any()" : "z.never()";
@@ -93,6 +94,8 @@ const selectParser: ParserSelector = (schema, refs) => {
     return parseAnyOf(schema, refs);
   } else if (its.an.allOf(schema)) {
     return parseAllOf(schema, refs);
+  } else if (its.a.discriminator(schema)) {
+    return parseDiscriminator(schema, refs);
   } else if (its.a.oneOf(schema)) {
     return parseOneOf(schema, refs);
   } else if (its.a.not(schema)) {
@@ -171,6 +174,12 @@ export const its = {
       then: JSONSchema7Definition;
       else: JSONSchema7Definition;
     } => Boolean(x.if && x.then && x.else),
+    discriminator: (
+      x: JSONSchema7Extended
+    ): x is JSONSchema7Extended & {
+      discriminator: { propertyName: string };
+      oneOf: JSONSchema7Definition[];
+    } => x.oneOf !== undefined && x.discriminator?.propertyName !== undefined,
     oneOf: (
       x: JSONSchema7
     ): x is JSONSchema7 & {
