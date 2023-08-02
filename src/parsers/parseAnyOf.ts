@@ -15,12 +15,12 @@ export const parseAnyOf = (
 		});
 	} else {
 		let typeFiltered = schema.anyOf.filter((type) =>
-			typeof type === "object" ? its.a.primitive(type, "null") : true
+			typeof type === "object" ? !its.a.primitive(type, "null") : true
 		);
 		let hasNull = typeFiltered.length < schema.anyOf.length;
 		let only = typeFiltered.length === 1 ? typeFiltered[0] : null;
 		if (only) {
-			return `${parseSchema(schema.anyOf[0], {
+			return `${parseSchema(only, {
 				...refs,
 				path: [...refs.path, "anyOf", 0],
 			})}.nullable()`;
