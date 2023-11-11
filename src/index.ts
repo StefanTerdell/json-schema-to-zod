@@ -1,5 +1,5 @@
-import { jsonSchemaToZod, jsonSchemaToZodDereffed } from "./jsonSchemaToZod";
-export { jsonSchemaToZod, jsonSchemaToZodDereffed };
+import { jsonSchemaToZod } from "./jsonSchemaToZod";
+export { jsonSchemaToZod };
 
 import { parseSchema } from "./parsers/parseSchema";
 export { parseSchema };

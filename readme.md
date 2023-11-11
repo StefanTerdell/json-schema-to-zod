@@ -42,11 +42,7 @@ Example:
 `jsonSchemaToZod` will output the full module code, including a Zod import. If you only need the Zod schema itself, try one of the parsers directly. If you need to deref your JSON schema, try awaiting `jsonSchemaDereffed`.
 
 ```typescript
-import {
-  jsonSchemaToZod,
-  jsonSchemaToZodDereffed,
-  parseSchema,
-} from "json-schema-to-zod";
+import { jsonSchemaToZod, parseSchema } from "json-schema-to-zod";
 
 const myObject = {
   type: "object",
@@ -58,8 +54,6 @@ const myObject = {
 };
 
 const module = jsonSchemaToZod(myObject);
-
-const dereffed = await jsonSchemaToZodDereffed(myObject);
 
 const schema = parseSchema(myObject);
 ```

@@ -1,4 +1,4 @@
-import jsonSchemaToZod, { jsonSchemaToZodDereffed } from "../src";
+import jsonSchemaToZod from "../src";
 
 describe("jsonSchemaToZod", () => {
   it("should produce a string of JS code creating a Zod schema from a simple JSON schema", () => {
@@ -137,45 +137,5 @@ export default z.null();
   z.intersection(z.number(), myCustomZodSchema)
 );
 `);
-  });
-
-  it("should handle the $ref structure from zod-to-json-schema", async () => {
-    expect(
-      await jsonSchemaToZodDereffed({
-        $ref: "#/definitions/hello",
-        definitions: {
-          hello: {
-            type: "string",
-          },
-        },
-      })
-    ).toStrictEqual(`import { z } from "zod";
-
-export default z.string();
-`);
-  });
-
-  it("should deal with some basic recursive schemas", async () => {
-    expect(
-      await jsonSchemaToZodDereffed(
-        {
-          type: "object",
-          properties: { rec1: { $ref: "#" }, rec2: { $ref: "#" } },
-        },
-        { recursionDepth: 1 }
-      )
-    ).toStrictEqual(
-      `import { z } from "zod";
-
-export default z.object({
-  rec1: z
-    .object({ rec1: z.any().optional(), rec2: z.any().optional() })
-    .optional(),
-  rec2: z
-    .object({ rec1: z.any().optional(), rec2: z.any().optional() })
-    .optional(),
-});
-`
-    );
   });
 });

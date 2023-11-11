@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { jsonSchemaToZod, jsonSchemaToZodDereffed } from "./jsonSchemaToZod";
+import { jsonSchemaToZod } from "./jsonSchemaToZod";
 import { readFileSync, writeFileSync, existsSync, mkdir } from "fs";
 import { dirname } from "path";
 
@@ -132,78 +132,39 @@ if (targetFilePath) {
     console.error(e);
     process.exit(1);
   }
-  if (deref) {
-    jsonSchemaToZodDereffed(sourceFileData, {
+  let result: string;
+  try {
+    result = jsonSchemaToZod(sourceFileData, {
       name,
       module: mod ?? true,
       withoutDefaults,
       recursionDepth,
-    })
-      .catch((e) => {
-        console.error("Failed to parse sourcefile content to Zod schema");
-        console.error(e);
-        process.exit(1);
-      })
-      .then((result) => {
-        try {
-          writeFileSync(targetFilePath, result);
-        } catch (e) {
-          console.error(`Failed to write result to ${targetFilePath}`);
-          console.error(e);
-          process.exit(1);
-        }
-      });
-  } else {
-    let result: string;
-    try {
-      result = jsonSchemaToZod(sourceFileData, {
-        name,
-        module: mod ?? true,
-        withoutDefaults,
-        recursionDepth,
-      });
-    } catch (e) {
-      console.error("Failed to parse sourcefile content to Zod schema");
-      console.error(e);
-      process.exit(1);
-    }
+    });
+  } catch (e) {
+    console.error("Failed to parse sourcefile content to Zod schema");
+    console.error(e);
+    process.exit(1);
+  }
 
-    try {
-      writeFileSync(targetFilePath, result);
-    } catch (e) {
-      console.error(`Failed to write result to ${targetFilePath}`);
-      console.error(e);
-      process.exit(1);
-    }
+  try {
+    writeFileSync(targetFilePath, result);
+  } catch (e) {
+    console.error(`Failed to write result to ${targetFilePath}`);
+    console.error(e);
+    process.exit(1);
   }
 } else {
-  if (deref) {
-    jsonSchemaToZodDereffed(sourceFileData, {
+  let result: string;
+  try {
+    result = jsonSchemaToZod(sourceFileData, {
       name,
       module: mod ?? false,
       withoutDefaults,
-    })
-      .catch((e) => {
-        console.error("Failed to parse sourcefile content to Zod schema");
-        console.error(e);
-        process.exit(1);
-      })
-      .then((result) => {
-        console.log(result);
-      });
-  } else {
-    let result: string;
-    try {
-      result = jsonSchemaToZod(sourceFileData, {
-        name,
-        module: mod ?? false,
-        withoutDefaults,
-      });
-    } catch (e) {
-      console.error("Failed to parse sourcefile content to Zod schema");
-      console.error(e);
-      process.exit(1);
-    }
-    console.log(result);
+    });
+  } catch (e) {
+    console.error("Failed to parse sourcefile content to Zod schema");
+    console.error(e);
+    process.exit(1);
   }
+  console.log(result);
 }
