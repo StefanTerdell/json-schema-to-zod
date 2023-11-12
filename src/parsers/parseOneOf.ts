@@ -12,12 +12,14 @@ export const parseOneOf = (
           path: [...refs.path, "oneOf", 0],
         })
       : `z.any().superRefine((x, ctx) => {
-    const schemas = [${schema.oneOf.map((schema, i) =>
-      parseSchema(schema, {
-        ...refs,
-        path: [...refs.path, "oneOf", i],
-      }),
-    ).join(", ")}];
+    const schemas = [${schema.oneOf
+      .map((schema, i) =>
+        parseSchema(schema, {
+          ...refs,
+          path: [...refs.path, "oneOf", i],
+        }),
+      )
+      .join(", ")}];
     const errors = schemas.reduce(
       (errors: z.ZodError[], schema) =>
         ((result) => ("error" in result ? [...errors, result.error] : errors))(

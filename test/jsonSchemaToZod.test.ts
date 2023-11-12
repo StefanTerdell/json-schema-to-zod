@@ -145,6 +145,8 @@ export default z.null()
           },
         },
       ),
-    ).toStrictEqual(`const schema = z.intersection(z.string(), z.intersection(z.number(), myCustomZodSchema))`);
+    ).toStrictEqual(
+      `const schema = z.intersection(z.string(), z.intersection(z.number(), myCustomZodSchema))`,
+    );
   });
 });

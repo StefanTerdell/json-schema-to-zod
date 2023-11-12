@@ -1,9 +1,9 @@
 {
-	"compilerOptions": {
-		"strict": true,
-		"noEmit": true,		
-		"skipLibCheck": true,
-		"esModuleInterop": true
-	},
-	"include": ["src"]
+  "compilerOptions": {
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true
+  },
+  "include": ["src"]
 }

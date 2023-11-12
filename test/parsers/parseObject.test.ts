@@ -77,7 +77,9 @@ describe("parseObject", () => {
           },
           { module: false, path: [], seen: new Map() },
         ),
-      ).toStrictEqual('z.object({ "myString": z.string() }).catchall(z.number())');
+      ).toStrictEqual(
+        'z.object({ "myString": z.string() }).catchall(z.number())',
+      );
     });
   });
 
@@ -290,7 +292,8 @@ describe("parseObject", () => {
         },
       };
 
-      const expected = 'z.object({ "a": z.string(), "b": z.number().optional() })';
+      const expected =
+        'z.object({ "a": z.string(), "b": z.number().optional() })';
 
       const result = parseObject(schema, { path: [], seen: new Map() });
 

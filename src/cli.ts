@@ -1,13 +1,8 @@
 #!/usr/bin/env node
-import { jsonSchemaToZod } from "./jsonSchemaToZod"
-import { writeFileSync, mkdirSync } from "fs"
-import { dirname } from "path"
-import {
-  type Param,
-  parseArgs,
-  parseOrReadJSON,
-  readPipe,
-} from "./args"
+import { jsonSchemaToZod } from "./jsonSchemaToZod";
+import { writeFileSync, mkdirSync } from "fs";
+import { dirname } from "path";
+import { type Param, parseArgs, parseOrReadJSON, readPipe } from "./args";
 
 const params: Param[] = [
   {
@@ -50,25 +45,25 @@ const params: Param[] = [
     short: "h",
     description: "Display this message :)",
   },
-]
+];
 
 async function main() {
-  const args = parseArgs(params, process.argv, {})
+  const args = parseArgs(params, process.argv, {});
 
-  const input = (args.input as string) ?? (await readPipe())
-  const jsonSchema = parseOrReadJSON(input)
+  const input = (args.input as string) ?? (await readPipe());
+  const jsonSchema = parseOrReadJSON(input);
   const zodSchema = jsonSchemaToZod(jsonSchema as any, {
     module: args.module as "esm" | "cjs",
     name: args.name as string,
     recursionDepth: args["recursion-depth"] as number,
-  })
+  });
 
   if (args.output) {
-    mkdirSync(dirname(args.output as string), { recursive: true })
-    writeFileSync(args.output as string, zodSchema)
+    mkdirSync(dirname(args.output as string), { recursive: true });
+    writeFileSync(args.output as string, zodSchema);
   } else {
-    console.log(zodSchema)
+    console.log(zodSchema);
   }
 }
 
-void main()
+void main();

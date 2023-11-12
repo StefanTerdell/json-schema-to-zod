@@ -17,9 +17,7 @@ export const jsonSchemaToZod = (
     if (module === "cjs") {
       result = `const { z } = require("zod")
 
-module.exports = ${
-    name ? `{ ${JSON.stringify(name)}: ${result} }` : result
-  }
+module.exports = ${name ? `{ ${JSON.stringify(name)}: ${result} }` : result}
 `;
     } else {
       result = `import { z } from "zod"
