@@ -1,7 +1,7 @@
-import { JSONSchema7, JSONSchema7Type } from "json-schema";
+import { JSONSchema, JSONSchemaType } from "../Types";
 
 export const parseEnum = (
-  schema: JSONSchema7 & { enum: JSONSchema7Type[] }
+  schema: JSONSchema & { enum: JSONSchemaType[] }
 ) => {
   if (schema.enum.length === 0) {
     return "z.never()";

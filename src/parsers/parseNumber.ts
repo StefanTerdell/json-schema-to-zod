@@ -1,7 +1,7 @@
-import { JSONSchema7 } from "json-schema";
+import { JSONSchema } from "../Types";
 
 export const parseNumber = (
-  schema: JSONSchema7 & { type: "number" | "integer" }
+  schema: JSONSchema & { type: "number" | "integer" }
 ) => {
   let r = "z.number()";
   if (

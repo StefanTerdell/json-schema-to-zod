@@ -1,6 +1,6 @@
-import { JSONSchema7 } from "json-schema";
+import { JSONSchema } from "../Types";
 
-export const parseString = (schema: JSONSchema7 & { type: "string" }) => {
+export const parseString = (schema: JSONSchema & { type: "string" }) => {
   let r = "z.string()";
   if (schema.pattern)
     r += `.regex(new RegExp(${JSON.stringify(schema.pattern)}))`;

@@ -1,6 +1,14 @@
+import { JSONSchema4, JSONSchema7 } from "json-schema";
 import jsonSchemaToZod, { jsonSchemaToZodDereffed } from "../src";
 
 describe("jsonSchemaToZod", () => {
+  it ("should accept json schema 7 and 4", () => {
+    const schema = { type: "string" }
+
+    expect(jsonSchemaToZod(schema as JSONSchema4))
+    expect(jsonSchemaToZod(schema as JSONSchema7))
+  })
+  
   it("should produce a string of JS code creating a Zod schema from a simple JSON schema", () => {
     expect(
       jsonSchemaToZod({

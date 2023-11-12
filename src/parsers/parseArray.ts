@@ -1,9 +1,8 @@
-import { JSONSchema7 } from "json-schema";
-import { Refs } from "../Types";
+import { JSONSchema, Refs } from "../Types";
 import { parseSchema } from "./parseSchema";
 
 export const parseArray = (
-  schema: JSONSchema7 & { type: "array" },
+  schema: JSONSchema & { type: "array" },
   refs: Refs
 ) => {
   let r = !schema.items

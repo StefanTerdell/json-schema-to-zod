@@ -1,12 +1,11 @@
-import { JSONSchema7 } from "json-schema";
-import { Refs } from "../Types";
+import { JSONSchema, Refs } from "../Types";
 import { parseAnyOf } from "./parseAnyOf";
 import { parseOneOf } from "./parseOneOf";
 import { its, parseSchema } from "./parseSchema";
 import { parseAllOf } from "./parseAllOf";
 
 export function parseObject(
-  objectSchema: JSONSchema7 & { type: "object" },
+  objectSchema: JSONSchema & { type: "object" },
   refs: Refs
 ): string {
   let properties: string | undefined = undefined;
@@ -30,8 +29,10 @@ export function parseObject(
             objectSchema.default !== null &&
             key in objectSchema.default);
 
-        const required = objectSchema.required?.includes(key) ?? false;
-
+        const required = Array.isArray(objectSchema.required) 
+          ? objectSchema.required.includes(key) 
+          : typeof propSchema === "object" && propSchema.required === true
+      
         const optional = !hasDefault && !required;
 
         return optional ? `${result}.optional()` : result;
@@ -185,7 +186,7 @@ export function parseObject(
           (x.properties || x.additionalProperties || x.patternProperties)
             ? { ...x, type: "object" }
             : x
-        ),
+        ) as any,
       },
       refs
     )})`;
@@ -201,7 +202,7 @@ export function parseObject(
           (x.properties || x.additionalProperties || x.patternProperties)
             ? { ...x, type: "object" }
             : x
-        ),
+        ) as any,
       },
       refs
     )})`;
@@ -217,7 +218,7 @@ export function parseObject(
           (x.properties || x.additionalProperties || x.patternProperties)
             ? { ...x, type: "object" }
             : x
-        ),
+        ) as any,
       },
       refs
     )})`;

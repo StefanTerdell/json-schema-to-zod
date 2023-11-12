@@ -1,9 +1,8 @@
-import { JSONSchema7, JSONSchema7Definition } from "json-schema";
-import { Refs } from "../Types";
+import { JSONSchema, JSONSchemaDefinition, Refs } from "../Types";
 import { parseSchema } from "./parseSchema";
 
 export const parseNot = (
-  schema: JSONSchema7 & { not: JSONSchema7Definition },
+  schema: JSONSchema & { not: JSONSchemaDefinition },
   refs: Refs
 ) => {
   return `z.any().refine((value) => !${parseSchema(schema.not, {

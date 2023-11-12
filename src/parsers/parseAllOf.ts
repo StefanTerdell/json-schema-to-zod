@@ -1,11 +1,10 @@
-import { JSONSchema7, JSONSchema7Definition } from "json-schema";
 import { parseSchema } from "./parseSchema";
 import { half } from "../utils/half";
-import { Refs } from "../Types";
+import { JSONSchema, JSONSchemaDefinition, Refs } from "../Types";
 
 const originalIndex = Symbol("Original index");
 
-const ensureOriginalIndex = (arr: JSONSchema7Definition[]) => {
+const ensureOriginalIndex = (arr: JSONSchemaDefinition[]) => {
   let newArr = [];
 
   for (let i = 0; i < arr.length; i++) {
@@ -25,7 +24,7 @@ const ensureOriginalIndex = (arr: JSONSchema7Definition[]) => {
 };
 
 export function parseAllOf(
-  schema: JSONSchema7 & { allOf: JSONSchema7Definition[] },
+  schema: JSONSchema & { allOf: JSONSchemaDefinition[] },
   refs: Refs
 ): string {
   if (schema.allOf.length === 0) {
@@ -45,7 +44,7 @@ export function parseAllOf(
       path: [...refs.path, "allOf", (item as any)[originalIndex]],
     });
   } else {
-    const [left, right] = half(ensureOriginalIndex(schema.allOf));
+    const [left, right] = half(ensureOriginalIndex(schema.allOf)) as any;
 
     return `z.intersection(${parseAllOf({ allOf: left }, refs)},${parseAllOf(
       {
