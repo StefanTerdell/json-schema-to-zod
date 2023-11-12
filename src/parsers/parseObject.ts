@@ -6,7 +6,7 @@ import { parseAllOf } from "./parseAllOf";
 
 export function parseObject(
   objectSchema: JSONSchema & { type: "object" },
-  refs: Refs
+  refs: Refs,
 ): string {
   let properties: string | undefined = undefined;
 
@@ -29,10 +29,10 @@ export function parseObject(
             objectSchema.default !== null &&
             key in objectSchema.default);
 
-        const required = Array.isArray(objectSchema.required) 
-          ? objectSchema.required.includes(key) 
-          : typeof propSchema === "object" && propSchema.required === true
-      
+        const required = Array.isArray(objectSchema.required)
+          ? objectSchema.required.includes(key)
+          : typeof propSchema === "object" && propSchema.required === true;
+
         const optional = !hasDefault && !required;
 
         return optional ? `${result}.optional()` : result;
@@ -62,7 +62,7 @@ export function parseObject(
             path: [...refs.path, "patternProperties", key],
           }),
         ];
-      }, {})
+      }, {}),
     );
 
     patternProperties = "";
@@ -75,11 +75,11 @@ export function parseObject(
         ]}]))`;
       } else if (Object.keys(parsedPatternProperties).length > 1) {
         patternProperties += `.catchall(z.union([${Object.values(
-          parsedPatternProperties
+          parsedPatternProperties,
         )}]))`;
       } else {
         patternProperties += `.catchall(${Object.values(
-          parsedPatternProperties
+          parsedPatternProperties,
         )})`;
       }
     } else {
@@ -90,11 +90,11 @@ export function parseObject(
         ]}]))`;
       } else if (Object.keys(parsedPatternProperties).length > 1) {
         patternProperties += `z.record(z.union([${Object.values(
-          parsedPatternProperties
+          parsedPatternProperties,
         )}]))`;
       } else {
         patternProperties += `z.record(${Object.values(
-          parsedPatternProperties
+          parsedPatternProperties,
         )})`;
       }
     }
@@ -106,7 +106,7 @@ export function parseObject(
     if (additionalProperties) {
       if (objectSchema.properties) {
         patternProperties += `let evaluated = [${Object.keys(
-          objectSchema.properties
+          objectSchema.properties,
         )
           .map((key) => JSON.stringify(key))
           .join(", ")}].includes(key)\n`;
@@ -166,15 +166,15 @@ export function parseObject(
     ? patternProperties
       ? properties + patternProperties
       : additionalProperties
-        ? additionalProperties === "z.never()" 
-          ? properties + ".strict()" 
-          : properties + `.catchall(${additionalProperties})`
-        : properties
+      ? additionalProperties === "z.never()"
+        ? properties + ".strict()"
+        : properties + `.catchall(${additionalProperties})`
+      : properties
     : patternProperties
-      ? patternProperties
-      : additionalProperties
-        ? `z.record(${additionalProperties})`
-        : "z.record(z.any())";
+    ? patternProperties
+    : additionalProperties
+    ? `z.record(${additionalProperties})`
+    : "z.record(z.any())";
 
   if (its.an.anyOf(objectSchema)) {
     output += `.and(${parseAnyOf(
@@ -185,10 +185,10 @@ export function parseObject(
           !x.type &&
           (x.properties || x.additionalProperties || x.patternProperties)
             ? { ...x, type: "object" }
-            : x
+            : x,
         ) as any,
       },
-      refs
+      refs,
     )})`;
   }
 
@@ -201,10 +201,10 @@ export function parseObject(
           !x.type &&
           (x.properties || x.additionalProperties || x.patternProperties)
             ? { ...x, type: "object" }
-            : x
+            : x,
         ) as any,
       },
-      refs
+      refs,
     )})`;
   }
 
@@ -217,10 +217,10 @@ export function parseObject(
           !x.type &&
           (x.properties || x.additionalProperties || x.patternProperties)
             ? { ...x, type: "object" }
-            : x
+            : x,
         ) as any,
       },
-      refs
+      refs,
     )})`;
   }
 

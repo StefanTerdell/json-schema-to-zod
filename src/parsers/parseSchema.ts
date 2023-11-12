@@ -14,8 +14,8 @@ import { parseObject } from "./parseObject";
 import { parseString } from "./parseString";
 import { parseOneOf } from "./parseOneOf";
 import { parseNullable } from "./parseNullable";
-import { 
-  ParserSelector, 
+import {
+  ParserSelector,
   Refs,
   JSONSchema,
   JSONSchemaDefinition,
@@ -25,7 +25,7 @@ import {
 
 export const parseSchema = (
   schema: JSONSchemaDefinition,
-  refs: Refs = { seen: new Map(), path: [] }
+  refs: Refs = { seen: new Map(), path: [] },
 ): string => {
   if (typeof schema !== "object") return schema ? "z.any()" : "z.never()";
 
@@ -129,17 +129,17 @@ export const its = {
     array: (x: JSONSchema): x is JSONSchema & { type: "array" } =>
       x.type === "array",
     anyOf: (
-      x: JSONSchema
+      x: JSONSchema,
     ): x is JSONSchema & {
       anyOf: JSONSchemaDefinition[];
     } => x.anyOf !== undefined,
     allOf: (
-      x: JSONSchema
+      x: JSONSchema,
     ): x is JSONSchema & {
       allOf: JSONSchemaDefinition[];
     } => x.allOf !== undefined,
     enum: (
-      x: JSONSchema
+      x: JSONSchema,
     ): x is JSONSchema & {
       enum: JSONSchemaType | JSONSchemaType[];
     } => x.enum !== undefined,
@@ -148,32 +148,35 @@ export const its = {
     nullable: (x: JSONSchema): x is JSONSchema & { nullable: true } =>
       (x as any).nullable === true,
     multipleType: (
-      x: JSONSchema
+      x: JSONSchema,
     ): x is JSONSchema & { type: JSONSchemaTypeName[] } =>
       Array.isArray(x.type),
     not: (
-      x: JSONSchema
+      x: JSONSchema,
     ): x is JSONSchema & {
       not: JSONSchemaDefinition;
     } => x.not !== undefined,
     const: (
-      x: JSONSchema
+      x: JSONSchema,
     ): x is JSONSchema & {
       const: JSONSchemaType;
     } => x.const !== undefined,
     primitive: <T extends "string" | "number" | "integer" | "boolean" | "null">(
       x: JSONSchema,
-      p: T
+      p: T,
     ): x is JSONSchema & { type: T } => x.type === p,
     conditional: (
-      x: JSONSchema
+      x: JSONSchema,
     ): x is JSONSchema & {
       if: JSONSchemaDefinition;
       then: JSONSchemaDefinition;
       else: JSONSchemaDefinition;
-    } => Boolean("if" in x && x.if && "then" in x && "else" in x && x.then && x.else),
+    } =>
+      Boolean(
+        "if" in x && x.if && "then" in x && "else" in x && x.then && x.else,
+      ),
     oneOf: (
-      x: JSONSchema
+      x: JSONSchema,
     ): x is JSONSchema & {
       oneOf: JSONSchemaDefinition[];
     } => x.oneOf !== undefined,

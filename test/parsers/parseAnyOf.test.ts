@@ -13,8 +13,8 @@ describe("parseAnyOf", () => {
             { type: "number" },
           ],
         },
-        { module: false, path: [], seen: new Map() }
-      )
+        { module: false, path: [], seen: new Map() },
+      ),
     ).toStrictEqual("z.union([z.string(),z.number()])");
   });
 
@@ -22,14 +22,14 @@ describe("parseAnyOf", () => {
     expect(
       parseAnyOf(
         { anyOf: [{ type: "string" }] },
-        { module: false, path: [], seen: new Map() }
-      )
+        { module: false, path: [], seen: new Map() },
+      ),
     ).toStrictEqual("z.string()");
   });
 
   it("should return z.any() if array is empty", () => {
     expect(
-      parseAnyOf({ anyOf: [] }, { module: false, path: [], seen: new Map() })
+      parseAnyOf({ anyOf: [] }, { module: false, path: [], seen: new Map() }),
     ).toStrictEqual("z.any()");
   });
 });

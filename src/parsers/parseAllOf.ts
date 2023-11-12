@@ -11,7 +11,7 @@ const ensureOriginalIndex = (arr: JSONSchemaDefinition[]) => {
     const item = arr[i];
     if (typeof item === "boolean") {
       newArr.push(
-        item ? { [originalIndex]: i } : { [originalIndex]: i, not: {} }
+        item ? { [originalIndex]: i } : { [originalIndex]: i, not: {} },
       );
     } else if (originalIndex in item) {
       return arr;
@@ -25,19 +25,19 @@ const ensureOriginalIndex = (arr: JSONSchemaDefinition[]) => {
 
 export function parseAllOf(
   schema: JSONSchema & { allOf: JSONSchemaDefinition[] },
-  refs: Refs
+  refs: Refs,
 ): string {
   if (schema.allOf.length === 0) {
     return "z.never()";
   } else if (schema.allOf.length === 1) {
-    const item = schema.allOf[0]
-      // typeof schema.allOf[0] === "boolean"
-      //   ? schema.allOf[0]
-      //     ? { [originalIndex]: 0 }
-      //     : { [originalIndex]: 0, not: {} }
-      //   : originalIndex in schema.allOf[0]
-      //   ? schema.allOf[0]
-      //   : { ...schema.allOf[0], [originalIndex]: 0 };
+    const item = schema.allOf[0];
+    // typeof schema.allOf[0] === "boolean"
+    //   ? schema.allOf[0]
+    //     ? { [originalIndex]: 0 }
+    //     : { [originalIndex]: 0, not: {} }
+    //   : originalIndex in schema.allOf[0]
+    //   ? schema.allOf[0]
+    //   : { ...schema.allOf[0], [originalIndex]: 0 };
 
     return parseSchema(item, {
       ...refs,
@@ -50,7 +50,7 @@ export function parseAllOf(
       {
         allOf: right,
       },
-      refs
+      refs,
     )})`;
   }
 }

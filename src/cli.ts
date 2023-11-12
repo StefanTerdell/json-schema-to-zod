@@ -28,14 +28,14 @@ if (sourceArgumentIndex === -1) {
 }
 if (sourceArgumentIndex === -1) {
   console.error(
-    "Must supply source file with --source [filename] or -s [filename}"
+    "Must supply source file with --source [filename] or -s [filename}",
   );
   process.exit(1);
 }
 const sourceFilePath = process.argv[sourceArgumentIndex + 1];
 if (!sourceFilePath) {
   console.error(
-    `No source path was provided after ${process.argv[sourceArgumentIndex]}`
+    `No source path was provided after ${process.argv[sourceArgumentIndex]}`,
   );
   process.exit(1);
 }
@@ -69,7 +69,7 @@ if (targetArgumentIndex !== -1) {
   targetFilePath = process.argv[targetArgumentIndex + 1];
   if (!targetFilePath) {
     console.error(
-      `No target path was provided after ${process.argv[targetArgumentIndex]}`
+      `No target path was provided after ${process.argv[targetArgumentIndex]}`,
     );
     process.exit(1);
   }
@@ -83,7 +83,7 @@ if (nameArgumentIndex !== -1) {
   name = process.argv[nameArgumentIndex + 1];
   if (!name) {
     console.error(
-      `No schema name was provided after ${process.argv[nameArgumentIndex]}`
+      `No schema name was provided after ${process.argv[nameArgumentIndex]}`,
     );
     process.exit(1);
   }
@@ -102,7 +102,7 @@ if (recursionDepthArgIndex !== -1) {
   recursionDepth = Number(process.argv[recursionDepthArgIndex + 1]);
   if (isNaN(recursionDepth)) {
     console.error(
-      `No number was provided after after ${process.argv[recursionDepthArgIndex]}`
+      `No number was provided after after ${process.argv[recursionDepthArgIndex]}`,
     );
     process.exit(1);
   }
@@ -116,7 +116,7 @@ if (modArgumentIndex !== -1) {
   mod = process.argv[modArgumentIndex + 1];
   if (!mod || (mod !== "cjs" && mod !== "esm")) {
     console.error(
-      `Provided either 'cjs' or 'mod' after ${process.argv[modArgumentIndex]}`
+      `Provided either 'cjs' or 'mod' after ${process.argv[modArgumentIndex]}`,
     );
     process.exit(1);
   }

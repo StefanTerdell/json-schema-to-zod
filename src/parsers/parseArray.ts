@@ -1,6 +1,6 @@
-import { JSONSchema, Refs } from "../Types"
-import { withMessage } from "../utils/withMessage"
-import { parseSchema } from "./parseSchema"
+import { JSONSchema, Refs } from "../Types";
+import { withMessage } from "../utils/withMessage";
+import { parseSchema } from "./parseSchema";
 
 export const parseArray = (
   schema: JSONSchema & { type: "array" },
@@ -9,7 +9,7 @@ export const parseArray = (
   if (Array.isArray(schema.items)) {
     return `z.tuple([${schema.items.map((v, i) =>
       parseSchema(v, { ...refs, path: [...refs.path, "items", i] }),
-    )}])`
+    )}])`;
   }
 
   let r = !schema.items
@@ -17,19 +17,19 @@ export const parseArray = (
     : `z.array(${parseSchema(schema.items, {
         ...refs,
         path: [...refs.path, "items"],
-      })})`
+      })})`;
 
   r += withMessage(schema, "minItems", ({ json }) => [
     `.min(${json}`,
     ", ",
     ")",
-  ])
+  ]);
 
   r += withMessage(schema, "maxItems", ({ json }) => [
     `.max(${json}`,
     ", ",
     ")",
-  ])
+  ]);
 
-  return r
-}
+  return r;
+};

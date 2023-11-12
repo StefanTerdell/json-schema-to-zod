@@ -1,4 +1,4 @@
-import { parseString } from "../../src/parsers/parseString"
+import { parseString } from "../../src/parsers/parseString";
 
 describe("parseString", () => {
   const run = (output: string, data: unknown) =>
@@ -6,15 +6,15 @@ describe("parseString", () => {
       `const {z} = require("zod"); ${output}.safeParse(${JSON.stringify(
         data,
       )})`,
-    )
+    );
 
   test("DateTime format", () => {
-    const datetime = "2018-11-13T20:20:39Z"
+    const datetime = "2018-11-13T20:20:39Z";
 
     expect(
       run(parseString({ type: "string", format: "date-time" }), datetime),
-    ).toStrictEqual({ success: true, data: datetime })
-  })
+    ).toStrictEqual({ success: true, data: datetime });
+  });
 
   it("should accept errorMessage", () => {
     expect(
@@ -31,6 +31,8 @@ describe("parseString", () => {
           maxLength: "nuts",
         },
       }),
-    ).toStrictEqual('z.string().ip({ version: "v4", message: "ayy" }).regex(new RegExp("x"), "lmao").min(1, "deez").max(2, "nuts")')
-  })
-})
+    ).toStrictEqual(
+      'z.string().ip({ version: "v4", message: "ayy" }).regex(new RegExp("x"), "lmao").min(1, "deez").max(2, "nuts")',
+    );
+  });
+});

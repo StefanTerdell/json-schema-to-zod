@@ -1,4 +1,4 @@
-import { parseNumber } from "../../src/parsers/parseNumber"
+import { parseNumber } from "../../src/parsers/parseNumber";
 
 describe("parseNumber", () => {
   it("should accept errorMessage", () => {
@@ -18,6 +18,6 @@ describe("parseNumber", () => {
       }),
     ).toStrictEqual(
       'z.number().int("ayy").multipleOf(2, "lmao").gt(0, "deez").lte(2, "nuts")',
-    )
-  })
-})
+    );
+  });
+});

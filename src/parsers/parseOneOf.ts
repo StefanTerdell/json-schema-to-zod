@@ -3,7 +3,7 @@ import { parseSchema } from "./parseSchema";
 
 export const parseOneOf = (
   schema: JSONSchema & { oneOf: JSONSchemaDefinition[] },
-  refs: Refs
+  refs: Refs,
 ) => {
   return schema.oneOf.length
     ? schema.oneOf.length === 1
@@ -16,7 +16,7 @@ export const parseOneOf = (
       parseSchema(schema, {
         ...refs,
         path: [...refs.path, "oneOf", i],
-      })
+      }),
     )}];
     const errors = schemas.reduce(
       (errors: z.ZodError[], schema) =>

@@ -12,8 +12,8 @@ describe("parseOneOf", () => {
             { type: "number" },
           ],
         },
-        { module: false, path: [], seen: new Map() }
-      )
+        { module: false, path: [], seen: new Map() },
+      ),
     ).toStrictEqual(`z.any().superRefine((x, ctx) => {
     const schemas = [z.string(),z.number()];
     const errors = schemas.reduce(
@@ -38,14 +38,14 @@ describe("parseOneOf", () => {
     expect(
       parseOneOf(
         { oneOf: [{ type: "string" }] },
-        { module: false, path: [], seen: new Map() }
-      )
+        { module: false, path: [], seen: new Map() },
+      ),
     ).toStrictEqual("z.string()");
   });
 
   it("should return z.any() if array is empty", () => {
     expect(
-      parseOneOf({ oneOf: [] }, { module: false, path: [], seen: new Map() })
+      parseOneOf({ oneOf: [] }, { module: false, path: [], seen: new Map() }),
     ).toStrictEqual("z.any()");
   });
 });

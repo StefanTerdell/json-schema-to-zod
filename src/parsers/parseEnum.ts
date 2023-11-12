@@ -1,8 +1,6 @@
 import { JSONSchema, JSONSchemaType } from "../Types";
 
-export const parseEnum = (
-  schema: JSONSchema & { enum: JSONSchemaType[] }
-) => {
+export const parseEnum = (schema: JSONSchema & { enum: JSONSchemaType[] }) => {
   if (schema.enum.length === 0) {
     return "z.never()";
   } else if (schema.enum.length === 1) {
@@ -12,7 +10,7 @@ export const parseEnum = (
     return `z.enum([${schema.enum.map((x) => JSON.stringify(x))}])`;
   } else {
     return `z.union([${schema.enum.map(
-      (x) => `z.literal(${JSON.stringify(x)})`
+      (x) => `z.literal(${JSON.stringify(x)})`,
     )}])`;
   }
 };
