@@ -1,22 +1,30 @@
-import { JsonRefsOptions, resolveRefs } from "json-refs";
-import { Options, JSONSchema } from "./Types";
-import { parseSchema } from "./parsers/parseSchema";
-import { format } from "./utils/format";
+import { JsonRefsOptions, resolveRefs } from "json-refs"
+import { Options, JSONSchemaDefinition } from "./Types"
+import { parseSchema } from "./parsers/parseSchema"
+import { format } from "./utils/format"
 
-export const jsonSchemaToZodDereffed = (
-  schema: JSONSchema,
-  options?: Options & { jsonRefsOptions?: JsonRefsOptions }
+export const jsonSchemaToZodDereffed = async (
+  schema: JSONSchemaDefinition,
+  options?: Options & { jsonRefsOptions?: JsonRefsOptions },
 ): Promise<string> => {
-  return resolveRefs(
-    schema,
-    options?.jsonRefsOptions ??
-      (options?.recursionDepth ? { resolveCirculars: true } : undefined)
-  ).then(({ resolved }) => jsonSchemaToZod(resolved as JSONSchema, options));
-};
+  if (typeof schema === "boolean") {
+    return jsonSchemaToZod(schema, options)
+  }
+
+  schema = (
+    await resolveRefs(
+      schema,
+      options?.jsonRefsOptions ??
+        (options?.recursionDepth ? { resolveCirculars: true } : undefined),
+    )
+  ).resolved
+
+  return jsonSchemaToZod(schema, options)
+}
 
 export const jsonSchemaToZod = (
-  schema: JSONSchema,
-  { module = true, name, ...rest }: Options = {}
+  schema: JSONSchemaDefinition,
+  { module = true, name, ...rest }: Options = {},
 ): string => {
   let result = parseSchema(schema, {
     module,
@@ -24,7 +32,7 @@ export const jsonSchemaToZod = (
     path: [],
     seen: new Map(),
     ...rest,
-  });
+  })
 
   if (module) {
     if (module === "cjs") {
@@ -34,17 +42,17 @@ export const jsonSchemaToZod = (
         module.exports = ${
           name ? `{ ${JSON.stringify(name)}: ${result} }` : result
         }
-      `;
+      `
     } else {
       result = `
         import { z } from 'zod'
 
         export ${name ? `const ${name} =` : `default`} ${result}
-      `;
+      `
     }
   } else {
-    result = `const ${name || "schema"} = ${result}`;
+    result = `const ${name || "schema"} = ${result}`
   }
 
-  return format(result);
-};
+  return format(result)
+}

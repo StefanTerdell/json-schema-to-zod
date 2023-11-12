@@ -10,13 +10,15 @@ import {
   JSONSchema7TypeName,
 } from "json-schema"
 
-export type JSONSchema = JSONSchema4 | JSONSchema7 | JSONSchema6
+export type JSONSchema = (JSONSchema4 | JSONSchema7 | JSONSchema6) & {
+  errorMessage?: { [key: string]: string | undefined }
+}
 export type JSONSchemaDefinition = JSONSchema | boolean
 export type JSONSchemaType = JSONSchema4Type | JSONSchema7Type | JSONSchema6Type
 export type JSONSchemaTypeName =
   | JSONSchema4TypeName
-  | JSONSchema7TypeName
   | JSONSchema6TypeName
+  | JSONSchema7TypeName
 
 export type ParserSelector = (schema: JSONSchema, refs: Refs) => string
 export type ParserOverride = (schema: JSONSchema, refs: Refs) => string | void

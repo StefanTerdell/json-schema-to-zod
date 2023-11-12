@@ -24,7 +24,7 @@ import {
 } from "../Types";
 
 export const parseSchema = (
-  schema: JSONSchema | boolean,
+  schema: JSONSchemaDefinition,
   refs: Refs = { seen: new Map(), path: [] }
 ): string => {
   if (typeof schema !== "object") return schema ? "z.any()" : "z.never()";

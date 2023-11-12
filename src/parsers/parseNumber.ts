@@ -1,39 +1,76 @@
-import { JSONSchema } from "../Types";
+import { JSONSchema } from "../Types"
+import { withMessage } from "../utils/withMessage"
 
 export const parseNumber = (
-  schema: JSONSchema & { type: "number" | "integer" }
+  schema: JSONSchema & { type: "number" | "integer" },
 ) => {
-  let r = "z.number()";
-  if (
-    schema.format === "int64" ||
-    schema.multipleOf === 1 ||
-    schema.type === "integer"
-  ) {
-    r += ".int()";
+  let r = "z.number()"
+
+  if (schema.type === "integer") {
+    r += withMessage(schema, "type", () => [".int(", ")"])
+  } else {
+    r += withMessage(schema, "format", ({ value }) => {
+      if (value === "int64") {
+        return [".int(", ")"]
+      }
+    })
   }
 
-  if (typeof schema.multipleOf === "number" && schema.multipleOf !== 1) {
-    r += `.multipleOf(${schema.multipleOf})`;
-  }
+  r += withMessage(schema, "multipleOf", ({ value, json }) => {
+    if (value === 1) {
+      if (r.startsWith("z.number().int(")) {
+        return 
+      }
+
+      return [".int(", ")"]
+    }
+
+    return [`.multipleOf(${json}`, ", ", ")"]
+  })
 
   if (typeof schema.minimum === "number") {
-    if ((schema as any).exclusiveMinimum === true) {
-      r += `.gt(${schema.minimum})`;
+    if (schema.exclusiveMinimum === true) {
+      r += withMessage(schema, "minimum", ({ json }) => [
+        `.gt(${json}`,
+        ", ",
+        ")",
+      ])
     } else {
-      r += `.gte(${schema.minimum})`;
+      r += withMessage(schema, "minimum", ({ json }) => [
+        `.gte(${json}`,
+        ", ",
+        ")",
+      ])
     }
   } else if (typeof schema.exclusiveMinimum === "number") {
-    r += `.gt(${schema.exclusiveMinimum})`;
+    r += withMessage(schema, "exclusiveMinimum", ({ json }) => [
+      `.gt(${json}`,
+      ", ",
+      ")",
+    ])
   }
 
   if (typeof schema.maximum === "number") {
-    if ((schema as any).exclusiveMaximum === true) {
-      r += `.lt(${schema.maximum})`;
+    if (schema.exclusiveMaximum === true) {
+      r += withMessage(schema, "maximum", ({ json }) => [
+        `.lt(${json}`,
+        ", ",
+        ")",
+      ])
     } else {
-      r += `.lte(${schema.maximum})`;
+      r += withMessage(schema, "maximum", ({ json }) => [
+        `.lte(${json}`,
+        ", ",
+        ")",
+      ])
     }
   } else if (typeof schema.exclusiveMaximum === "number") {
-    r += `.lt(${schema.exclusiveMaximum})`;
+    r += withMessage(schema, "exclusiveMaximum", ({ json }) => [
+      `.lt(${json}`,
+      ", ",
+      ")",
+    ])
   }
-  return r;
-};
+
+  return r
+}
