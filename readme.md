@@ -78,6 +78,10 @@ export default z.object({ hello: z.string().optional() });
 z.object({ hello: z.string().optional() });
 ```
 
+#### Overriding a parser
+
+You can pass a `ParserOverride` to the `overrideParser` option, which is a function that receives the current schema node and the reference object, and should return a string when it wants to replace a default output. If the default output should be used for the node, just return nothing.
+
 ### At Runtime
 
 The output of this package is not meant to be used at runtime. JSON Schema and Zod does not overlap 100% and the scope of the parsers are purposefully limited in order to help the author avoid a permanent state of chaotic insanity. As this may cause some details of the original schema to be lost in translation, it is instead recommended to use tools such as (Ajv)[https://ajv.js.org/] to validate your runtime values directly against the original JSON Schema.
