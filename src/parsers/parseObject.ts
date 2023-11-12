@@ -165,13 +165,15 @@ export function parseObject(
     ? patternProperties
       ? properties + patternProperties
       : additionalProperties
-      ? properties + `.catchall(${additionalProperties})`
-      : properties
+        ? additionalProperties === "z.never()" 
+          ? properties + ".strict()" 
+          : properties + `.catchall(${additionalProperties})`
+        : properties
     : patternProperties
-    ? patternProperties
-    : additionalProperties
-    ? `z.record(${additionalProperties})`
-    : "z.record(z.any())";
+      ? patternProperties
+      : additionalProperties
+        ? `z.record(${additionalProperties})`
+        : "z.record(z.any())";
 
   if (its.an.anyOf(objectSchema)) {
     output += `.and(${parseAnyOf(

@@ -41,7 +41,7 @@ describe("parseObject", () => {
           },
           { module: false, path: [], seen: new Map() }
         )
-      ).toStrictEqual('z.object({"myString":z.string()}).catchall(z.never())');
+      ).toStrictEqual('z.object({"myString":z.string()}).strict()');
     });
 
     it("should handle additionalProperties when set to true", () => {
