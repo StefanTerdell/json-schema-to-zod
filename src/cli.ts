@@ -28,8 +28,8 @@ const params: Param[] = [
     description: "The name of the schema in the output",
   },
   {
-    name: "recursion-depth",
-    short: "rd",
+    name: "depth",
+    short: "d",
     value: "number",
     description:
       "Maximum depth of recursion before falling back to z.any() - defaults to 0",
