@@ -18,7 +18,7 @@ export const parseIfThenElse = (
     ...refs,
     path: [...refs.path, "else"],
   });
-  return `z.union([${$then},${$else}]).superRefine((value,ctx) => {
+  return `z.union([${$then}, ${$else}]).superRefine((value,ctx) => {
   const result = ${$if}.safeParse(value).success
     ? ${$then}.safeParse(value)
     : ${$else}.safeParse(value);

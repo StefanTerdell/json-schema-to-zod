@@ -22,7 +22,7 @@ describe("parseObject", () => {
           { module: false, path: [], seen: new Map() },
         ),
       ).toStrictEqual(
-        'z.object({"myOptionalString":z.string().optional(),"myRequiredString":z.string()})',
+        'z.object({ "myOptionalString": z.string().optional(), "myRequiredString": z.string() })',
       );
     });
 
@@ -41,7 +41,7 @@ describe("parseObject", () => {
           },
           { module: false, path: [], seen: new Map() },
         ),
-      ).toStrictEqual('z.object({"myString":z.string()}).strict()');
+      ).toStrictEqual('z.object({ "myString": z.string() }).strict()');
     });
 
     it("should handle additionalProperties when set to true", () => {
@@ -59,7 +59,7 @@ describe("parseObject", () => {
           },
           { module: false, path: [], seen: new Map() },
         ),
-      ).toStrictEqual('z.object({"myString":z.string()}).catchall(z.any())');
+      ).toStrictEqual('z.object({ "myString": z.string() }).catchall(z.any())');
     });
 
     it("should handle additionalProperties when provided a schema", () => {
@@ -77,7 +77,7 @@ describe("parseObject", () => {
           },
           { module: false, path: [], seen: new Map() },
         ),
-      ).toStrictEqual('z.object({"myString":z.string()}).catchall(z.number())');
+      ).toStrictEqual('z.object({ "myString": z.string() }).catchall(z.number())');
     });
   });
 
@@ -133,7 +133,7 @@ describe("parseObject", () => {
           },
           { module: false, path: [], seen: new Map() },
         ),
-      ).toStrictEqual(`z.object({"s":z.string().default("")})`);
+      ).toStrictEqual(`z.object({ "s": z.string().default("") })`);
     });
   });
 
@@ -170,7 +170,7 @@ describe("parseObject", () => {
         { module: false, path: [], seen: new Map() },
       ),
     ).toStrictEqual(
-      'z.object({"a":z.string()}).and(z.union([z.object({"b":z.string()}),z.object({"c":z.string()})]))',
+      'z.object({ "a": z.string() }).and(z.union([z.object({ "b": z.string() }), z.object({ "c": z.string() })]))',
     );
 
     expect(
@@ -205,8 +205,8 @@ describe("parseObject", () => {
         { module: false, path: [], seen: new Map() },
       ),
     ).toStrictEqual(
-      `z.object({"a":z.string()}).and(z.any().superRefine((x, ctx) => {
-    const schemas = [z.object({"b":z.string()}),z.object({"c":z.string()})];
+      `z.object({ "a": z.string() }).and(z.any().superRefine((x, ctx) => {
+    const schemas = [z.object({ "b": z.string() }), z.object({ "c": z.string() })];
     const errors = schemas.reduce(
       (errors: z.ZodError[], schema) =>
         ((result) => ("error" in result ? [...errors, result.error] : errors))(
@@ -257,7 +257,7 @@ describe("parseObject", () => {
         { module: false, path: [], seen: new Map() },
       ),
     ).toStrictEqual(
-      'z.object({"a":z.string()}).and(z.intersection(z.object({"b":z.string()}),z.object({"c":z.string()})))',
+      'z.object({ "a": z.string() }).and(z.intersection(z.object({ "b": z.string() }), z.object({ "c": z.string() })))',
     );
   });
 
@@ -290,7 +290,7 @@ describe("parseObject", () => {
         },
       };
 
-      const expected = 'z.object({"a":z.string(),"b":z.number().optional()})';
+      const expected = 'z.object({ "a": z.string(), "b": z.number().optional() })';
 
       const result = parseObject(schema, { path: [], seen: new Map() });
 
@@ -348,7 +348,7 @@ describe("parseObject", () => {
       };
 
       const expected =
-        'z.object({"a":z.string(),"b":z.number().optional()}).catchall(z.boolean())';
+        'z.object({ "a": z.string(), "b": z.number().optional() }).catchall(z.boolean())';
 
       const result = parseObject(schema, { path: [], seen: new Map() });
 
@@ -401,7 +401,7 @@ describe("parseObject", () => {
         },
       };
 
-      const expected = `z.object({"a":z.string(),"b":z.number().optional()}).catchall(z.union([z.array(z.any()),z.array(z.any()).min(1),z.boolean()])).superRefine((value, ctx) => {
+      const expected = `z.object({ "a": z.string(), "b": z.number().optional() }).catchall(z.union([z.array(z.any()), z.array(z.any()).min(1), z.boolean()])).superRefine((value, ctx) => {
 for (const key in value) {
 let evaluated = ["a", "b"].includes(key)
 if (key.match(new RegExp("\\\\."))) {
@@ -476,7 +476,7 @@ ctx.addIssue({
         },
       };
 
-      const expected = `z.record(z.union([z.array(z.any()),z.array(z.any()).min(1),z.boolean()])).superRefine((value, ctx) => {
+      const expected = `z.record(z.union([z.array(z.any()), z.array(z.any()).min(1), z.boolean()])).superRefine((value, ctx) => {
 for (const key in value) {
 let evaluated = false
 if (key.match(new RegExp(\"\\\\.\"))) {
@@ -561,7 +561,7 @@ ctx.addIssue({
         },
       };
 
-      const expected = `z.record(z.union([z.array(z.any()),z.array(z.any()).min(1)])).superRefine((value, ctx) => {
+      const expected = `z.record(z.union([z.array(z.any()), z.array(z.any()).min(1)])).superRefine((value, ctx) => {
 for (const key in value) {
 if (key.match(new RegExp(\"\\\\.\"))) {
 const result = z.array(z.any()).safeParse(value[key])
@@ -644,7 +644,7 @@ ctx.addIssue({
         },
       };
 
-      const expected = `z.object({\"a\":z.string(),\"b\":z.number().optional()}).catchall(z.union([z.array(z.any()),z.array(z.any()).min(1)])).superRefine((value, ctx) => {
+      const expected = `z.object({ "a": z.string(), "b": z.number().optional() }).catchall(z.union([z.array(z.any()), z.array(z.any()).min(1)])).superRefine((value, ctx) => {
 for (const key in value) {
 if (key.match(new RegExp(\"\\\\.\"))) {
 const result = z.array(z.any()).safeParse(value[key])

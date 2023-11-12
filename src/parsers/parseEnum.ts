@@ -13,6 +13,6 @@ export const parseEnum = (
   } else {
     return `z.union([${schema.enum.map(
       (x) => `z.literal(${JSON.stringify(x)})`,
-    )}])`;
+    ).join(", ")}])`;
   }
 };

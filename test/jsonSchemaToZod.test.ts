@@ -3,7 +3,7 @@ import {
   JSONSchema6Definition,
   JSONSchema7Definition,
 } from "json-schema";
-import jsonSchemaToZod, { jsonSchemaToZodDereffed } from "../src";
+import jsonSchemaToZod from "../src";
 
 describe("jsonSchemaToZod", () => {
   it("should accept json schema 7 and 4", () => {
@@ -19,9 +19,9 @@ describe("jsonSchemaToZod", () => {
       jsonSchemaToZod({
         type: "string",
       }),
-    ).toStrictEqual(`import { z } from "zod";
+    ).toStrictEqual(`import { z } from "zod"
 
-export default z.string();
+export default z.string()
 `);
   });
 
@@ -31,9 +31,9 @@ export default z.string();
         type: "string",
         default: "foo",
       }),
-    ).toStrictEqual(`import { z } from "zod";
+    ).toStrictEqual(`import { z } from "zod"
 
-export default z.string().default("foo");
+export default z.string().default("foo")
 `);
   });
 
@@ -43,9 +43,9 @@ export default z.string().default("foo");
         type: "string",
         default: "",
       }),
-    ).toStrictEqual(`import { z } from "zod";
+    ).toStrictEqual(`import { z } from "zod"
 
-export default z.string().default("");
+export default z.string().default("")
 `);
   });
 
@@ -55,9 +55,9 @@ export default z.string().default("");
         type: "string",
         const: "",
       }),
-    ).toStrictEqual(`import { z } from "zod";
+    ).toStrictEqual(`import { z } from "zod"
 
-export default z.literal("");
+export default z.literal("")
 `);
   });
 
@@ -70,9 +70,9 @@ export default z.literal("");
         },
         { module: true, withoutDefaults: true },
       ),
-    ).toStrictEqual(`import { z } from "zod";
+    ).toStrictEqual(`import { z } from "zod"
 
-export default z.string();
+export default z.string()
 `);
   });
 
@@ -87,9 +87,9 @@ export default z.string();
           },
         },
       }),
-    ).toStrictEqual(`import { z } from "zod";
+    ).toStrictEqual(`import { z } from "zod"
 
-export default z.object({ prop: z.string().default("def") });
+export default z.object({ "prop": z.string().default("def") })
 `);
   });
 
@@ -102,9 +102,9 @@ export default z.object({ prop: z.string().default("def") });
         },
         { module: true },
       ),
-    ).toStrictEqual(`import { z } from "zod";
+    ).toStrictEqual(`import { z } from "zod"
 
-export default z.boolean().default(false);
+export default z.boolean().default(false)
 `);
   });
 
@@ -114,9 +114,9 @@ export default z.boolean().default(false);
         type: "null",
         default: undefined,
       }),
-    ).toStrictEqual(`import { z } from "zod";
+    ).toStrictEqual(`import { z } from "zod"
 
-export default z.null();
+export default z.null()
 `);
   });
 
@@ -145,50 +145,6 @@ export default z.null();
           },
         },
       ),
-    ).toStrictEqual(`const schema = z.intersection(
-  z.string(),
-  z.intersection(z.number(), myCustomZodSchema)
-);
-`);
-  });
-
-  it("should handle the $ref structure from zod-to-json-schema", async () => {
-    expect(
-      await jsonSchemaToZodDereffed({
-        $ref: "#/definitions/hello",
-        definitions: {
-          hello: {
-            type: "string",
-          },
-        },
-      }),
-    ).toStrictEqual(`import { z } from "zod";
-
-export default z.string();
-`);
-  });
-
-  it("should deal with some basic recursive schemas", async () => {
-    expect(
-      await jsonSchemaToZodDereffed(
-        {
-          type: "object",
-          properties: { rec1: { $ref: "#" }, rec2: { $ref: "#" } },
-        },
-        { recursionDepth: 1 },
-      ),
-    ).toStrictEqual(
-      `import { z } from "zod";
-
-export default z.object({
-  rec1: z
-    .object({ rec1: z.any().optional(), rec2: z.any().optional() })
-    .optional(),
-  rec2: z
-    .object({ rec1: z.any().optional(), rec2: z.any().optional() })
-    .optional(),
-});
-`,
-    );
+    ).toStrictEqual(`const schema = z.intersection(z.string(), z.intersection(z.number(), myCustomZodSchema))`);
   });
 });

@@ -17,7 +17,7 @@ export const parseOneOf = (
         ...refs,
         path: [...refs.path, "oneOf", i],
       }),
-    )}];
+    ).join(", ")}];
     const errors = schemas.reduce(
       (errors: z.ZodError[], schema) =>
         ((result) => ("error" in result ? [...errors, result.error] : errors))(

@@ -13,6 +13,6 @@ export const parseAnyOf = (
         })
       : `z.union([${schema.anyOf.map((schema, i) =>
           parseSchema(schema, { ...refs, path: [...refs.path, "anyOf", i] }),
-        )}])`
+        ).join(", ")}])`
     : `z.any()`;
 };

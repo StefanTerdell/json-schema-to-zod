@@ -15,7 +15,7 @@ describe("parseAnyOf", () => {
         },
         { module: false, path: [], seen: new Map() },
       ),
-    ).toStrictEqual("z.union([z.string(),z.number()])");
+    ).toStrictEqual("z.union([z.string(), z.number()])");
   });
 
   it("should extract a single schema", () => {

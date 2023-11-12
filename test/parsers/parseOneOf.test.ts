@@ -15,7 +15,7 @@ describe("parseOneOf", () => {
         { module: false, path: [], seen: new Map() },
       ),
     ).toStrictEqual(`z.any().superRefine((x, ctx) => {
-    const schemas = [z.string(),z.number()];
+    const schemas = [z.string(), z.number()];
     const errors = schemas.reduce(
       (errors: z.ZodError[], schema) =>
         ((result) => ("error" in result ? [...errors, result.error] : errors))(
