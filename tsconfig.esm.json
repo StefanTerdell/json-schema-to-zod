@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
+    "target": "es2015",
+    "module": "es2015",
     "outDir": "dist/esm",
     "strict": true,
     "skipLibCheck": true,
     "esModuleInterop": true
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }

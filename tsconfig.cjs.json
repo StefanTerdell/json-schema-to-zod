@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
+    "target": "es2015",
     "module": "commonjs",
     "outDir": "dist/cjs",
     "strict": true,
     "skipLibCheck": true,
     "esModuleInterop": true
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }
