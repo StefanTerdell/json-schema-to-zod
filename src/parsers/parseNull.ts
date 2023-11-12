@@ -1,5 +1,5 @@
-import { JSONSchema } from "../Types";
+import { JsonSchemaObject } from "../Types";
 
-export const parseNull = (_schema: JSONSchema & { type: "null" }) => {
+export const parseNull = (_schema: JsonSchemaObject & { type: "null" }) => {
   return "z.null()";
 };

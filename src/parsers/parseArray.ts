@@ -1,9 +1,9 @@
-import { JSONSchema, Refs } from "../Types";
+import { JsonSchemaObject, Refs } from "../Types";
 import { withMessage } from "../utils/withMessage";
 import { parseSchema } from "./parseSchema";
 
 export const parseArray = (
-  schema: JSONSchema & { type: "array" },
+  schema: JsonSchemaObject & { type: "array" },
   refs: Refs,
 ) => {
   if (Array.isArray(schema.items)) {

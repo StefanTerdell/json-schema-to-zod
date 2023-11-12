@@ -1,8 +1,8 @@
-import { JSONSchema, JSONSchemaTypeName, Refs } from "../Types";
+import { JsonSchemaObject, Refs } from "../Types";
 import { parseSchema } from "./parseSchema";
 
 export const parseMultipleType = (
-  schema: JSONSchema & { type: JSONSchemaTypeName[] },
+  schema: JsonSchemaObject & { type: string[] },
   refs: Refs,
 ) => {
   return `z.union([${schema.type.map((type) =>

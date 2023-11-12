@@ -1,10 +1,10 @@
 import { JsonRefsOptions, resolveRefs } from "json-refs";
-import { Options, JSONSchemaDefinition } from "./Types";
+import { Options, JsonSchema } from "./Types";
 import { parseSchema } from "./parsers/parseSchema";
 import { format } from "./utils/format";
 
 export const jsonSchemaToZodDereffed = async (
-  schema: JSONSchemaDefinition,
+  schema: JsonSchema,
   options?: Options & { jsonRefsOptions?: JsonRefsOptions },
 ): Promise<string> => {
   if (typeof schema === "boolean") {
@@ -23,7 +23,7 @@ export const jsonSchemaToZodDereffed = async (
 };
 
 export const jsonSchemaToZod = (
-  schema: JSONSchemaDefinition,
+  schema: JsonSchema,
   { module = true, name, ...rest }: Options = {},
 ): string => {
   let result = parseSchema(schema, {

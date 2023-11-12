@@ -1,7 +1,7 @@
-import { JSONSchema } from "../Types";
+import { JsonSchemaObject } from "../Types";
 import { withMessage } from "../utils/withMessage";
 
-export const parseString = (schema: JSONSchema & { type: "string" }) => {
+export const parseString = (schema: JsonSchemaObject & { type: "string" }) => {
   let r = "z.string()";
 
   r += withMessage(schema, "format", ({ value }) => {

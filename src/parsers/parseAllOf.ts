@@ -1,10 +1,10 @@
 import { parseSchema } from "./parseSchema";
 import { half } from "../utils/half";
-import { JSONSchema, JSONSchemaDefinition, Refs } from "../Types";
+import { JsonSchemaObject, JsonSchema, Refs } from "../Types";
 
 const originalIndex = Symbol("Original index");
 
-const ensureOriginalIndex = (arr: JSONSchemaDefinition[]) => {
+const ensureOriginalIndex = (arr: JsonSchema[]) => {
   let newArr = [];
 
   for (let i = 0; i < arr.length; i++) {
@@ -24,7 +24,7 @@ const ensureOriginalIndex = (arr: JSONSchemaDefinition[]) => {
 };
 
 export function parseAllOf(
-  schema: JSONSchema & { allOf: JSONSchemaDefinition[] },
+  schema: JsonSchemaObject & { allOf: JsonSchema[] },
   refs: Refs,
 ): string {
   if (schema.allOf.length === 0) {

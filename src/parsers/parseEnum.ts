@@ -1,6 +1,8 @@
-import { JSONSchema, JSONSchemaType } from "../Types";
+import { JsonSchemaObject, Serializable } from "../Types";
 
-export const parseEnum = (schema: JSONSchema & { enum: JSONSchemaType[] }) => {
+export const parseEnum = (
+  schema: JsonSchemaObject & { enum: Serializable[] },
+) => {
   if (schema.enum.length === 0) {
     return "z.never()";
   } else if (schema.enum.length === 1) {

@@ -35,11 +35,11 @@
     "json-schema-to-zod": "./cli.js"
   },
   "dependencies": {
-    "@types/json-schema": "^7.0.9",
     "json-refs": "^3.0.15",
     "prettier": "^2.4.1"
   },
   "devDependencies": {
+    "@types/json-schema": "^7.0.9",
     "@types/jest": "^29.2.2",
     "@types/node": "^16.11.4",
     "@types/prettier": "^2.4.1",

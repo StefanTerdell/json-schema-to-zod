@@ -1,11 +1,11 @@
-import { JSONSchema, Refs } from "../Types";
+import { JsonSchemaObject, Refs } from "../Types";
 import { parseAnyOf } from "./parseAnyOf";
 import { parseOneOf } from "./parseOneOf";
 import { its, parseSchema } from "./parseSchema";
 import { parseAllOf } from "./parseAllOf";
 
 export function parseObject(
-  objectSchema: JSONSchema & { type: "object" },
+  objectSchema: JsonSchemaObject & { type: "object" },
   refs: Refs,
 ): string {
   let properties: string | undefined = undefined;

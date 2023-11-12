@@ -1,4 +1,4 @@
-import { JSONSchema } from "../Types";
+import { JsonSchemaObject } from "../Types";
 
 type Opener = string;
 type MessagePrefix = string;
@@ -7,7 +7,7 @@ type Closer = string;
 type Builder = [Opener, Closer] | [Opener, MessagePrefix, Closer];
 
 export function withMessage(
-  schema: JSONSchema,
+  schema: JsonSchemaObject,
   key: string,
   get: (props: { value: unknown; json: string }) => Builder | void,
 ) {

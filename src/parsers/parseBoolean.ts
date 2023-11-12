@@ -1,5 +1,7 @@
-import { JSONSchema } from "../Types";
+import { JsonSchemaObject } from "../Types";
 
-export const parseBoolean = (_schema: JSONSchema & { type: "boolean" }) => {
+export const parseBoolean = (
+  _schema: JsonSchemaObject & { type: "boolean" },
+) => {
   return "z.boolean()";
 };

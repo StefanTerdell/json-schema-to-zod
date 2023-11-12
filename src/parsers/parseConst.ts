@@ -1,5 +1,7 @@
-import { JSONSchema, JSONSchemaType } from "../Types";
+import { JsonSchemaObject, Serializable } from "../Types";
 
-export const parseConst = (schema: JSONSchema & { const: JSONSchemaType }) => {
+export const parseConst = (
+  schema: JsonSchemaObject & { const: Serializable },
+) => {
   return `z.literal(${JSON.stringify(schema.const)})`;
 };

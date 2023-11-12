@@ -17,14 +17,13 @@ import { parseNullable } from "./parseNullable";
 import {
   ParserSelector,
   Refs,
-  JSONSchema,
-  JSONSchemaDefinition,
-  JSONSchemaType,
-  JSONSchemaTypeName,
+  JsonSchemaObject,
+  JsonSchema,
+  Serializable,
 } from "../Types";
 
 export const parseSchema = (
-  schema: JSONSchemaDefinition,
+  schema: JsonSchema,
   refs: Refs = { seen: new Map(), path: [] },
 ): string => {
   if (typeof schema !== "object") return schema ? "z.any()" : "z.never()";
@@ -67,7 +66,7 @@ export const parseSchema = (
   return parsed;
 };
 
-const addMeta = (schema: JSONSchema, parsed: string): string => {
+const addMeta = (schema: JsonSchemaObject, parsed: string): string => {
   if (schema.description) {
     parsed += `.describe(${JSON.stringify(schema.description)})`;
   }
@@ -75,7 +74,7 @@ const addMeta = (schema: JSONSchema, parsed: string): string => {
   return parsed;
 };
 
-const addDefaults = (schema: JSONSchema, parsed: string): string => {
+const addDefaults = (schema: JsonSchemaObject, parsed: string): string => {
   if (schema.default !== undefined) {
     parsed += `.default(${JSON.stringify(schema.default)})`;
   }
@@ -124,61 +123,62 @@ const selectParser: ParserSelector = (schema, refs) => {
 
 export const its = {
   an: {
-    object: (x: JSONSchema): x is JSONSchema & { type: "object" } =>
+    object: (x: JsonSchemaObject): x is JsonSchemaObject & { type: "object" } =>
       x.type === "object",
-    array: (x: JSONSchema): x is JSONSchema & { type: "array" } =>
+    array: (x: JsonSchemaObject): x is JsonSchemaObject & { type: "array" } =>
       x.type === "array",
     anyOf: (
-      x: JSONSchema,
-    ): x is JSONSchema & {
-      anyOf: JSONSchemaDefinition[];
+      x: JsonSchemaObject,
+    ): x is JsonSchemaObject & {
+      anyOf: JsonSchema[];
     } => x.anyOf !== undefined,
     allOf: (
-      x: JSONSchema,
-    ): x is JSONSchema & {
-      allOf: JSONSchemaDefinition[];
+      x: JsonSchemaObject,
+    ): x is JsonSchemaObject & {
+      allOf: JsonSchema[];
     } => x.allOf !== undefined,
     enum: (
-      x: JSONSchema,
-    ): x is JSONSchema & {
-      enum: JSONSchemaType | JSONSchemaType[];
+      x: JsonSchemaObject,
+    ): x is JsonSchemaObject & {
+      enum: Serializable | Serializable[];
     } => x.enum !== undefined,
   },
   a: {
-    nullable: (x: JSONSchema): x is JSONSchema & { nullable: true } =>
+    nullable: (
+      x: JsonSchemaObject,
+    ): x is JsonSchemaObject & { nullable: true } =>
       (x as any).nullable === true,
     multipleType: (
-      x: JSONSchema,
-    ): x is JSONSchema & { type: JSONSchemaTypeName[] } =>
-      Array.isArray(x.type),
+      x: JsonSchemaObject,
+    ): x is JsonSchemaObject & { type: string[] } => Array.isArray(x.type),
     not: (
-      x: JSONSchema,
-    ): x is JSONSchema & {
-      not: JSONSchemaDefinition;
+      x: JsonSchemaObject,
+    ): x is JsonSchemaObject & {
+      not: JsonSchema;
     } => x.not !== undefined,
     const: (
-      x: JSONSchema,
-    ): x is JSONSchema & {
-      const: JSONSchemaType;
+      x: JsonSchemaObject,
+    ): x is JsonSchemaObject & {
+      const: Serializable;
     } => x.const !== undefined,
     primitive: <T extends "string" | "number" | "integer" | "boolean" | "null">(
-      x: JSONSchema,
+      x: JsonSchemaObject,
       p: T,
-    ): x is JSONSchema & { type: T } => x.type === p,
+    ): x is JsonSchemaObject & { type: T } => x.type === p,
     conditional: (
-      x: JSONSchema,
-    ): x is JSONSchema & {
-      if: JSONSchemaDefinition;
-      then: JSONSchemaDefinition;
-      else: JSONSchemaDefinition;
+      x: JsonSchemaObject,
+    ): x is JsonSchemaObject & {
+      if: JsonSchema;
+      then: JsonSchema;
+      else: JsonSchema;
     } =>
       Boolean(
         "if" in x && x.if && "then" in x && "else" in x && x.then && x.else,
       ),
     oneOf: (
-      x: JSONSchema,
-    ): x is JSONSchema & {
-      oneOf: JSONSchemaDefinition[];
+      x: JsonSchemaObject,
+    ): x is JsonSchemaObject & {
+      oneOf: JsonSchema[];
     } => x.oneOf !== undefined,
   },
 };

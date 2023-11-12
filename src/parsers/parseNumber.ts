@@ -1,8 +1,8 @@
-import { JSONSchema } from "../Types";
+import { JsonSchemaObject } from "../Types";
 import { withMessage } from "../utils/withMessage";
 
 export const parseNumber = (
-  schema: JSONSchema & { type: "number" | "integer" },
+  schema: JsonSchemaObject & { type: "number" | "integer" },
 ) => {
   let r = "z.number()";
 

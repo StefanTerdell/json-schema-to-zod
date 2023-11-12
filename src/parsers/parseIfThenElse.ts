@@ -1,11 +1,11 @@
-import { JSONSchema, JSONSchemaDefinition, Refs } from "../Types";
+import { JsonSchemaObject, JsonSchema, Refs } from "../Types";
 import { parseSchema } from "./parseSchema";
 
 export const parseIfThenElse = (
-  schema: JSONSchema & {
-    if: JSONSchemaDefinition;
-    then: JSONSchemaDefinition;
-    else: JSONSchemaDefinition;
+  schema: JsonSchemaObject & {
+    if: JsonSchema;
+    then: JsonSchema;
+    else: JsonSchema;
   },
   refs: Refs,
 ): string => {

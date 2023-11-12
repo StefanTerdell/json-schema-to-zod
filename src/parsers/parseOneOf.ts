@@ -1,8 +1,8 @@
-import { JSONSchema, JSONSchemaDefinition, Refs } from "../Types";
+import { JsonSchemaObject, JsonSchema, Refs } from "../Types";
 import { parseSchema } from "./parseSchema";
 
 export const parseOneOf = (
-  schema: JSONSchema & { oneOf: JSONSchemaDefinition[] },
+  schema: JsonSchemaObject & { oneOf: JsonSchema[] },
   refs: Refs,
 ) => {
   return schema.oneOf.length
