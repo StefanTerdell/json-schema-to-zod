@@ -55,7 +55,7 @@ const myObject = {
       type: "string",
     },
   },
-};
+} as const;
 
 const module = jsonSchemaToZod(myObject);
 
