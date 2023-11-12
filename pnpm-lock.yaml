@@ -8,9 +8,6 @@ dependencies:
   '@types/json-schema':
     specifier: ^7.0.9
     version: 7.0.15
-  prettier:
-    specifier: ^2.4.1
-    version: 2.8.8
 
 devDependencies:
   '@types/jest':
@@ -2038,12 +2035,6 @@ packages:
     dependencies:
       find-up: 4.1.0
     dev: true
-
-  /prettier@2.8.8:
-    resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
-    engines: {node: '>=10.13.0'}
-    hasBin: true
-    dev: false
 
   /pretty-format@29.7.0:
     resolution: {integrity: sha512-Pdlw/oPxN+aXdmM9R00JVC9WVFoCLTKJvDVLgmJ+qAffBMxsV85l/Lu7sNx4zSzPyoL2euImuEwHhOXdEgNFZQ==}
