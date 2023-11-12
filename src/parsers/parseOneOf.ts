@@ -1,10 +1,9 @@
-import { JSONSchema7, JSONSchema7Definition } from "json-schema";
-import { Refs } from "../Types";
+import { JsonSchemaObject, JsonSchema, Refs } from "../Types";
 import { parseSchema } from "./parseSchema";
 
 export const parseOneOf = (
-  schema: JSONSchema7 & { oneOf: JSONSchema7Definition[] },
-  refs: Refs
+  schema: JsonSchemaObject & { oneOf: JsonSchema[] },
+  refs: Refs,
 ) => {
   return schema.oneOf.length
     ? schema.oneOf.length === 1
@@ -17,7 +16,7 @@ export const parseOneOf = (
       parseSchema(schema, {
         ...refs,
         path: [...refs.path, "oneOf", i],
-      })
+      }),
     )}];
     const errors = schemas.reduce(
       (errors: z.ZodError[], schema) =>

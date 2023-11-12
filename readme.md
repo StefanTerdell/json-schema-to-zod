@@ -55,7 +55,7 @@ const myObject = {
       type: "string",
     },
   },
-};
+} as const;
 
 const module = jsonSchemaToZod(myObject);
 
@@ -77,6 +77,10 @@ export default z.object({ hello: z.string().optional() });
 ```typescript
 z.object({ hello: z.string().optional() });
 ```
+
+#### Overriding a parser
+
+You can pass a `ParserOverride` to the `overrideParser` option, which is a function that receives the current schema node and the reference object, and should return a string when it wants to replace a default output. If the default output should be used for the node, just return nothing.
 
 ### At Runtime
 

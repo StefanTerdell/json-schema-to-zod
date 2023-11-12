@@ -1,7 +1,7 @@
-import { JSONSchema7, JSONSchema7Type } from "json-schema";
+import { JsonSchemaObject, Serializable } from "../Types";
 
 export const parseConst = (
-  schema: JSONSchema7 & { const: JSONSchema7Type }
+  schema: JsonSchemaObject & { const: Serializable },
 ) => {
   return `z.literal(${JSON.stringify(schema.const)})`;
 };

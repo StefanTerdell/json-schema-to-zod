@@ -1,5 +1,5 @@
-import { JSONSchema7 } from "json-schema";
+import { JsonSchemaObject } from "../Types";
 
-export const parseDefault = (schema: JSONSchema7) => {
+export const parseDefault = (_schema: JsonSchemaObject) => {
   return "z.any()";
 };

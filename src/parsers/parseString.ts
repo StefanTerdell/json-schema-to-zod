@@ -1,14 +1,45 @@
-import { JSONSchema7 } from "json-schema";
+import { JsonSchemaObject } from "../Types";
+import { withMessage } from "../utils/withMessage";
 
-export const parseString = (schema: JSONSchema7 & { type: "string" }) => {
+export const parseString = (schema: JsonSchemaObject & { type: "string" }) => {
   let r = "z.string()";
-  if (schema.pattern)
-    r += `.regex(new RegExp(${JSON.stringify(schema.pattern)}))`;
-  if (schema.format === "email") r += ".email()";
-  else if (schema.format === "uri") r += ".url()";
-  else if (schema.format === "uuid") r += ".uuid()";
-  else if (schema.format === "date-time") r += ".datetime()";
-  if (typeof schema.minLength === "number") r += `.min(${schema.minLength})`;
-  if (typeof schema.maxLength === "number") r += `.max(${schema.maxLength})`;
+
+  r += withMessage(schema, "format", ({ value }) => {
+    switch (value) {
+      case "email":
+        return [".email(", ")"];
+      case "ip":
+        return [".ip(", ")"];
+      case "ipv4":
+        return ['.ip({ version: "v4"', ", message: ", " })"];
+      case "ipv6":
+        return ['.ip({ version: "v6"', ", message: ", " })"];
+      case "uri":
+        return [".url(", ")"];
+      case "uuid":
+        return [".uuid(", ")"];
+      case "date-time":
+        return [".datetime(", ")"];
+    }
+  });
+
+  r += withMessage(schema, "pattern", ({ json }) => [
+    `.regex(new RegExp(${json})`,
+    ", ",
+    ")",
+  ]);
+
+  r += withMessage(schema, "minLength", ({ json }) => [
+    `.min(${json}`,
+    ", ",
+    ")",
+  ]);
+
+  r += withMessage(schema, "maxLength", ({ json }) => [
+    `.max(${json}`,
+    ", ",
+    ")",
+  ]);
+
   return r;
 };

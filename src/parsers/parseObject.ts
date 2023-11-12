@@ -1,13 +1,12 @@
-import { JSONSchema7 } from "json-schema";
-import { Refs } from "../Types";
+import { JsonSchemaObject, Refs } from "../Types";
 import { parseAnyOf } from "./parseAnyOf";
 import { parseOneOf } from "./parseOneOf";
 import { its, parseSchema } from "./parseSchema";
 import { parseAllOf } from "./parseAllOf";
 
 export function parseObject(
-  objectSchema: JSONSchema7 & { type: "object" },
-  refs: Refs
+  objectSchema: JsonSchemaObject & { type: "object" },
+  refs: Refs,
 ): string {
   let properties: string | undefined = undefined;
 
@@ -30,7 +29,9 @@ export function parseObject(
             objectSchema.default !== null &&
             key in objectSchema.default);
 
-        const required = objectSchema.required?.includes(key) ?? false;
+        const required = Array.isArray(objectSchema.required)
+          ? objectSchema.required.includes(key)
+          : typeof propSchema === "object" && propSchema.required === true;
 
         const optional = !hasDefault && !required;
 
@@ -61,7 +62,7 @@ export function parseObject(
             path: [...refs.path, "patternProperties", key],
           }),
         ];
-      }, {})
+      }, {}),
     );
 
     patternProperties = "";
@@ -74,11 +75,11 @@ export function parseObject(
         ]}]))`;
       } else if (Object.keys(parsedPatternProperties).length > 1) {
         patternProperties += `.catchall(z.union([${Object.values(
-          parsedPatternProperties
+          parsedPatternProperties,
         )}]))`;
       } else {
         patternProperties += `.catchall(${Object.values(
-          parsedPatternProperties
+          parsedPatternProperties,
         )})`;
       }
     } else {
@@ -89,11 +90,11 @@ export function parseObject(
         ]}]))`;
       } else if (Object.keys(parsedPatternProperties).length > 1) {
         patternProperties += `z.record(z.union([${Object.values(
-          parsedPatternProperties
+          parsedPatternProperties,
         )}]))`;
       } else {
         patternProperties += `z.record(${Object.values(
-          parsedPatternProperties
+          parsedPatternProperties,
         )})`;
       }
     }
@@ -105,7 +106,7 @@ export function parseObject(
     if (additionalProperties) {
       if (objectSchema.properties) {
         patternProperties += `let evaluated = [${Object.keys(
-          objectSchema.properties
+          objectSchema.properties,
         )
           .map((key) => JSON.stringify(key))
           .join(", ")}].includes(key)\n`;
@@ -165,7 +166,9 @@ export function parseObject(
     ? patternProperties
       ? properties + patternProperties
       : additionalProperties
-      ? properties + `.catchall(${additionalProperties})`
+      ? additionalProperties === "z.never()"
+        ? properties + ".strict()"
+        : properties + `.catchall(${additionalProperties})`
       : properties
     : patternProperties
     ? patternProperties
@@ -182,10 +185,10 @@ export function parseObject(
           !x.type &&
           (x.properties || x.additionalProperties || x.patternProperties)
             ? { ...x, type: "object" }
-            : x
-        ),
+            : x,
+        ) as any,
       },
-      refs
+      refs,
     )})`;
   }
 
@@ -198,10 +201,10 @@ export function parseObject(
           !x.type &&
           (x.properties || x.additionalProperties || x.patternProperties)
             ? { ...x, type: "object" }
-            : x
-        ),
+            : x,
+        ) as any,
       },
-      refs
+      refs,
     )})`;
   }
 
@@ -214,10 +217,10 @@ export function parseObject(
           !x.type &&
           (x.properties || x.additionalProperties || x.patternProperties)
             ? { ...x, type: "object" }
-            : x
-        ),
+            : x,
+        ) as any,
       },
-      refs
+      refs,
     )})`;
   }
 

@@ -12,19 +12,19 @@ import { parseIfThenElse } from "./parseIfThenElse";
 import { parseNumber } from "./parseNumber";
 import { parseObject } from "./parseObject";
 import { parseString } from "./parseString";
-import {
-  JSONSchema7,
-  JSONSchema7Definition,
-  JSONSchema7Type,
-  JSONSchema7TypeName,
-} from "json-schema";
 import { parseOneOf } from "./parseOneOf";
 import { parseNullable } from "./parseNullable";
-import { ParserSelector, Refs } from "../Types";
+import {
+  ParserSelector,
+  Refs,
+  JsonSchemaObject,
+  JsonSchema,
+  Serializable,
+} from "../Types";
 
 export const parseSchema = (
-  schema: JSONSchema7 | boolean,
-  refs: Refs = { seen: new Map(), path: [] }
+  schema: JsonSchema,
+  refs: Refs = { seen: new Map(), path: [] },
 ): string => {
   if (typeof schema !== "object") return schema ? "z.any()" : "z.never()";
 
@@ -66,7 +66,7 @@ export const parseSchema = (
   return parsed;
 };
 
-const addMeta = (schema: JSONSchema7, parsed: string): string => {
+const addMeta = (schema: JsonSchemaObject, parsed: string): string => {
   if (schema.description) {
     parsed += `.describe(${JSON.stringify(schema.description)})`;
   }
@@ -74,7 +74,7 @@ const addMeta = (schema: JSONSchema7, parsed: string): string => {
   return parsed;
 };
 
-const addDefaults = (schema: JSONSchema7, parsed: string): string => {
+const addDefaults = (schema: JsonSchemaObject, parsed: string): string => {
   if (schema.default !== undefined) {
     parsed += `.default(${JSON.stringify(schema.default)})`;
   }
@@ -123,58 +123,62 @@ const selectParser: ParserSelector = (schema, refs) => {
 
 export const its = {
   an: {
-    object: (x: JSONSchema7): x is JSONSchema7 & { type: "object" } =>
+    object: (x: JsonSchemaObject): x is JsonSchemaObject & { type: "object" } =>
       x.type === "object",
-    array: (x: JSONSchema7): x is JSONSchema7 & { type: "array" } =>
+    array: (x: JsonSchemaObject): x is JsonSchemaObject & { type: "array" } =>
       x.type === "array",
     anyOf: (
-      x: JSONSchema7
-    ): x is JSONSchema7 & {
-      anyOf: JSONSchema7Definition[];
+      x: JsonSchemaObject,
+    ): x is JsonSchemaObject & {
+      anyOf: JsonSchema[];
     } => x.anyOf !== undefined,
     allOf: (
-      x: JSONSchema7
-    ): x is JSONSchema7 & {
-      allOf: JSONSchema7Definition[];
+      x: JsonSchemaObject,
+    ): x is JsonSchemaObject & {
+      allOf: JsonSchema[];
     } => x.allOf !== undefined,
     enum: (
-      x: JSONSchema7
-    ): x is JSONSchema7 & {
-      enum: JSONSchema7Type | JSONSchema7Type[];
+      x: JsonSchemaObject,
+    ): x is JsonSchemaObject & {
+      enum: Serializable | Serializable[];
     } => x.enum !== undefined,
   },
   a: {
-    nullable: (x: JSONSchema7): x is JSONSchema7 & { nullable: true } =>
+    nullable: (
+      x: JsonSchemaObject,
+    ): x is JsonSchemaObject & { nullable: true } =>
       (x as any).nullable === true,
     multipleType: (
-      x: JSONSchema7
-    ): x is JSONSchema7 & { type: JSONSchema7TypeName[] } =>
-      Array.isArray(x.type),
+      x: JsonSchemaObject,
+    ): x is JsonSchemaObject & { type: string[] } => Array.isArray(x.type),
     not: (
-      x: JSONSchema7
-    ): x is JSONSchema7 & {
-      not: JSONSchema7Definition;
+      x: JsonSchemaObject,
+    ): x is JsonSchemaObject & {
+      not: JsonSchema;
     } => x.not !== undefined,
     const: (
-      x: JSONSchema7
-    ): x is JSONSchema7 & {
-      const: JSONSchema7Type;
+      x: JsonSchemaObject,
+    ): x is JsonSchemaObject & {
+      const: Serializable;
     } => x.const !== undefined,
     primitive: <T extends "string" | "number" | "integer" | "boolean" | "null">(
-      x: JSONSchema7,
-      p: T
-    ): x is JSONSchema7 & { type: T } => x.type === p,
+      x: JsonSchemaObject,
+      p: T,
+    ): x is JsonSchemaObject & { type: T } => x.type === p,
     conditional: (
-      x: JSONSchema7
-    ): x is JSONSchema7 & {
-      if: JSONSchema7Definition;
-      then: JSONSchema7Definition;
-      else: JSONSchema7Definition;
-    } => Boolean(x.if && x.then && x.else),
+      x: JsonSchemaObject,
+    ): x is JsonSchemaObject & {
+      if: JsonSchema;
+      then: JsonSchema;
+      else: JsonSchema;
+    } =>
+      Boolean(
+        "if" in x && x.if && "then" in x && "else" in x && x.then && x.else,
+      ),
     oneOf: (
-      x: JSONSchema7
-    ): x is JSONSchema7 & {
-      oneOf: JSONSchema7Definition[];
+      x: JsonSchemaObject,
+    ): x is JsonSchemaObject & {
+      oneOf: JsonSchema[];
     } => x.oneOf !== undefined,
   },
 };

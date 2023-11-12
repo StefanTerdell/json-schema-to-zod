@@ -1,18 +1,17 @@
-import { JSONSchema7, JSONSchema7Definition } from "json-schema";
 import { parseSchema } from "./parseSchema";
 import { half } from "../utils/half";
-import { Refs } from "../Types";
+import { JsonSchemaObject, JsonSchema, Refs } from "../Types";
 
 const originalIndex = Symbol("Original index");
 
-const ensureOriginalIndex = (arr: JSONSchema7Definition[]) => {
+const ensureOriginalIndex = (arr: JsonSchema[]) => {
   let newArr = [];
 
   for (let i = 0; i < arr.length; i++) {
     const item = arr[i];
     if (typeof item === "boolean") {
       newArr.push(
-        item ? { [originalIndex]: i } : { [originalIndex]: i, not: {} }
+        item ? { [originalIndex]: i } : { [originalIndex]: i, not: {} },
       );
     } else if (originalIndex in item) {
       return arr;
@@ -25,33 +24,33 @@ const ensureOriginalIndex = (arr: JSONSchema7Definition[]) => {
 };
 
 export function parseAllOf(
-  schema: JSONSchema7 & { allOf: JSONSchema7Definition[] },
-  refs: Refs
+  schema: JsonSchemaObject & { allOf: JsonSchema[] },
+  refs: Refs,
 ): string {
   if (schema.allOf.length === 0) {
     return "z.never()";
   } else if (schema.allOf.length === 1) {
-    const item = schema.allOf[0]
-      // typeof schema.allOf[0] === "boolean"
-      //   ? schema.allOf[0]
-      //     ? { [originalIndex]: 0 }
-      //     : { [originalIndex]: 0, not: {} }
-      //   : originalIndex in schema.allOf[0]
-      //   ? schema.allOf[0]
-      //   : { ...schema.allOf[0], [originalIndex]: 0 };
+    const item = schema.allOf[0];
+    // typeof schema.allOf[0] === "boolean"
+    //   ? schema.allOf[0]
+    //     ? { [originalIndex]: 0 }
+    //     : { [originalIndex]: 0, not: {} }
+    //   : originalIndex in schema.allOf[0]
+    //   ? schema.allOf[0]
+    //   : { ...schema.allOf[0], [originalIndex]: 0 };
 
     return parseSchema(item, {
       ...refs,
       path: [...refs.path, "allOf", (item as any)[originalIndex]],
     });
   } else {
-    const [left, right] = half(ensureOriginalIndex(schema.allOf));
+    const [left, right] = half(ensureOriginalIndex(schema.allOf)) as any;
 
     return `z.intersection(${parseAllOf({ allOf: left }, refs)},${parseAllOf(
       {
         allOf: right,
       },
-      refs
+      refs,
     )})`;
   }
 }

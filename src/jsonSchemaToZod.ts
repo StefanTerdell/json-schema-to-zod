@@ -1,23 +1,30 @@
 import { JsonRefsOptions, resolveRefs } from "json-refs";
-import { JSONSchema7 } from "json-schema";
-import { Options } from "./Types";
+import { Options, JsonSchema } from "./Types";
 import { parseSchema } from "./parsers/parseSchema";
 import { format } from "./utils/format";
 
-export const jsonSchemaToZodDereffed = (
-  schema: JSONSchema7,
-  options?: Options & { jsonRefsOptions?: JsonRefsOptions }
+export const jsonSchemaToZodDereffed = async (
+  schema: JsonSchema,
+  options?: Options & { jsonRefsOptions?: JsonRefsOptions },
 ): Promise<string> => {
-  return resolveRefs(
-    schema,
-    options?.jsonRefsOptions ??
-      (options?.recursionDepth ? { resolveCirculars: true } : undefined)
-  ).then(({ resolved }) => jsonSchemaToZod(resolved as JSONSchema7, options));
+  if (typeof schema === "boolean") {
+    return jsonSchemaToZod(schema, options);
+  }
+
+  schema = (
+    await resolveRefs(
+      schema,
+      options?.jsonRefsOptions ??
+        (options?.recursionDepth ? { resolveCirculars: true } : undefined),
+    )
+  ).resolved;
+
+  return jsonSchemaToZod(schema, options);
 };
 
 export const jsonSchemaToZod = (
-  schema: JSONSchema7,
-  { module = true, name, ...rest }: Options = {}
+  schema: JsonSchema,
+  { module = true, name, ...rest }: Options = {},
 ): string => {
   let result = parseSchema(schema, {
     module,
