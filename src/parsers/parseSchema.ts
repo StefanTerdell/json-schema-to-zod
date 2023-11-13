@@ -1,26 +1,26 @@
-import { parseAnyOf } from "./parseAnyOf";
-import { parseBoolean } from "./parseBoolean";
-import { parseDefault } from "./parseDefault";
-import { parseMultipleType } from "./parseMultipleType";
-import { parseNot } from "./parseNot";
-import { parseNull } from "./parseNull";
-import { parseAllOf } from "./parseAllOf";
-import { parseArray } from "./parseArray";
-import { parseConst } from "./parseConst";
-import { parseEnum } from "./parseEnum";
-import { parseIfThenElse } from "./parseIfThenElse";
-import { parseNumber } from "./parseNumber";
-import { parseObject } from "./parseObject";
-import { parseString } from "./parseString";
-import { parseOneOf } from "./parseOneOf";
-import { parseNullable } from "./parseNullable";
+import { parseAnyOf } from "./parseAnyOf.js";
+import { parseBoolean } from "./parseBoolean.js";
+import { parseDefault } from "./parseDefault.js";
+import { parseMultipleType } from "./parseMultipleType.js";
+import { parseNot } from "./parseNot.js";
+import { parseNull } from "./parseNull.js";
+import { parseAllOf } from "./parseAllOf.js";
+import { parseArray } from "./parseArray.js";
+import { parseConst } from "./parseConst.js";
+import { parseEnum } from "./parseEnum.js";
+import { parseIfThenElse } from "./parseIfThenElse.js";
+import { parseNumber } from "./parseNumber.js";
+import { parseObject } from "./parseObject.js";
+import { parseString } from "./parseString.js";
+import { parseOneOf } from "./parseOneOf.js";
+import { parseNullable } from "./parseNullable.js";
 import {
   ParserSelector,
   Refs,
   JsonSchemaObject,
   JsonSchema,
   Serializable,
-} from "../Types";
+} from "../Types.js";
 
 export const parseSchema = (
   schema: JsonSchema,

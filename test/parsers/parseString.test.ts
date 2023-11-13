@@ -1,6 +1,7 @@
 import { parseString } from "../../src/parsers/parseString";
+import { suite } from "../suite";
 
-describe("parseString", () => {
+suite("parseString", (test) => {
   const run = (output: string, data: unknown) =>
     eval(
       `const {z} = require("zod"); ${output}.safeParse(${JSON.stringify(
@@ -8,16 +9,17 @@ describe("parseString", () => {
       )})`,
     );
 
-  test("DateTime format", () => {
+  test("DateTime format", (assert) => {
     const datetime = "2018-11-13T20:20:39Z";
 
-    expect(
+    assert(
       run(parseString({ type: "string", format: "date-time" }), datetime),
-    ).toStrictEqual({ success: true, data: datetime });
+      { success: true, data: datetime },
+    );
   });
 
-  it("should accept errorMessage", () => {
-    expect(
+  test("should accept errorMessage", (assert) => {
+    assert(
       parseString({
         type: "string",
         format: "ipv4",
@@ -31,7 +33,6 @@ describe("parseString", () => {
           maxLength: "nuts",
         },
       }),
-    ).toStrictEqual(
       'z.string().ip({ version: "v4", message: "ayy" }).regex(new RegExp("x"), "lmao").min(1, "deez").max(2, "nuts")',
     );
   });

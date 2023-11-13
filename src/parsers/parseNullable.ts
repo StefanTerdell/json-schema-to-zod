@@ -1,6 +1,6 @@
-import { JsonSchemaObject, Refs } from "../Types";
-import { omit } from "../utils/omit";
-import { parseSchema } from "./parseSchema";
+import { JsonSchemaObject, Refs } from "../Types.js";
+import { omit } from "../utils/omit.js";
+import { parseSchema } from "./parseSchema.js";
 
 /**
  * For compatibility with open api 3.0 nullable

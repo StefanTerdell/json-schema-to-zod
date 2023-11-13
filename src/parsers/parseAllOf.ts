@@ -1,6 +1,6 @@
-import { parseSchema } from "./parseSchema";
-import { half } from "../utils/half";
-import { JsonSchemaObject, JsonSchema, Refs } from "../Types";
+import { parseSchema } from "./parseSchema.js";
+import { half } from "../utils/half.js";
+import { JsonSchemaObject, JsonSchema, Refs } from "../Types.js";
 
 const originalIndex = Symbol("Original index");
 

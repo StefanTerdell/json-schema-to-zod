@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-import { jsonSchemaToZod } from "./jsonSchemaToZod";
+import { jsonSchemaToZod } from "./jsonSchemaToZod.js";
 import { writeFileSync, mkdirSync } from "fs";
 import { dirname } from "path";
-import { type Param, parseArgs, parseOrReadJSON, readPipe } from "./args";
+import { type Param, parseArgs, parseOrReadJSON, readPipe } from "./args.js";
 
 const params: Param[] = [
   {
@@ -39,11 +39,6 @@ const params: Param[] = [
     short: "m",
     value: ["esm", "cjs"],
     description: "Force module syntax ('esm' or 'cjs')",
-  },
-  {
-    name: "help",
-    short: "h",
-    description: "Display this message :)",
   },
 ];
 

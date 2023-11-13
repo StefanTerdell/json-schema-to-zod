@@ -1,8 +1,9 @@
 import { parseOneOf } from "../../src/parsers/parseOneOf";
+import { suite } from "../suite";
 
-describe("parseOneOf", () => {
-  it("should create a union from two or more schemas", () => {
-    expect(
+suite("parseOneOf", (test) => {
+  test("should create a union from two or more schemas", (assert) => {
+    assert(
       parseOneOf(
         {
           oneOf: [
@@ -14,7 +15,7 @@ describe("parseOneOf", () => {
         },
         { module: false, path: [], seen: new Map() },
       ),
-    ).toStrictEqual(`z.any().superRefine((x, ctx) => {
+      `z.any().superRefine((x, ctx) => {
     const schemas = [z.string(), z.number()];
     const errors = schemas.reduce(
       (errors: z.ZodError[], schema) =>
@@ -31,21 +32,24 @@ describe("parseOneOf", () => {
         message: "Invalid input: Should pass single schema",
       });
     }
-  })`);
+  })`,
+    );
   });
 
-  it("should extract a single schema", () => {
-    expect(
+  test("should extract a single schema", (assert) => {
+    assert(
       parseOneOf(
         { oneOf: [{ type: "string" }] },
         { module: false, path: [], seen: new Map() },
       ),
-    ).toStrictEqual("z.string()");
+      "z.string()",
+    );
   });
 
-  it("should return z.any() if array is empty", () => {
-    expect(
+  test("should return z.any() if array is empty", (assert) => {
+    assert(
       parseOneOf({ oneOf: [] }, { module: false, path: [], seen: new Map() }),
-    ).toStrictEqual("z.any()");
+      "z.any()",
+    );
   });
 });

@@ -1,7 +1,8 @@
 import { parseSchema } from "../../src";
+import { suite } from "../suite";
 
-describe("parseSchema", () => {
-  it("should be usable without providing refs", () => {
-    expect(parseSchema({ type: "string" })).toStrictEqual("z.string()");
+suite("parseSchema", (test) => {
+  test("should be usable without providing refs", (assert) => {
+    assert(parseSchema({ type: "string" }), "z.string()");
   });
 });

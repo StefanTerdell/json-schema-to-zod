@@ -1,5 +1,5 @@
-import { Options, JsonSchema } from "./Types";
-import { parseSchema } from "./parsers/parseSchema";
+import { Options, JsonSchema } from "./Types.js";
+import { parseSchema } from "./parsers/parseSchema.js";
 
 export const jsonSchemaToZod = (
   schema: JsonSchema,

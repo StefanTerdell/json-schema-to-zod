@@ -1,4 +1,4 @@
-import { JsonSchemaObject, Serializable } from "../Types";
+import { JsonSchemaObject, Serializable } from "../Types.js";
 
 export const parseConst = (
   schema: JsonSchemaObject & { const: Serializable },

@@ -1,5 +1,5 @@
-import { JsonSchemaObject, Refs } from "../Types";
-import { parseSchema } from "./parseSchema";
+import { JsonSchemaObject, Refs } from "../Types.js";
+import { parseSchema } from "./parseSchema.js";
 
 export const parseMultipleType = (
   schema: JsonSchemaObject & { type: string[] },

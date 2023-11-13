@@ -1,146 +1,149 @@
 import { JSONSchema7 } from "json-schema";
 import { ZodError } from "zod";
 import { parseObject } from "../../src/parsers/parseObject";
+import { suite } from "../suite";
 
-describe("parseObject", () => {
-  describe("With properties", () => {
-    it("should handle optional and required properties", () => {
-      expect(
-        parseObject(
-          {
-            type: "object",
-            required: ["myRequiredString"],
-            properties: {
-              myOptionalString: {
-                type: "string",
-              },
-              myRequiredString: {
-                type: "string",
-              },
-            },
-          },
-          { module: false, path: [], seen: new Map() },
-        ),
-      ).toStrictEqual(
-        'z.object({ "myOptionalString": z.string().optional(), "myRequiredString": z.string() })',
-      );
-    });
-
-    it("should handle additionalProperties when set to false", () => {
-      expect(
-        parseObject(
-          {
-            type: "object",
-            required: ["myString"],
-            properties: {
-              myString: {
-                type: "string",
-              },
-            },
-            additionalProperties: false,
-          },
-          { module: false, path: [], seen: new Map() },
-        ),
-      ).toStrictEqual('z.object({ "myString": z.string() }).strict()');
-    });
-
-    it("should handle additionalProperties when set to true", () => {
-      expect(
-        parseObject(
-          {
-            type: "object",
-            required: ["myString"],
-            properties: {
-              myString: {
-                type: "string",
-              },
-            },
-            additionalProperties: true,
-          },
-          { module: false, path: [], seen: new Map() },
-        ),
-      ).toStrictEqual('z.object({ "myString": z.string() }).catchall(z.any())');
-    });
-
-    it("should handle additionalProperties when provided a schema", () => {
-      expect(
-        parseObject(
-          {
-            type: "object",
-            required: ["myString"],
-            properties: {
-              myString: {
-                type: "string",
-              },
-            },
-            additionalProperties: { type: "number" },
-          },
-          { module: false, path: [], seen: new Map() },
-        ),
-      ).toStrictEqual(
-        'z.object({ "myString": z.string() }).catchall(z.number())',
-      );
-    });
-  });
-
-  describe("Without properties", () => {
-    it("should handle additionalProperties when set to false", () => {
-      expect(
-        parseObject(
-          {
-            type: "object",
-            additionalProperties: false,
-          },
-          { module: false, path: [], seen: new Map() },
-        ),
-      ).toStrictEqual("z.record(z.never())");
-    });
-
-    it("should handle additionalProperties when set to true", () => {
-      expect(
-        parseObject(
-          {
-            type: "object",
-            additionalProperties: true,
-          },
-          { module: false, path: [], seen: new Map() },
-        ),
-      ).toStrictEqual("z.record(z.any())");
-    });
-
-    it("should handle additionalProperties when provided a schema", () => {
-      expect(
-        parseObject(
-          {
-            type: "object",
-            additionalProperties: { type: "number" },
-          },
-
-          { module: false, path: [], seen: new Map() },
-        ),
-      ).toStrictEqual("z.record(z.number())");
-    });
-
-    it("should include falsy defaults", () => {
-      expect(
-        parseObject(
-          {
-            type: "object",
-            properties: {
-              s: {
-                type: "string",
-                default: "",
-              },
-            },
-          },
-          { module: false, path: [], seen: new Map() },
-        ),
-      ).toStrictEqual(`z.object({ "s": z.string().default("") })`);
-    });
-  });
-
-  describe("with nested unions", () => {
+suite("parseObject", (test) => {
+  test("With properties - should handle optional and required properties", (expect) => {
     expect(
+      parseObject(
+        {
+          type: "object",
+          required: ["myRequiredString"],
+          properties: {
+            myOptionalString: {
+              type: "string",
+            },
+            myRequiredString: {
+              type: "string",
+            },
+          },
+        },
+        { module: false, path: [], seen: new Map() },
+      ),
+
+      'z.object({ "myOptionalString": z.string().optional(), "myRequiredString": z.string() })',
+    );
+  });
+
+  test("With properties - should handle additionalProperties when set to false", (expect) => {
+    expect(
+      parseObject(
+        {
+          type: "object",
+          required: ["myString"],
+          properties: {
+            myString: {
+              type: "string",
+            },
+          },
+          additionalProperties: false,
+        },
+        { module: false, path: [], seen: new Map() },
+      ),
+      'z.object({ "myString": z.string() }).strict()',
+    );
+  });
+
+  test("With properties - should handle additionalProperties when set to true", (expect) => {
+    expect(
+      parseObject(
+        {
+          type: "object",
+          required: ["myString"],
+          properties: {
+            myString: {
+              type: "string",
+            },
+          },
+          additionalProperties: true,
+        },
+        { module: false, path: [], seen: new Map() },
+      ),
+      'z.object({ "myString": z.string() }).catchall(z.any())',
+    );
+  });
+
+  test("With properties - should handle additionalProperties when provided a schema", (expect) => {
+    expect(
+      parseObject(
+        {
+          type: "object",
+          required: ["myString"],
+          properties: {
+            myString: {
+              type: "string",
+            },
+          },
+          additionalProperties: { type: "number" },
+        },
+        { module: false, path: [], seen: new Map() },
+      ),
+
+      'z.object({ "myString": z.string() }).catchall(z.number())',
+    );
+  });
+
+  test("Without properties - should handle additionalProperties when set to false", (expect) => {
+    expect(
+      parseObject(
+        {
+          type: "object",
+          additionalProperties: false,
+        },
+        { module: false, path: [], seen: new Map() },
+      ),
+      "z.record(z.never())",
+    );
+  });
+
+  test("Without properties - should handle additionalProperties when set to true", (expect) => {
+    expect(
+      parseObject(
+        {
+          type: "object",
+          additionalProperties: true,
+        },
+        { module: false, path: [], seen: new Map() },
+      ),
+      "z.record(z.any())",
+    );
+  });
+
+  test("Without properties - should handle additionalProperties when provided a schema", (expect) => {
+    expect(
+      parseObject(
+        {
+          type: "object",
+          additionalProperties: { type: "number" },
+        },
+
+        { module: false, path: [], seen: new Map() },
+      ),
+      "z.record(z.number())",
+    );
+  });
+
+  test("Without properties - should include falsy defaults", (expect) => {
+    expect(
+      parseObject(
+        {
+          type: "object",
+          properties: {
+            s: {
+              type: "string",
+              default: "",
+            },
+          },
+        },
+        { module: false, path: [], seen: new Map() },
+      ),
+      `z.object({ "s": z.string().default("") })`,
+    );
+  });
+
+  test("eh", (assert) => {
+    assert(
       parseObject(
         {
           type: "object",
@@ -171,11 +174,11 @@ describe("parseObject", () => {
         },
         { module: false, path: [], seen: new Map() },
       ),
-    ).toStrictEqual(
+
       'z.object({ "a": z.string() }).and(z.union([z.object({ "b": z.string() }), z.object({ "c": z.string() })]))',
     );
 
-    expect(
+    assert(
       parseObject(
         {
           type: "object",
@@ -206,7 +209,7 @@ describe("parseObject", () => {
         },
         { module: false, path: [], seen: new Map() },
       ),
-    ).toStrictEqual(
+
       `z.object({ "a": z.string() }).and(z.any().superRefine((x, ctx) => {
     const schemas = [z.object({ "b": z.string() }), z.object({ "c": z.string() })];
     const errors = schemas.reduce(
@@ -227,7 +230,7 @@ describe("parseObject", () => {
   }))`,
     );
 
-    expect(
+    assert(
       parseObject(
         {
           type: "object",
@@ -258,153 +261,152 @@ describe("parseObject", () => {
         },
         { module: false, path: [], seen: new Map() },
       ),
-    ).toStrictEqual(
+
       'z.object({ "a": z.string() }).and(z.intersection(z.object({ "b": z.string() }), z.object({ "c": z.string() })))',
     );
   });
 
-  describe("functional tests", () => {
-    const run = (output: string, data: unknown) =>
-      eval(
-        `const {z} = require("zod"); ${output}.safeParse(${JSON.stringify(
-          data,
-        )})`,
-      );
+  const run = (output: string, data: unknown) =>
+    eval(
+      `const {z} = require("zod"); ${output}.safeParse(${JSON.stringify(
+        data,
+      )})`,
+    );
 
-    test("run", () => {
-      expect(run("z.string()", "hello")).toStrictEqual({
-        success: true,
-        data: "hello",
-      });
+  test("Funcional tests - run", (assert) => {
+    assert(run("z.string()", "hello"), {
+      success: true,
+      data: "hello",
+    });
+  });
+
+  test("Funcional tests - properties", (assert) => {
+    const schema: JSONSchema7 & { type: "object" } = {
+      type: "object",
+      required: ["a"],
+      properties: {
+        a: {
+          type: "string",
+        },
+        b: {
+          type: "number",
+        },
+      },
+    };
+
+    const expected =
+      'z.object({ "a": z.string(), "b": z.number().optional() })';
+
+    const result = parseObject(schema, { path: [], seen: new Map() });
+
+    assert(result, expected);
+
+    assert(run(result, { a: "hello" }), {
+      success: true,
+      data: {
+        a: "hello",
+      },
     });
 
-    test("properties", () => {
-      const schema: JSONSchema7 & { type: "object" } = {
-        type: "object",
-        required: ["a"],
-        properties: {
-          a: {
-            type: "string",
-          },
-          b: {
-            type: "number",
-          },
-        },
-      };
-
-      const expected =
-        'z.object({ "a": z.string(), "b": z.number().optional() })';
-
-      const result = parseObject(schema, { path: [], seen: new Map() });
-
-      expect(result).toStrictEqual(expected);
-
-      expect(run(result, { a: "hello" })).toStrictEqual({
-        success: true,
-        data: {
-          a: "hello",
-        },
-      });
-
-      expect(run(result, { a: "hello", b: 123 })).toStrictEqual({
-        success: true,
-        data: {
-          a: "hello",
-          b: 123,
-        },
-      });
-
-      expect(run(result, { b: "hello", x: true })).toStrictEqual({
-        success: false,
-        error: new ZodError([
-          {
-            code: "invalid_type",
-            expected: "string",
-            received: "undefined",
-            path: ["a"],
-            message: "Required",
-          },
-          {
-            code: "invalid_type",
-            expected: "number",
-            received: "string",
-            path: ["b"],
-            message: "Expected number, received string",
-          },
-        ]),
-      });
+    assert(run(result, { a: "hello", b: 123 }), {
+      success: true,
+      data: {
+        a: "hello",
+        b: 123,
+      },
     });
 
-    test("properties and additionalProperties", () => {
-      const schema: JSONSchema7 & { type: "object" } = {
-        type: "object",
-        required: ["a"],
-        properties: {
-          a: {
-            type: "string",
-          },
-          b: {
-            type: "number",
-          },
+    assert(run(result, { b: "hello", x: true }), {
+      success: false,
+      error: new ZodError([
+        {
+          code: "invalid_type",
+          expected: "string",
+          received: "undefined",
+          path: ["a"],
+          message: "Required",
         },
-        additionalProperties: { type: "boolean" },
-      };
-
-      const expected =
-        'z.object({ "a": z.string(), "b": z.number().optional() }).catchall(z.boolean())';
-
-      const result = parseObject(schema, { path: [], seen: new Map() });
-
-      expect(result).toStrictEqual(expected);
-
-      expect(run(result, { b: "hello", x: "true" })).toStrictEqual({
-        success: false,
-        error: new ZodError([
-          {
-            code: "invalid_type",
-            expected: "string",
-            received: "undefined",
-            path: ["a"],
-            message: "Required",
-          },
-          {
-            code: "invalid_type",
-            expected: "number",
-            received: "string",
-            path: ["b"],
-            message: "Expected number, received string",
-          },
-          {
-            code: "invalid_type",
-            expected: "boolean",
-            received: "string",
-            path: ["x"],
-            message: "Expected boolean, received string",
-          },
-        ]),
-      });
+        {
+          code: "invalid_type",
+          expected: "number",
+          received: "string",
+          path: ["b"],
+          message: "Expected number, received string",
+        },
+      ]),
     });
+  });
 
-    test("properties, additionalProperties and patternProperties", () => {
-      const schema: JSONSchema7 & { type: "object" } = {
-        type: "object",
-        required: ["a"],
-        properties: {
-          a: {
-            type: "string",
-          },
-          b: {
-            type: "number",
-          },
+  test("Funcional tests - properties and additionalProperties", (assert) => {
+    const schema: JSONSchema7 & { type: "object" } = {
+      type: "object",
+      required: ["a"],
+      properties: {
+        a: {
+          type: "string",
         },
-        additionalProperties: { type: "boolean" },
-        patternProperties: {
-          "\\.": { type: "array" },
-          "\\,": { type: "array", minItems: 1 },
+        b: {
+          type: "number",
         },
-      };
+      },
+      additionalProperties: { type: "boolean" },
+    };
 
-      const expected = `z.object({ "a": z.string(), "b": z.number().optional() }).catchall(z.union([z.array(z.any()), z.array(z.any()).min(1), z.boolean()])).superRefine((value, ctx) => {
+    const expected =
+      'z.object({ "a": z.string(), "b": z.number().optional() }).catchall(z.boolean())';
+
+    const result = parseObject(schema, { path: [], seen: new Map() });
+
+    assert(result, expected);
+
+    assert(run(result, { b: "hello", x: "true" }), {
+      success: false,
+      error: new ZodError([
+        {
+          code: "invalid_type",
+          expected: "string",
+          received: "undefined",
+          path: ["a"],
+          message: "Required",
+        },
+        {
+          code: "invalid_type",
+          expected: "number",
+          received: "string",
+          path: ["b"],
+          message: "Expected number, received string",
+        },
+        {
+          code: "invalid_type",
+          expected: "boolean",
+          received: "string",
+          path: ["x"],
+          message: "Expected boolean, received string",
+        },
+      ]),
+    });
+  });
+
+  test("Funcional tests - properties, additionalProperties and patternProperties", (assert) => {
+    const schema: JSONSchema7 & { type: "object" } = {
+      type: "object",
+      required: ["a"],
+      properties: {
+        a: {
+          type: "string",
+        },
+        b: {
+          type: "number",
+        },
+      },
+      additionalProperties: { type: "boolean" },
+      patternProperties: {
+        "\\.": { type: "array" },
+        "\\,": { type: "array", minItems: 1 },
+      },
+    };
+
+    const expected = `z.object({ "a": z.string(), "b": z.number().optional() }).catchall(z.union([z.array(z.any()), z.array(z.any()).min(1), z.boolean()])).superRefine((value, ctx) => {
 for (const key in value) {
 let evaluated = ["a", "b"].includes(key)
 if (key.match(new RegExp("\\\\."))) {
@@ -451,35 +453,35 @@ ctx.addIssue({
 }
 })`;
 
-      const result = parseObject(schema, { path: [], seen: new Map() });
+    const result = parseObject(schema, { path: [], seen: new Map() });
 
-      expect(result).toStrictEqual(expected);
-    });
+    assert(result, expected);
+  });
 
-    test("additionalProperties", () => {
-      const schema: JSONSchema7 & { type: "object" } = {
-        type: "object",
-        additionalProperties: { type: "boolean" },
-      };
+  test("Funcional tests - additionalProperties", (assert) => {
+    const schema: JSONSchema7 & { type: "object" } = {
+      type: "object",
+      additionalProperties: { type: "boolean" },
+    };
 
-      const expected = "z.record(z.boolean())";
+    const expected = "z.record(z.boolean())";
 
-      const result = parseObject(schema, { path: [], seen: new Map() });
+    const result = parseObject(schema, { path: [], seen: new Map() });
 
-      expect(result).toStrictEqual(expected);
-    });
+    assert(result, expected);
+  });
 
-    test("additionalProperties and patternProperties", () => {
-      const schema: JSONSchema7 & { type: "object" } = {
-        type: "object",
-        additionalProperties: { type: "boolean" },
-        patternProperties: {
-          "\\.": { type: "array" },
-          "\\,": { type: "array", minItems: 1 },
-        },
-      };
+  test("Funcional tests - additionalProperties and patternProperties", (assert) => {
+    const schema: JSONSchema7 & { type: "object" } = {
+      type: "object",
+      additionalProperties: { type: "boolean" },
+      patternProperties: {
+        "\\.": { type: "array" },
+        "\\,": { type: "array", minItems: 1 },
+      },
+    };
 
-      const expected = `z.record(z.union([z.array(z.any()), z.array(z.any()).min(1), z.boolean()])).superRefine((value, ctx) => {
+    const expected = `z.record(z.union([z.array(z.any()), z.array(z.any()).min(1), z.boolean()])).superRefine((value, ctx) => {
 for (const key in value) {
 let evaluated = false
 if (key.match(new RegExp(\"\\\\.\"))) {
@@ -526,45 +528,45 @@ ctx.addIssue({
 }
 })`;
 
-      const result = parseObject(schema, { path: [], seen: new Map() });
+    const result = parseObject(schema, { path: [], seen: new Map() });
 
-      expect(result).toStrictEqual(expected);
+    assert(result, expected);
 
-      expect(run(result, { x: true, ".": [], ",": [] })).toStrictEqual({
-        success: false,
-        error: new ZodError([
-          {
-            path: [","],
-            code: "custom",
-            message: "Invalid input: Key matching regex /,/ must match schema",
-            params: {
-              issues: [
-                {
-                  code: "too_small",
-                  minimum: 1,
-                  type: "array",
-                  inclusive: true,
-                  exact: false,
-                  message: "Array must contain at least 1 element(s)",
-                  path: [],
-                },
-              ],
-            },
+    assert(run(result, { x: true, ".": [], ",": [] }), {
+      success: false,
+      error: new ZodError([
+        {
+          path: [","],
+          code: "custom",
+          message: "Invalid input: Key matching regex /,/ must match schema",
+          params: {
+            issues: [
+              {
+                code: "too_small",
+                minimum: 1,
+                type: "array",
+                inclusive: true,
+                exact: false,
+                message: "Array must contain at least 1 element(s)",
+                path: [],
+              },
+            ],
           },
-        ]),
-      });
-    });
-
-    test("patternProperties", () => {
-      const schema: JSONSchema7 & { type: "object" } = {
-        type: "object",
-        patternProperties: {
-          "\\.": { type: "array" },
-          "\\,": { type: "array", minItems: 1 },
         },
-      };
+      ]),
+    });
+  });
 
-      const expected = `z.record(z.union([z.array(z.any()), z.array(z.any()).min(1)])).superRefine((value, ctx) => {
+  test("Funcional tests - patternProperties", (assert) => {
+    const schema: JSONSchema7 & { type: "object" } = {
+      type: "object",
+      patternProperties: {
+        "\\.": { type: "array" },
+        "\\,": { type: "array", minItems: 1 },
+      },
+    };
+
+    const expected = `z.record(z.union([z.array(z.any()), z.array(z.any()).min(1)])).superRefine((value, ctx) => {
 for (const key in value) {
 if (key.match(new RegExp(\"\\\\.\"))) {
 const result = z.array(z.any()).safeParse(value[key])
@@ -595,59 +597,59 @@ ctx.addIssue({
 }
 })`;
 
-      const result = parseObject(schema, { path: [], seen: new Map() });
+    const result = parseObject(schema, { path: [], seen: new Map() });
 
-      expect(run(result, { ".": [] })).toStrictEqual({
-        success: true,
-        data: { ".": [] },
-      });
-
-      expect(run(result, { ",": [] })).toStrictEqual({
-        success: false,
-        error: new ZodError([
-          {
-            path: [","],
-            code: "custom",
-            message: "Invalid input: Key matching regex /,/ must match schema",
-            params: {
-              issues: [
-                {
-                  code: "too_small",
-                  minimum: 1,
-                  type: "array",
-                  inclusive: true,
-                  exact: false,
-                  message: "Array must contain at least 1 element(s)",
-                  path: [],
-                },
-              ],
-            },
-          },
-        ]),
-      });
-
-      expect(result).toStrictEqual(expected);
+    assert(run(result, { ".": [] }), {
+      success: true,
+      data: { ".": [] },
     });
 
-    test("patternProperties and properties", () => {
-      const schema: JSONSchema7 & { type: "object" } = {
-        type: "object",
-        required: ["a"],
-        properties: {
-          a: {
-            type: "string",
-          },
-          b: {
-            type: "number",
+    assert(run(result, { ",": [] }), {
+      success: false,
+      error: new ZodError([
+        {
+          path: [","],
+          code: "custom",
+          message: "Invalid input: Key matching regex /,/ must match schema",
+          params: {
+            issues: [
+              {
+                code: "too_small",
+                minimum: 1,
+                type: "array",
+                inclusive: true,
+                exact: false,
+                message: "Array must contain at least 1 element(s)",
+                path: [],
+              },
+            ],
           },
         },
-        patternProperties: {
-          "\\.": { type: "array" },
-          "\\,": { type: "array", minItems: 1 },
-        },
-      };
+      ]),
+    });
 
-      const expected = `z.object({ "a": z.string(), "b": z.number().optional() }).catchall(z.union([z.array(z.any()), z.array(z.any()).min(1)])).superRefine((value, ctx) => {
+    assert(result, expected);
+  });
+
+  test("Funcional tests - patternProperties and properties", (assert) => {
+    const schema: JSONSchema7 & { type: "object" } = {
+      type: "object",
+      required: ["a"],
+      properties: {
+        a: {
+          type: "string",
+        },
+        b: {
+          type: "number",
+        },
+      },
+      patternProperties: {
+        "\\.": { type: "array" },
+        "\\,": { type: "array", minItems: 1 },
+      },
+    };
+
+    const expected = `z.object({ "a": z.string(), "b": z.number().optional() }).catchall(z.union([z.array(z.any()), z.array(z.any()).min(1)])).superRefine((value, ctx) => {
 for (const key in value) {
 if (key.match(new RegExp(\"\\\\.\"))) {
 const result = z.array(z.any()).safeParse(value[key])
@@ -678,9 +680,8 @@ ctx.addIssue({
 }
 })`;
 
-      const result = parseObject(schema, { path: [], seen: new Map() });
+    const result = parseObject(schema, { path: [], seen: new Map() });
 
-      expect(result).toStrictEqual(expected);
-    });
+    assert(result, expected);
   });
 });

@@ -1,8 +1,9 @@
 import { parseNumber } from "../../src/parsers/parseNumber";
+import { suite } from "../suite";
 
-describe("parseNumber", () => {
-  it("should accept errorMessage", () => {
-    expect(
+suite("parseNumber", (test) => {
+  test("should accept errorMessage", (assert) => {
+    assert(
       parseNumber({
         type: "number",
         format: "int64",
@@ -16,7 +17,7 @@ describe("parseNumber", () => {
           maximum: "nuts",
         },
       }),
-    ).toStrictEqual(
+
       'z.number().int("ayy").multipleOf(2, "lmao").gt(0, "deez").lte(2, "nuts")',
     );
   });

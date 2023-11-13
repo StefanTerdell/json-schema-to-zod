@@ -16,8 +16,8 @@
     "build:esm": "tsc -p tsconfig.esm.json && echo {\"type\":\"module\"} > dist/esm/package.json",
     "build": "npm i && npm test && rimraf ./dist && npm run build:types && npm run build:cjs && npm run build:esm",
     "dry": "npm run build && npm pub --dry-run",
-    "dev": "jest --watch",
-    "test": "jest"
+    "dev": "tsx watch test/index.ts",
+    "test": "tsx test/index.ts"
   },
   "keywords": [
     "zod",
@@ -42,13 +42,10 @@
     "url": "https://github.com/StefanTerdell/json-schema-to-zod"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.8",
     "@types/json-schema": "^7.0.15",
     "@types/node": "^20.9.0",
-    "@types/prettier": "^2.4.1",
-    "jest": "^29.7.0",
     "rimraf": "^5.0.5",
-    "ts-jest": "^29.1.1",
+    "tsx": "^4.1.1",
     "typescript": "^5.2.2",
     "zod": "^3.22.4"
   }

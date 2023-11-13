@@ -48,10 +48,7 @@ Since v2 the CLI supports piped JSON.
 `jsonSchemaToZod` will output the full module code, including a Zod import. If you only need the Zod schema itself, try one of the parsers directly. If you need to deref your JSON schema, try using `json-refs` `resolve` function before passing in the schema.
 
 ```typescript
-import {
-  jsonSchemaToZod,
-  parseSchema,
-} from "json-schema-to-zod";
+import { jsonSchemaToZod, parseSchema } from "json-schema-to-zod";
 
 const myObject = {
   type: "object",

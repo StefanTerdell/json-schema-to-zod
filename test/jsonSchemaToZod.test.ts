@@ -4,65 +4,70 @@ import {
   JSONSchema7Definition,
 } from "json-schema";
 import jsonSchemaToZod from "../src";
+import { suite } from "./suite";
 
-describe("jsonSchemaToZod", () => {
-  it("should accept json schema 7 and 4", () => {
+suite("jsonSchemaToZod", (test) => {
+  test("should accept json schema 7 and 4", (assert) => {
     const schema = { type: "string" } as unknown;
 
-    expect(jsonSchemaToZod(schema as JSONSchema4));
-    expect(jsonSchemaToZod(schema as JSONSchema6Definition));
-    expect(jsonSchemaToZod(schema as JSONSchema7Definition));
+    assert(jsonSchemaToZod(schema as JSONSchema4));
+    assert(jsonSchemaToZod(schema as JSONSchema6Definition));
+    assert(jsonSchemaToZod(schema as JSONSchema7Definition));
   });
 
-  it("should produce a string of JS code creating a Zod schema from a simple JSON schema", () => {
-    expect(
+  test("should produce a string of JS code creating a Zod schema from a simple JSON schema", (assert) => {
+    assert(
       jsonSchemaToZod({
         type: "string",
       }),
-    ).toStrictEqual(`import { z } from "zod"
+      `import { z } from "zod"
 
 export default z.string()
-`);
+`,
+    );
   });
 
-  it("should include defaults", () => {
-    expect(
+  test("should include defaults", (assert) => {
+    assert(
       jsonSchemaToZod({
         type: "string",
         default: "foo",
       }),
-    ).toStrictEqual(`import { z } from "zod"
+      `import { z } from "zod"
 
 export default z.string().default("foo")
-`);
+`,
+    );
   });
 
-  it("should include falsy defaults", () => {
-    expect(
+  test("should include falsy defaults", (assert) => {
+    assert(
       jsonSchemaToZod({
         type: "string",
         default: "",
       }),
-    ).toStrictEqual(`import { z } from "zod"
+      `import { z } from "zod"
 
 export default z.string().default("")
-`);
+`,
+    );
   });
 
-  it("should include falsy defaults", () => {
-    expect(
+  test("should include falsy defaults", (assert) => {
+    assert(
       jsonSchemaToZod({
         type: "string",
         const: "",
       }),
-    ).toStrictEqual(`import { z } from "zod"
+      `import { z } from "zod"
 
 export default z.literal("")
-`);
+`,
+    );
   });
 
-  it("can exclude defaults", () => {
-    expect(
+  test("can exclude defaults", (assert) => {
+    assert(
       jsonSchemaToZod(
         {
           type: "string",
@@ -70,14 +75,15 @@ export default z.literal("")
         },
         { module: true, withoutDefaults: true },
       ),
-    ).toStrictEqual(`import { z } from "zod"
+      `import { z } from "zod"
 
 export default z.string()
-`);
+`,
+    );
   });
 
-  it("will remove optionality if default is present", () => {
-    expect(
+  test("will remove optionality if default is present", (assert) => {
+    assert(
       jsonSchemaToZod({
         type: "object",
         properties: {
@@ -87,14 +93,15 @@ export default z.string()
           },
         },
       }),
-    ).toStrictEqual(`import { z } from "zod"
+      `import { z } from "zod"
 
 export default z.object({ "prop": z.string().default("def") })
-`);
+`,
+    );
   });
 
-  it("will handle falsy defaults", () => {
-    expect(
+  test("will handle falsy defaults", (assert) => {
+    assert(
       jsonSchemaToZod(
         {
           type: "boolean",
@@ -102,26 +109,28 @@ export default z.object({ "prop": z.string().default("def") })
         },
         { module: true },
       ),
-    ).toStrictEqual(`import { z } from "zod"
+      `import { z } from "zod"
 
 export default z.boolean().default(false)
-`);
+`,
+    );
   });
 
-  it("will ignore undefined as default", () => {
-    expect(
+  test("will ignore undefined as default", (assert) => {
+    assert(
       jsonSchemaToZod({
         type: "null",
         default: undefined,
       }),
-    ).toStrictEqual(`import { z } from "zod"
+      `import { z } from "zod"
 
 export default z.null()
-`);
+`,
+    );
   });
 
-  it("should be possible to define a custom parser", () => {
-    expect(
+  test("should be possible to define a custom parser", (assert) => {
+    assert(
       jsonSchemaToZod(
         {
           allOf: [
@@ -145,7 +154,7 @@ export default z.null()
           },
         },
       ),
-    ).toStrictEqual(
+
       `const schema = z.intersection(z.string(), z.intersection(z.number(), myCustomZodSchema))`,
     );
   });

@@ -1,8 +1,8 @@
-import { JsonSchemaObject, Refs } from "../Types";
-import { parseAnyOf } from "./parseAnyOf";
-import { parseOneOf } from "./parseOneOf";
-import { its, parseSchema } from "./parseSchema";
-import { parseAllOf } from "./parseAllOf";
+import { JsonSchemaObject, Refs } from "../Types.js";
+import { parseAnyOf } from "./parseAnyOf.js";
+import { parseOneOf } from "./parseOneOf.js";
+import { its, parseSchema } from "./parseSchema.js";
+import { parseAllOf } from "./parseAllOf.js";
 
 export function parseObject(
   objectSchema: JsonSchemaObject & { type: "object" },
