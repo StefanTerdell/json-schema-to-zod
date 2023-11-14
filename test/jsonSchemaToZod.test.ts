@@ -159,7 +159,7 @@ export default z.null()
         },
         {
           // module: false,
-          overrideParser: (schema, refs) => {
+          parserOverride: (schema, refs) => {
             if (
               refs.path.length === 2 &&
               refs.path[0] === "allOf" &&
