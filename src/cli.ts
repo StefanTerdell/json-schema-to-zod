@@ -45,7 +45,7 @@ const params: Param[] = [
 async function main() {
   const args = parseArgs(params, process.argv, {});
 
-  const input = (args.input as string) ?? (await readPipe());
+  const input = (args.input as string) || (await readPipe());
   const jsonSchema = parseOrReadJSON(input);
   const zodSchema = jsonSchemaToZod(jsonSchema as any, {
     module: args.module as "esm" | "cjs",
