@@ -41,14 +41,14 @@ Since v2 the CLI supports piped JSON.
 | `--output` | `-t`      | Target file name                                                                        |
 | `--name`   | `-n`      | The name of the schema in the output                                                    |
 | `--depth`  | `-d`      | Maximum depth of recursion in schema before falling back to `z.any()`. Defaults to 0. ` |
-| `--module` | `-m`      | Force module syntax (`"esm"` or `"cjs"`)                                                |
+| `--module` | `-m`      | Use module syntax (`"esm"` or `"cjs"`)                                                  |
 
 ### Programmatic
 
 `jsonSchemaToZod` will output the full module code, including a Zod import. If you only need the Zod schema itself, try one of the parsers directly. If you need to deref your JSON schema, try using `json-refs` `resolve` function before passing in the schema.
 
 ```typescript
-import { jsonSchemaToZod, parseSchema } from "json-schema-to-zod";
+import { jsonSchemaToZod } from "json-schema-to-zod";
 
 const myObject = {
   type: "object",
@@ -57,11 +57,13 @@ const myObject = {
       type: "string",
     },
   },
-} as const;
+};
 
-const module = jsonSchemaToZod(myObject);
+const module = jsonSchemaToZod(myObject, { module: "esm" });
 
-const schema = parseSchema(myObject);
+const cjs = jsonSchemaToZod(myObject, { module: "cjs", name: "mySchema" });
+
+const schema = jsonSchemaToZod(myObject);
 ```
 
 #### `module`
@@ -70,6 +72,14 @@ const schema = parseSchema(myObject);
 import { z } from "zod";
 
 export default z.object({ hello: z.string().optional() });
+```
+
+#### `cjs`
+
+```typescript
+const { z } = require("zod");
+
+module.exports = { mySchema: z.object({ hello: z.string().optional() }) };
 ```
 
 #### `schema`

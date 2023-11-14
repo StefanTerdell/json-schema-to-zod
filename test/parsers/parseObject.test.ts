@@ -19,7 +19,7 @@ suite("parseObject", (test) => {
             },
           },
         },
-        { module: false, path: [], seen: new Map() },
+        { path: [], seen: new Map() },
       ),
 
       'z.object({ "myOptionalString": z.string().optional(), "myRequiredString": z.string() })',
@@ -39,7 +39,7 @@ suite("parseObject", (test) => {
           },
           additionalProperties: false,
         },
-        { module: false, path: [], seen: new Map() },
+        { path: [], seen: new Map() },
       ),
       'z.object({ "myString": z.string() }).strict()',
     );
@@ -58,7 +58,7 @@ suite("parseObject", (test) => {
           },
           additionalProperties: true,
         },
-        { module: false, path: [], seen: new Map() },
+        { path: [], seen: new Map() },
       ),
       'z.object({ "myString": z.string() }).catchall(z.any())',
     );
@@ -77,7 +77,7 @@ suite("parseObject", (test) => {
           },
           additionalProperties: { type: "number" },
         },
-        { module: false, path: [], seen: new Map() },
+        { path: [], seen: new Map() },
       ),
 
       'z.object({ "myString": z.string() }).catchall(z.number())',
@@ -91,7 +91,7 @@ suite("parseObject", (test) => {
           type: "object",
           additionalProperties: false,
         },
-        { module: false, path: [], seen: new Map() },
+        { path: [], seen: new Map() },
       ),
       "z.record(z.never())",
     );
@@ -104,7 +104,7 @@ suite("parseObject", (test) => {
           type: "object",
           additionalProperties: true,
         },
-        { module: false, path: [], seen: new Map() },
+        { path: [], seen: new Map() },
       ),
       "z.record(z.any())",
     );
@@ -118,7 +118,7 @@ suite("parseObject", (test) => {
           additionalProperties: { type: "number" },
         },
 
-        { module: false, path: [], seen: new Map() },
+        { path: [], seen: new Map() },
       ),
       "z.record(z.number())",
     );
@@ -136,7 +136,7 @@ suite("parseObject", (test) => {
             },
           },
         },
-        { module: false, path: [], seen: new Map() },
+        { path: [], seen: new Map() },
       ),
       `z.object({ "s": z.string().default("") })`,
     );
@@ -172,7 +172,7 @@ suite("parseObject", (test) => {
             },
           ],
         },
-        { module: false, path: [], seen: new Map() },
+        { path: [], seen: new Map() },
       ),
 
       'z.object({ "a": z.string() }).and(z.union([z.object({ "b": z.string() }), z.object({ "c": z.string() })]))',
@@ -207,7 +207,7 @@ suite("parseObject", (test) => {
             },
           ],
         },
-        { module: false, path: [], seen: new Map() },
+        { path: [], seen: new Map() },
       ),
 
       `z.object({ "a": z.string() }).and(z.any().superRefine((x, ctx) => {
@@ -259,7 +259,7 @@ suite("parseObject", (test) => {
             },
           ],
         },
-        { module: false, path: [], seen: new Map() },
+        { path: [], seen: new Map() },
       ),
 
       'z.object({ "a": z.string() }).and(z.intersection(z.object({ "b": z.string() }), z.object({ "c": z.string() })))',

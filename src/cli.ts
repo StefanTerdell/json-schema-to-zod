@@ -3,6 +3,7 @@ import { jsonSchemaToZod } from "./jsonSchemaToZod.js";
 import { writeFileSync, mkdirSync } from "fs";
 import { dirname } from "path";
 import { type Param, parseArgs, parseOrReadJSON, readPipe } from "./args.js";
+import { JsonSchema } from "./Types.js";
 
 const params: Param[] = [
   {
@@ -32,30 +33,37 @@ const params: Param[] = [
     short: "d",
     value: "number",
     description:
-      "Maximum depth of recursion before falling back to z.any() - defaults to 0",
+      "Maximum depth of recursion before falling back to any (defaults to 0)",
   },
   {
     name: "module",
     short: "m",
-    value: ["esm", "cjs"],
-    description: "Force module syntax ('esm' or 'cjs')",
+    value: ["esm", "cjs", "none"],
+    description: "Module syntax ('esm', 'cjs' or 'none', defaults to 'esm')",
   },
 ];
 
 async function main() {
   const args = parseArgs(params, process.argv, {});
 
-  const input = (args.input as string) || (await readPipe());
+  const input = typeof args.input === "string" ? args.input : await readPipe();
+
   const jsonSchema = parseOrReadJSON(input);
-  const zodSchema = jsonSchemaToZod(jsonSchema as any, {
-    module: args.module as "esm" | "cjs",
-    name: args.name as string,
-    recursionDepth: args["recursion-depth"] as number,
+
+  const zodSchema = jsonSchemaToZod(jsonSchema as JsonSchema, {
+    module:
+      args.module === "none"
+        ? undefined
+        : args.module === "cjs"
+        ? "cjs"
+        : "esm",
+    name: typeof args.name === "string" ? args.name : undefined,
+    recursionDepth: typeof args.depth === "number" ? args.depth : undefined,
   });
 
-  if (args.output) {
-    mkdirSync(dirname(args.output as string), { recursive: true });
-    writeFileSync(args.output as string, zodSchema);
+  if (typeof args.output === "string") {
+    mkdirSync(dirname(args.output), { recursive: true });
+    writeFileSync(args.output, zodSchema);
   } else {
     console.log(zodSchema);
   }

@@ -65,7 +65,7 @@ export type ParserOverride = (
 
 export type Options = {
   name?: string;
-  module?: boolean | "cjs" | "esm";
+  module?: "cjs" | "esm";
   withoutDefaults?: boolean;
   overrideParser?: ParserOverride;
   recursionDepth?: number;

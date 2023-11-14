@@ -17,9 +17,12 @@ suite("jsonSchemaToZod", (test) => {
 
   test("should produce a string of JS code creating a Zod schema from a simple JSON schema", (assert) => {
     assert(
-      jsonSchemaToZod({
-        type: "string",
-      }),
+      jsonSchemaToZod(
+        {
+          type: "string",
+        },
+        { module: "esm" },
+      ),
       `import { z } from "zod"
 
 export default z.string()
@@ -29,10 +32,13 @@ export default z.string()
 
   test("should include defaults", (assert) => {
     assert(
-      jsonSchemaToZod({
-        type: "string",
-        default: "foo",
-      }),
+      jsonSchemaToZod(
+        {
+          type: "string",
+          default: "foo",
+        },
+        { module: "esm" },
+      ),
       `import { z } from "zod"
 
 export default z.string().default("foo")
@@ -42,10 +48,13 @@ export default z.string().default("foo")
 
   test("should include falsy defaults", (assert) => {
     assert(
-      jsonSchemaToZod({
-        type: "string",
-        default: "",
-      }),
+      jsonSchemaToZod(
+        {
+          type: "string",
+          default: "",
+        },
+        { module: "esm" },
+      ),
       `import { z } from "zod"
 
 export default z.string().default("")
@@ -55,10 +64,13 @@ export default z.string().default("")
 
   test("should include falsy defaults", (assert) => {
     assert(
-      jsonSchemaToZod({
-        type: "string",
-        const: "",
-      }),
+      jsonSchemaToZod(
+        {
+          type: "string",
+          const: "",
+        },
+        { module: "esm" },
+      ),
       `import { z } from "zod"
 
 export default z.literal("")
@@ -73,7 +85,7 @@ export default z.literal("")
           type: "string",
           default: "foo",
         },
-        { module: true, withoutDefaults: true },
+        { module: "esm", withoutDefaults: true },
       ),
       `import { z } from "zod"
 
@@ -84,15 +96,18 @@ export default z.string()
 
   test("will remove optionality if default is present", (assert) => {
     assert(
-      jsonSchemaToZod({
-        type: "object",
-        properties: {
-          prop: {
-            type: "string",
-            default: "def",
+      jsonSchemaToZod(
+        {
+          type: "object",
+          properties: {
+            prop: {
+              type: "string",
+              default: "def",
+            },
           },
         },
-      }),
+        { module: "esm" },
+      ),
       `import { z } from "zod"
 
 export default z.object({ "prop": z.string().default("def") })
@@ -107,7 +122,7 @@ export default z.object({ "prop": z.string().default("def") })
           type: "boolean",
           default: false,
         },
-        { module: true },
+        { module: "esm" },
       ),
       `import { z } from "zod"
 
@@ -118,10 +133,13 @@ export default z.boolean().default(false)
 
   test("will ignore undefined as default", (assert) => {
     assert(
-      jsonSchemaToZod({
-        type: "null",
-        default: undefined,
-      }),
+      jsonSchemaToZod(
+        {
+          type: "null",
+          default: undefined,
+        },
+        { module: "esm" },
+      ),
       `import { z } from "zod"
 
 export default z.null()
@@ -140,7 +158,7 @@ export default z.null()
           ],
         },
         {
-          module: false,
+          // module: false,
           overrideParser: (schema, refs) => {
             if (
               refs.path.length === 2 &&
@@ -155,7 +173,11 @@ export default z.null()
         },
       ),
 
-      `const schema = z.intersection(z.string(), z.intersection(z.number(), myCustomZodSchema))`,
+      `z.intersection(z.string(), z.intersection(z.number(), myCustomZodSchema))`,
     );
+  });
+
+  test("can exclude name", (assert) => {
+    assert(jsonSchemaToZod(true), "z.any()");
   });
 });

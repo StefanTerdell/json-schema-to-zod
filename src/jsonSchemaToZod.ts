@@ -3,7 +3,7 @@ import { parseSchema } from "./parsers/parseSchema.js";
 
 export const jsonSchemaToZod = (
   schema: JsonSchema,
-  { module = true, name, ...rest }: Options = {},
+  { module, name, ...rest }: Options = {},
 ): string => {
   let result = parseSchema(schema, {
     module,
@@ -13,20 +13,18 @@ export const jsonSchemaToZod = (
     ...rest,
   });
 
-  if (module) {
-    if (module === "cjs") {
-      result = `const { z } = require("zod")
+  if (module === "cjs") {
+    result = `const { z } = require("zod")
 
 module.exports = ${name ? `{ ${JSON.stringify(name)}: ${result} }` : result}
 `;
-    } else {
-      result = `import { z } from "zod"
+  } else if (module === "esm") {
+    result = `import { z } from "zod"
 
 export ${name ? `const ${name} =` : `default`} ${result}
 `;
-    }
-  } else {
-    result = `const ${name || "schema"} = ${result}`;
+  } else if (name) {
+    result = `const ${name} = ${result}`;
   }
 
   return result;

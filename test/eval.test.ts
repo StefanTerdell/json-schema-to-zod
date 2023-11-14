@@ -1,4 +1,4 @@
-import jsonSchemaToZod from "../src";
+import { jsonSchemaToZod } from "../src/jsonSchemaToZod.js";
 import { suite } from "./suite";
 
 suite("eval", (test) => {

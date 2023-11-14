@@ -13,7 +13,7 @@ suite("parseAnyOf", (test) => {
             { type: "number" },
           ],
         },
-        { module: false, path: [], seen: new Map() },
+        { path: [], seen: new Map() },
       ),
       "z.union([z.string(), z.number()])",
     );
@@ -23,16 +23,13 @@ suite("parseAnyOf", (test) => {
     assert(
       parseAnyOf(
         { anyOf: [{ type: "string" }] },
-        { module: false, path: [], seen: new Map() },
+        { path: [], seen: new Map() },
       ),
       "z.string()",
     );
   });
 
   test("should return z.any() if array is empty", (assert) => {
-    assert(
-      parseAnyOf({ anyOf: [] }, { module: false, path: [], seen: new Map() }),
-      "z.any()",
-    );
+    assert(parseAnyOf({ anyOf: [] }, { path: [], seen: new Map() }), "z.any()");
   });
 });

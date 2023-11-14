@@ -13,7 +13,7 @@ suite("parseOneOf", (test) => {
             { type: "number" },
           ],
         },
-        { module: false, path: [], seen: new Map() },
+        { path: [], seen: new Map() },
       ),
       `z.any().superRefine((x, ctx) => {
     const schemas = [z.string(), z.number()];
@@ -40,16 +40,13 @@ suite("parseOneOf", (test) => {
     assert(
       parseOneOf(
         { oneOf: [{ type: "string" }] },
-        { module: false, path: [], seen: new Map() },
+        { path: [], seen: new Map() },
       ),
       "z.string()",
     );
   });
 
   test("should return z.any() if array is empty", (assert) => {
-    assert(
-      parseOneOf({ oneOf: [] }, { module: false, path: [], seen: new Map() }),
-      "z.any()",
-    );
+    assert(parseOneOf({ oneOf: [] }, { path: [], seen: new Map() }), "z.any()");
   });
 });

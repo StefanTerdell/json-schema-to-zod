@@ -1,4 +1,4 @@
-import { parseSchema } from "../../src";
+import { parseSchema } from "../../src/parsers/parseSchema.js";
 import { suite } from "../suite";
 
 suite("parseSchema", (test) => {
