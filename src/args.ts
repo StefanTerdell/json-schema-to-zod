@@ -1,104 +1,110 @@
 import { statSync, readFileSync } from "fs";
 
 export type Param = {
-  name: string;
-  short: string;
+  shorthand?: string;
   description?: string;
-  value?: "string" | "number" | string[];
-  required?: boolean | string;
+  required?: boolean | string | undefined;
+} & (
+  | { value?: "boolean" }
+  | { value: "number" }
+  | { value: "string" }
+  | { value: { [key: number]: string } }
+);
+
+export type Params = { [name: string]: Param };
+
+type InferReturnType<T extends Params> = {
+  [name in keyof T]:
+    | (T[name]["value"] extends "number"
+        ? number
+        : T[name]["value"] extends "string"
+        ? string
+        : T[name]["value"] extends { [key: number]: string }
+        ? T[name]["value"][number]
+        : boolean)
+    | (T[name]["required"] extends string | true ? never : undefined);
 };
 
-type Help = Partial<Pick<Param, "name" | "short" | "description">>;
-
-export function parseArgs(
-  params: Param[],
+export function parseArgs<T extends Params>(
+  params: T,
   args: string[],
-  help?: boolean | Help,
-): Record<string, string | number | boolean | undefined> {
+  help?: boolean | string,
+): InferReturnType<T> {
   const result: Record<string, string | number | boolean> = {};
 
   if (help) {
-    const defaults: Param = {
-      name: "help",
-      short: "h",
-      description: "Display this message :)",
-    };
-
-    const param: Param =
-      help === true
-        ? defaults
-        : {
-            ...defaults,
-            ...help,
-          };
-
-    let index = args.indexOf("--" + param.name);
+    let index = args.indexOf("--help");
 
     if (index === -1) {
-      index = args.indexOf("-" + param.short);
+      index = args.indexOf("-h");
     }
 
     if (index !== -1) {
-      printParams([...params, param]);
+      printParams({
+        ...params,
+        help: {
+          shorthand: "h",
+          description:
+            typeof help === "string" ? help : "Display this message :)",
+        },
+      });
+
       process.exit(0);
     }
   }
 
-  for (const param of params) {
-    let index = args.indexOf("--" + param.name);
+  for (const name in params) {
+    const { shorthand, required, value } = params[name];
+    let index = args.indexOf("--" + name);
 
-    if (index === -1) {
-      index = args.indexOf("-" + param.short);
+    if (index === -1 && shorthand) {
+      index = args.indexOf("-" + shorthand);
     }
 
     if (index === -1) {
-      if (param.required) {
+      if (required !== false) {
         throw new Error(
-          typeof param.required === "string"
-            ? param.required
-            : `Missing required argument ${param.name}`,
+          typeof required === "string" && required !== ""
+            ? required
+            : `Missing required argument ${name}`,
         );
       }
 
-      result[param.name] = false;
+      result[name] = false;
 
       continue;
     }
 
-    if (param.value) {
+    if (value) {
       const value = args[index + 1];
 
       if (value === undefined) {
-        throw new Error(`Expected a value for argument ${param.name}`);
+        throw new Error(`Expected a value for argument ${name}`);
       }
 
-      if (param.value === "number") {
+      if (value === "number") {
         const asNumber = Number(value);
 
         if (isNaN(asNumber)) {
-          throw new Error(
-            `Value of argument ${param.name} must be a valid number`,
-          );
+          throw new Error(`Value of argument ${name} must be a valid number`);
         }
 
-        result[param.name] = asNumber;
+        result[name] = asNumber;
 
         continue;
       }
 
-      if (Array.isArray(param.value) && !param.value.includes(value)) {
-        throw new Error(
-          `Value of argument ${param.name} must be one of ${param.value}`,
-        );
+      if (Array.isArray(value) && !value.includes(value)) {
+        throw new Error(`Value of argument ${name} must be one of ${value}`);
       }
 
-      result[param.name] = value;
+      result[name] = value;
     } else {
-      result[param.name] = true;
+      result[name] = true;
     }
   }
 
-  return result;
+  return result as any;
 }
 
 export function parseOrReadJSON(jsonOrPath: string): unknown {
@@ -129,24 +135,27 @@ export function readPipe(): Promise<string> {
   });
 }
 
-export function printParams(params: Param[]): void {
-  const longest = params.reduce(
-    (n, p) => (p.name.length > n ? p.name.length : n),
+export function printParams(params: Record<string, Param>): void {
+  const longest = Object.keys(params).reduce(
+    (l, c) => (c.length > l ? c.length : l),
     5,
   );
+
   const header = "Name " + " ".repeat(longest - 2) + "Short Description";
 
   console.log(header);
 
-  for (const param of params) {
+  for (const name in params) {
+    const { shorthand, description } = params[name];
+
     console.log(
       "--" +
-        param.name +
-        " ".repeat(longest - param.name.length) +
+        name +
+        " ".repeat(longest - name.length) +
         " -" +
-        param.short +
+        shorthand +
         "    " +
-        param.description ?? "",
+        description ?? "",
     );
   }
 }

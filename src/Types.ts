@@ -65,10 +65,10 @@ export type ParserOverride = (
 
 export type Options = {
   name?: string;
-  module?: "cjs" | "esm";
+  module?: "cjs" | "esm" | "none";
   withoutDefaults?: boolean;
-  overrideParser?: ParserOverride;
-  recursionDepth?: number;
+  parserOverride?: ParserOverride;
+  depth?: number;
 };
 
 export type Refs = Options & {

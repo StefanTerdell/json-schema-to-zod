@@ -1,9 +1,9 @@
-export const omit = <T extends object, K extends keyof T>(
+export const pick = <T extends object, K extends keyof T>(
   obj: T,
   ...keys: K[]
-): Omit<T, K> =>
+): Pick<T, K> =>
   Object.keys(obj).reduce((acc: Record<string, unknown>, key) => {
-    if (!keys.includes(key as K)) {
+    if (keys.includes(key as K)) {
       acc[key] = obj[key as K];
     }
 

@@ -28,8 +28,8 @@ export const parseSchema = (
 ): string => {
   if (typeof schema !== "object") return schema ? "z.any()" : "z.never()";
 
-  if (refs.overrideParser) {
-    const custom = refs.overrideParser(schema, refs);
+  if (refs.parserOverride) {
+    const custom = refs.parserOverride(schema, refs);
 
     if (typeof custom === "string") {
       return custom;
@@ -43,7 +43,7 @@ export const parseSchema = (
       return seen.r;
     }
 
-    if (refs.recursionDepth === undefined || seen.n >= refs.recursionDepth) {
+    if (refs.depth === undefined || seen.n >= refs.depth) {
       return "z.any()";
     }
 

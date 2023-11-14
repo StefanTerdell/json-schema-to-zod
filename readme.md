@@ -35,13 +35,13 @@ Since v2 the CLI supports piped JSON.
 
 #### Options
 
-| Flag       | Shorthand | Function                                                                                |
-| ---------- | --------- | --------------------------------------------------------------------------------------- |
-| `--input`  | `-i`      | JSON or a source file path (required if no data is piped)                               |
-| `--output` | `-t`      | Target file name                                                                        |
-| `--name`   | `-n`      | The name of the schema in the output                                                    |
-| `--depth`  | `-d`      | Maximum depth of recursion in schema before falling back to `z.any()`. Defaults to 0. ` |
-| `--module` | `-m`      | Use module syntax (`"esm"` or `"cjs"`)                                                  |
+| Flag       | Shorthand | Function                                                                                     |
+| ---------- | --------- | -------------------------------------------------------------------------------------------- |
+| `--input`  | `-i`      | JSON or a source file path. Required if no data is piped.                                    |
+| `--output` | `-t`      | A file path to write to. If not supplied stdout will be used.                                |
+| `--name`   | `-n`      | The name of the schema in the output                                                         |
+| `--depth`  | `-d`      | Maximum depth of recursion in schema before falling back to `z.any()`. Defaults to 0.        |
+| `--module` | `-m`      | Module syntax; `esm`, `cjs` or none. Defaults to `esm` in the CLI and `none` programmaticly. |
 
 ### Programmatic
 
@@ -90,7 +90,7 @@ z.object({ hello: z.string().optional() });
 
 ### Overriding a parser
 
-You can pass a `ParserOverride` to the `overrideParser` option, which is a function that receives the current schema node and the reference object, and should return a string when it wants to replace a default output. If the default output should be used for the node, just return nothing.
+You can pass a function to the `overrideParser` option, which represents a function that receives the current schema node and the reference object, and should return a string when it wants to replace a default output. If the default output should be used for the node just return void.
 
 ### Use at Runtime
 
