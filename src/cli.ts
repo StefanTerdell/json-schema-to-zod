@@ -4,7 +4,6 @@ import { writeFileSync, mkdirSync } from "fs";
 import { dirname } from "path";
 import { parseArgs, parseOrReadJSON, readPipe } from "./utils/cliTools.js";
 import { JsonSchema } from "./Types.js";
-import { pick } from "./utils/pick.js";
 
 const params = {
   input: {
@@ -43,10 +42,11 @@ async function main() {
   const args = parseArgs(params, process.argv, true);
   const input = args.input || (await readPipe());
   const jsonSchema = parseOrReadJSON(input);
-  const zodSchema = jsonSchemaToZod(
-    jsonSchema as JsonSchema,
-    pick(args, "name", "depth", "module"),
-  );
+  const zodSchema = jsonSchemaToZod(jsonSchema as JsonSchema, {
+    name: args.name,
+    depth: args.depth,
+    module: args.module || "esm",
+  });
 
   if (args.output) {
     mkdirSync(dirname(args.output), { recursive: true });
