@@ -2,7 +2,7 @@
 import { jsonSchemaToZod } from "./jsonSchemaToZod.js";
 import { writeFileSync, mkdirSync } from "fs";
 import { dirname } from "path";
-import { parseArgs, parseOrReadJSON, readPipe } from "./args.js";
+import { parseArgs, parseOrReadJSON, readPipe } from "./utils/cliTools.js";
 import { JsonSchema } from "./Types.js";
 import { pick } from "./utils/pick.js";
 
