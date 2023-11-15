@@ -4,8 +4,8 @@ import { parseObject } from "../../src/parsers/parseObject";
 import { suite } from "../suite";
 
 suite("parseObject", (test) => {
-  test("With properties - should handle optional and required properties", (expect) => {
-    expect(
+  test("With properties - should handle optional and required properties", (assert) => {
+    assert(
       parseObject(
         {
           type: "object",
@@ -26,8 +26,8 @@ suite("parseObject", (test) => {
     );
   });
 
-  test("With properties - should handle additionalProperties when set to false", (expect) => {
-    expect(
+  test("With properties - should handle additionalProperties when set to false", (assert) => {
+    assert(
       parseObject(
         {
           type: "object",
@@ -45,8 +45,8 @@ suite("parseObject", (test) => {
     );
   });
 
-  test("With properties - should handle additionalProperties when set to true", (expect) => {
-    expect(
+  test("With properties - should handle additionalProperties when set to true", (assert) => {
+    assert(
       parseObject(
         {
           type: "object",
@@ -64,8 +64,8 @@ suite("parseObject", (test) => {
     );
   });
 
-  test("With properties - should handle additionalProperties when provided a schema", (expect) => {
-    expect(
+  test("With properties - should handle additionalProperties when provided a schema", (assert) => {
+    assert(
       parseObject(
         {
           type: "object",
@@ -84,8 +84,8 @@ suite("parseObject", (test) => {
     );
   });
 
-  test("Without properties - should handle additionalProperties when set to false", (expect) => {
-    expect(
+  test("Without properties - should handle additionalProperties when set to false", (assert) => {
+    assert(
       parseObject(
         {
           type: "object",
@@ -97,8 +97,8 @@ suite("parseObject", (test) => {
     );
   });
 
-  test("Without properties - should handle additionalProperties when set to true", (expect) => {
-    expect(
+  test("Without properties - should handle additionalProperties when set to true", (assert) => {
+    assert(
       parseObject(
         {
           type: "object",
@@ -110,8 +110,8 @@ suite("parseObject", (test) => {
     );
   });
 
-  test("Without properties - should handle additionalProperties when provided a schema", (expect) => {
-    expect(
+  test("Without properties - should handle additionalProperties when provided a schema", (assert) => {
+    assert(
       parseObject(
         {
           type: "object",
@@ -124,8 +124,8 @@ suite("parseObject", (test) => {
     );
   });
 
-  test("Without properties - should include falsy defaults", (expect) => {
-    expect(
+  test("Without properties - should include falsy defaults", (assert) => {
+    assert(
       parseObject(
         {
           type: "object",
