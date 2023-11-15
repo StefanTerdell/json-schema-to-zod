@@ -1,4 +1,4 @@
-import { JsonSchemaObject } from "../Types";
+import { JsonSchemaObject } from "../Types.js";
 
 type Opener = string;
 type MessagePrefix = string;

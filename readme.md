@@ -7,7 +7,11 @@ _Looking for the exact opposite? Check out [zod-to-json-schema](https://npmjs.or
 
 ## Summary
 
-A runtime package and CLI tool to convert JSON schema (draft 4+) objects or files into Zod schemas in the form of JavaScript code. Uses Prettier for formatting.
+A runtime package and CLI tool to convert JSON schema (draft 4+) objects or files into Zod schemas in the form of JavaScript code.
+
+Before v2 it used [`prettier`](https://www.npmjs.com/package/prettier) for formatting and [`json-refs`](https://www.npmjs.com/package/json-refs) to resolve schemas. To replicate the previous behaviour, please use their respective CLI tools.
+
+Since v2 the CLI supports piped JSON.
 
 ## Usage
 
@@ -17,36 +21,34 @@ A runtime package and CLI tool to convert JSON schema (draft 4+) objects or file
 
 ### CLI
 
-Installation:
+#### Simplest example
 
 > `npm i -g json-schema-to-zod`
 
-Example:
+> `json-schema-to-zod -i mySchema.json -o mySchema.ts`
 
-> `json-schema-to-zod -s myJson.json -t mySchema.ts`
+#### Example with $refs resolved and output formatted
+
+> `npm i -g json-schema-to-zod json-refs prettier`
+
+> `json-refs resolve mySchema.json | json-schema-to-zod | prettier --parser typescript > mySchema.ts`
 
 #### Options
 
-| Flag                 | Shorthand | Function                                                                                |
-| -------------------- | --------- | --------------------------------------------------------------------------------------- |
-| `--source`           | `-s`      | Source file name (required)                                                             |
-| `--target`           | `-t`      | Target file name                                                                        |
-| `--name`             | `-n`      | The name of the schema in the output                                                    |
-| `--deref`            | `-d`      | Uses `json-schema-ref-parser` to dereference the schema                                 |
-| `--without-defaults` | `-wd`     | Ignore default values in the schema                                                     |
-| `--recursionDepth`   | `-rd`     | Maximum depth of recursion in schema before falling back to `z.any()`. Defaults to 0. ` |
-| `--module`           | `-m`      | Force module syntax (`"esm"` or `"cjs"`)                                                |
+| Flag       | Shorthand | Function                                                                                     |
+| ---------- | --------- | -------------------------------------------------------------------------------------------- |
+| `--input`  | `-i`      | JSON or a source file path. Required if no data is piped.                                    |
+| `--output` | `-t`      | A file path to write to. If not supplied stdout will be used.                                |
+| `--name`   | `-n`      | The name of the schema in the output                                                         |
+| `--depth`  | `-d`      | Maximum depth of recursion in schema before falling back to `z.any()`. Defaults to 0.        |
+| `--module` | `-m`      | Module syntax; `esm`, `cjs` or none. Defaults to `esm` in the CLI and `none` programmaticly. |
 
 ### Programmatic
 
-`jsonSchemaToZod` will output the full module code, including a Zod import. If you only need the Zod schema itself, try one of the parsers directly. If you need to deref your JSON schema, try awaiting `jsonSchemaDereffed`.
+`jsonSchemaToZod` will output the full module code, including a Zod import. If you only need the Zod schema itself, try one of the parsers directly. If you need to deref your JSON schema, try using `json-refs` `resolve` function before passing in the schema.
 
 ```typescript
-import {
-  jsonSchemaToZod,
-  jsonSchemaToZodDereffed,
-  parseSchema,
-} from "json-schema-to-zod";
+import { jsonSchemaToZod } from "json-schema-to-zod";
 
 const myObject = {
   type: "object",
@@ -55,16 +57,16 @@ const myObject = {
       type: "string",
     },
   },
-} as const;
+};
 
-const module = jsonSchemaToZod(myObject);
+const module = jsonSchemaToZod(myObject, { module: "esm" });
 
-const dereffed = await jsonSchemaToZodDereffed(myObject);
+const cjs = jsonSchemaToZod(myObject, { module: "cjs", name: "mySchema" });
 
-const schema = parseSchema(myObject);
+const schema = jsonSchemaToZod(myObject);
 ```
 
-`module`/`dereffed` =
+#### `module`
 
 ```typescript
 import { z } from "zod";
@@ -72,21 +74,29 @@ import { z } from "zod";
 export default z.object({ hello: z.string().optional() });
 ```
 
-`schema` =
+#### `cjs`
+
+```typescript
+const { z } = require("zod");
+
+module.exports = { mySchema: z.object({ hello: z.string().optional() }) };
+```
+
+#### `schema`
 
 ```typescript
 z.object({ hello: z.string().optional() });
 ```
 
-#### Overriding a parser
+### Overriding a parser
 
-You can pass a `ParserOverride` to the `overrideParser` option, which is a function that receives the current schema node and the reference object, and should return a string when it wants to replace a default output. If the default output should be used for the node, just return nothing.
+You can pass a function to the `overrideParser` option, which represents a function that receives the current schema node and the reference object, and should return a string when it wants to replace a default output. If the default output should be used for the node just return void.
 
-### At Runtime
+### Use at Runtime
 
 The output of this package is not meant to be used at runtime. JSON Schema and Zod does not overlap 100% and the scope of the parsers are purposefully limited in order to help the author avoid a permanent state of chaotic insanity. As this may cause some details of the original schema to be lost in translation, it is instead recommended to use tools such as (Ajv)[https://ajv.js.org/] to validate your runtime values directly against the original JSON Schema.
 
-That said, it's possible to use `eval`. Here's an example that you shouldn't use:
+That said, it's possible in most cases to use `eval`. Here's an example that you shouldn't use:
 
 ```typescript
 const zodSchema = eval(jsonSchemaToZod({ type: "string" }, { module: "cjs" }));

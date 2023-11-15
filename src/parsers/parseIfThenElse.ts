@@ -1,5 +1,5 @@
-import { JsonSchemaObject, JsonSchema, Refs } from "../Types";
-import { parseSchema } from "./parseSchema";
+import { JsonSchemaObject, JsonSchema, Refs } from "../Types.js";
+import { parseSchema } from "./parseSchema.js";
 
 export const parseIfThenElse = (
   schema: JsonSchemaObject & {
@@ -18,7 +18,7 @@ export const parseIfThenElse = (
     ...refs,
     path: [...refs.path, "else"],
   });
-  return `z.union([${$then},${$else}]).superRefine((value,ctx) => {
+  return `z.union([${$then}, ${$else}]).superRefine((value,ctx) => {
   const result = ${$if}.safeParse(value).success
     ? ${$then}.safeParse(value)
     : ${$else}.safeParse(value);

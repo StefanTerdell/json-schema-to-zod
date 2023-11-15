@@ -1,6 +1,6 @@
-import { JsonSchemaObject, Refs } from "../Types";
-import { withMessage } from "../utils/withMessage";
-import { parseSchema } from "./parseSchema";
+import { JsonSchemaObject, Refs } from "../Types.js";
+import { withMessage } from "../utils/withMessage.js";
+import { parseSchema } from "./parseSchema.js";
 
 export const parseArray = (
   schema: JsonSchemaObject & { type: "array" },

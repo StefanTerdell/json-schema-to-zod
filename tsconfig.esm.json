@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
+    "target": "es2020",
+    "module": "es2020",
+    "outDir": "dist/esm",
     "strict": true,
-    "noEmit": true,
     "skipLibCheck": true,
     "esModuleInterop": true
   },

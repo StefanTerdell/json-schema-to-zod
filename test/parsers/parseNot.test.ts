@@ -1,17 +1,17 @@
 import { parseNot } from "../../src/parsers/parseNot";
+import { suite } from "../suite";
 
-describe("parseNot", () => {
-  it("", () => {
-    expect(
+suite("parseNot", (test) => {
+  test("", (assert) => {
+    assert(
       parseNot(
         {
           not: {
             type: "string",
           },
         },
-        { module: false, path: [], seen: new Map() },
+        { path: [], seen: new Map() },
       ),
-    ).toStrictEqual(
       'z.any().refine((value) => !z.string().safeParse(value).success, "Invalid input: Should NOT be valid against schema")',
     );
   });

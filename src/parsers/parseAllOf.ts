@@ -1,6 +1,6 @@
-import { parseSchema } from "./parseSchema";
-import { half } from "../utils/half";
-import { JsonSchemaObject, JsonSchema, Refs } from "../Types";
+import { parseSchema } from "./parseSchema.js";
+import { half } from "../utils/half.js";
+import { JsonSchemaObject, JsonSchema, Refs } from "../Types.js";
 
 const originalIndex = Symbol("Original index");
 
@@ -31,13 +31,6 @@ export function parseAllOf(
     return "z.never()";
   } else if (schema.allOf.length === 1) {
     const item = schema.allOf[0];
-    // typeof schema.allOf[0] === "boolean"
-    //   ? schema.allOf[0]
-    //     ? { [originalIndex]: 0 }
-    //     : { [originalIndex]: 0, not: {} }
-    //   : originalIndex in schema.allOf[0]
-    //   ? schema.allOf[0]
-    //   : { ...schema.allOf[0], [originalIndex]: 0 };
 
     return parseSchema(item, {
       ...refs,
@@ -46,7 +39,7 @@ export function parseAllOf(
   } else {
     const [left, right] = half(ensureOriginalIndex(schema.allOf)) as any;
 
-    return `z.intersection(${parseAllOf({ allOf: left }, refs)},${parseAllOf(
+    return `z.intersection(${parseAllOf({ allOf: left }, refs)}, ${parseAllOf(
       {
         allOf: right,
       },

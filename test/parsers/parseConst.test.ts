@@ -1,11 +1,13 @@
 import { parseConst } from "../../src/parsers/parseConst";
+import { suite } from "../suite";
 
-describe("parseConst", () => {
-  it("should handle falsy constants", () => {
-    expect(
+suite("parseConst", (test) => {
+  test("should handle falsy constants", (assert) => {
+    assert(
       parseConst({
         const: false,
       }),
-    ).toStrictEqual("z.literal(false)");
+      "z.literal(false)",
+    );
   });
 });
