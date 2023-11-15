@@ -8,3 +8,7 @@ import "./parsers/parseObject.test.js";
 import "./parsers/parseOneOf.test.js";
 import "./parsers/parseSchema.test.js";
 import "./parsers/parseString.test.js";
+import "./utils/cliTools.test.js";
+import "./utils/omit.test.js";
+import "./utils/pick.test.js";
+import "./utils/half.test.js";

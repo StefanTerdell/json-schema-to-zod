@@ -62,7 +62,7 @@ export function parseArgs<T extends Params>(
     }
 
     if (index === -1) {
-      if (required !== false) {
+      if (required || required === "") {
         throw new Error(
           typeof required === "string" && required !== ""
             ? required
