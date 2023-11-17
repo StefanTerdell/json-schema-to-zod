@@ -45,7 +45,7 @@ Since v2 the CLI supports piped JSON.
 
 ### Programmatic
 
-`jsonSchemaToZod` will output the full module code, including a Zod import. If you only need the Zod schema itself, try one of the parsers directly. If you need to deref your JSON schema, try using `json-refs` `resolve` function before passing in the schema.
+#### Simple example
 
 ```typescript
 import { jsonSchemaToZod } from "json-schema-to-zod";
@@ -66,7 +66,7 @@ const cjs = jsonSchemaToZod(myObject, { module: "cjs", name: "mySchema" });
 const schema = jsonSchemaToZod(myObject);
 ```
 
-#### `module`
+##### `module`
 
 ```typescript
 import { z } from "zod";
@@ -74,7 +74,7 @@ import { z } from "zod";
 export default z.object({ hello: z.string().optional() });
 ```
 
-#### `cjs`
+##### `cjs`
 
 ```typescript
 const { z } = require("zod");
@@ -82,17 +82,34 @@ const { z } = require("zod");
 module.exports = { mySchema: z.object({ hello: z.string().optional() }) };
 ```
 
-#### `schema`
+##### `schema`
 
 ```typescript
 z.object({ hello: z.string().optional() });
 ```
 
-### Overriding a parser
+#### Resolved and formatted
+
+```typescript
+import { z } from "zod"
+import { resolveRefs } from "json-refs"
+import { format } from "prettier"
+import jsonSchemaToZod from "json-schema-to-zod"
+
+async function example(jsonSchema: any) {
+  const { resolved }= await resolveRefs(jsonSchema)
+  const code = jsonSchemaToZod(resolved)
+  const formatted = await format(code, { parser: "typescript" })
+
+  return formatted
+}
+```
+
+#### Overriding a parser
 
 You can pass a function to the `overrideParser` option, which represents a function that receives the current schema node and the reference object, and should return a string when it wants to replace a default output. If the default output should be used for the node just return void.
 
-### Use at Runtime
+#### Use at Runtime
 
 The output of this package is not meant to be used at runtime. JSON Schema and Zod does not overlap 100% and the scope of the parsers are purposefully limited in order to help the author avoid a permanent state of chaotic insanity. As this may cause some details of the original schema to be lost in translation, it is instead recommended to use tools such as (Ajv)[https://ajv.js.org/] to validate your runtime values directly against the original JSON Schema.
 
