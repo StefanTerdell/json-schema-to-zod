@@ -111,7 +111,7 @@ You can pass a function to the `overrideParser` option, which represents a funct
 
 #### Use at Runtime
 
-The output of this package is not meant to be used at runtime. JSON Schema and Zod does not overlap 100% and the scope of the parsers are purposefully limited in order to help the author avoid a permanent state of chaotic insanity. As this may cause some details of the original schema to be lost in translation, it is instead recommended to use tools such as (Ajv)[https://ajv.js.org/] to validate your runtime values directly against the original JSON Schema.
+The output of this package is not meant to be used at runtime. JSON Schema and Zod does not overlap 100% and the scope of the parsers are purposefully limited in order to help the author avoid a permanent state of chaotic insanity. As this may cause some details of the original schema to be lost in translation, it is instead recommended to use tools such as [Ajv](https://ajv.js.org/) to validate your runtime values directly against the original JSON Schema.
 
 That said, it's possible in most cases to use `eval`. Here's an example that you shouldn't use:
 
