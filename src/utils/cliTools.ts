@@ -110,7 +110,7 @@ export function parseArgs<T extends Params>(
 export function parseOrReadJSON(jsonOrPath: string): unknown {
   jsonOrPath = jsonOrPath.trim();
 
-  if (statSync(jsonOrPath, { throwIfNoEntry: false })?.isFile()) {
+  if (jsonOrPath.length < 255 && statSync(jsonOrPath, { throwIfNoEntry: false })?.isFile()) {
     jsonOrPath = readFileSync(jsonOrPath, "utf-8");
   }
 
