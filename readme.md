@@ -48,7 +48,7 @@ Since v2 the CLI supports piped JSON.
 #### Simple example
 
 ```typescript
-import { jsonSchemaToZod } from "json-schema-to-zod";
+import jsonSchemaToZod from "json-schema-to-zod";
 
 const myObject = {
   type: "object",
