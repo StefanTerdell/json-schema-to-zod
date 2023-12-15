@@ -11,3 +11,4 @@ import "./parsers/parseString.test.js";
 import "./utils/cliTools.test.js";
 import "./utils/omit.test.js";
 import "./utils/half.test.js";
+import "./parsers/parseNullable.test.js"

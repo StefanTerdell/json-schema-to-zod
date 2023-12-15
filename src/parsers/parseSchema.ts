@@ -25,6 +25,7 @@ import {
 export const parseSchema = (
   schema: JsonSchema,
   refs: Refs = { seen: new Map(), path: [] },
+  blockMeta?: boolean,
 ): string => {
   if (typeof schema !== "object") return schema ? "z.any()" : "z.never()";
 
@@ -54,11 +55,13 @@ export const parseSchema = (
   }
 
   let parsed = selectParser(schema, refs);
+ 
+  if (!blockMeta) {
+    parsed = addMeta(schema, parsed);
 
-  parsed = addMeta(schema, parsed);
-
-  if (!refs.withoutDefaults) {
-    parsed = addDefaults(schema, parsed);
+    if (!refs.withoutDefaults) {
+      parsed = addDefaults(schema, parsed);
+    }
   }
 
   seen.r = parsed;

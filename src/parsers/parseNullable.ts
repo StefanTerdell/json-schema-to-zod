@@ -9,5 +9,5 @@ export const parseNullable = (
   schema: JsonSchemaObject & { nullable: true },
   refs: Refs,
 ) => {
-  return `${parseSchema(omit(schema, "nullable") as any, refs)}.nullable()`;
+  return `${parseSchema(omit(schema, "nullable"), refs, true)}.nullable()`;
 };
