@@ -1,6 +1,6 @@
 import { readdirSync, writeFileSync, statSync } from "fs";
 
-const ignore = ["src/index.ts", "src/cli.ts"];
+const ignore = ["src/index.ts", "src/cli.ts", "src/utils/cliTools.ts"];
 
 function checkSrcDir(path: string): string[] {
   const lines: string[] = [];
