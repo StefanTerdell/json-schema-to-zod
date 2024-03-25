@@ -36,9 +36,9 @@ export const parseOneOf = (
 
       ctx.addIssue({
         path: ctx.path,
-        code: 'invalid_union',
+        code: "invalid_union",
         unionErrors: errors,
-        message: 'Invalid input: Should pass single schema',
+        message: "Invalid input: Should pass single schema",
       });
     })
   })`
