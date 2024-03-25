@@ -19,22 +19,28 @@ export const parseOneOf = (
           path: [...refs.path, "oneOf", i],
         }),
       )
-      .join(", ")}];
-    const errors = schemas.reduce(
-      (errors: z.ZodError[], schema) =>
-        ((result) => ("error" in result ? [...errors, result.error] : errors))(
-          schema.safeParse(x)
-        ),
-      []
-    );
-    if (schemas.length - errors.length !== 1) {
+      .join(", ")}] as const;
+      const errors: z.ZodError[] = [];
+
+      for (const schema of schemas) {
+        const result = schema.safeParse(x);
+
+        if (result.success) {
+          return;
+        }
+
+        if ('error' in result) {
+          errors.push(result.error);
+        }
+      }
+
       ctx.addIssue({
         path: ctx.path,
-        code: "invalid_union",
+        code: 'invalid_union',
         unionErrors: errors,
-        message: "Invalid input: Should pass single schema",
+        message: 'Invalid input: Should pass single schema',
       });
-    }
+    })
   })`
     : "z.any()";
 };
