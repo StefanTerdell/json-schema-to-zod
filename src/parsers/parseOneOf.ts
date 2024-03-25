@@ -40,7 +40,6 @@ export const parseOneOf = (
         unionErrors: errors,
         message: "Invalid input: Should pass single schema",
       });
-    })
   })`
     : "z.any()";
 };
