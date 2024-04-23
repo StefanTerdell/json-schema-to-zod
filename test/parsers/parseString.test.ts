@@ -18,6 +18,43 @@ suite("parseString", (test) => {
     );
   });
 
+  test("base64", (assert) => {
+    assert(
+      parseString({
+        type: "string",
+        contentEncoding: "base64",
+      }),
+      "z.string().base64()",
+    );
+    assert(
+      parseString({
+        type: "string",
+        contentEncoding: "base64",
+        errorMessage: {
+          contentEncoding: "x",
+        },
+      }),
+      'z.string().base64("x")',
+    );
+    assert(
+      parseString({
+        type: "string",
+        format: "binary",
+      }),
+      "z.string().base64()",
+    );
+    assert(
+      parseString({
+        type: "string",
+        format: "binary",
+        errorMessage: {
+          format: "x",
+        },
+      }),
+      'z.string().base64("x")',
+    );
+  });
+
   test("should accept errorMessage", (assert) => {
     assert(
       parseString({

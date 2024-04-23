@@ -20,6 +20,18 @@ export const parseString = (schema: JsonSchemaObject & { type: "string" }) => {
         return [".uuid(", ")"];
       case "date-time":
         return [".datetime(", ")"];
+      case "time":
+        return [".time(", ")"];
+      case "date":
+        return [".date(", ")"];
+      case "binary":
+        return [".base64(", ")"];
+    }
+  });
+
+  r += withMessage(schema, "contentEncoding", ({ value }) => {
+    if (value === "base64") {
+      return [".base64(", ")"];
     }
   });
 
