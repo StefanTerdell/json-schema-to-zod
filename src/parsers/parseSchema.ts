@@ -55,13 +55,14 @@ export const parseSchema = (
   }
 
   let parsed = selectParser(schema, refs);
- 
   if (!blockMeta) {
     parsed = addMeta(schema, parsed);
 
     if (!refs.withoutDefaults) {
       parsed = addDefaults(schema, parsed);
     }
+
+    parsed = addAnnotations(schema, parsed)
   }
 
   seen.r = parsed;
@@ -80,6 +81,14 @@ const addMeta = (schema: JsonSchemaObject, parsed: string): string => {
 const addDefaults = (schema: JsonSchemaObject, parsed: string): string => {
   if (schema.default !== undefined) {
     parsed += `.default(${JSON.stringify(schema.default)})`;
+  }
+
+  return parsed;
+};
+
+const addAnnotations = (schema: JsonSchemaObject, parsed: string): string => {
+  if (schema.readOnly) {
+    parsed += ".readonly()";
   }
 
   return parsed;
