@@ -26,6 +26,8 @@ export const parseString = (schema: JsonSchemaObject & { type: "string" }) => {
         return [".date(", ")"];
       case "binary":
         return [".base64(", ")"];
+      case "duration":
+        return [".duration(", ")"];
     }
   });
 
