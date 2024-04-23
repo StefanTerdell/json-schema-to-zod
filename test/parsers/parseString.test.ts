@@ -12,10 +12,15 @@ suite("parseString", (test) => {
   test("DateTime format", (assert) => {
     const datetime = "2018-11-13T20:20:39Z";
 
-    assert(
-      run(parseString({ type: "string", format: "date-time" }), datetime),
-      { success: true, data: datetime },
-    );
+    const code = parseString({
+      type: "string",
+      format: "date-time",
+      errorMessage: { format: "hello" },
+    });
+
+    assert(code, 'z.string().datetime({ offset: true, message: "hello" })');
+
+    assert(run(code, datetime), { success: true, data: datetime });
   });
 
   test("base64", (assert) => {
