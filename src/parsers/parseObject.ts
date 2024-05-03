@@ -26,11 +26,7 @@ export function parseObject(
           })}`;
 
           const hasDefault =
-            (typeof propSchema === "object" &&
-              propSchema.default !== undefined) ||
-            (typeof objectSchema.default === "object" &&
-              objectSchema.default !== null &&
-              key in objectSchema.default);
+            typeof propSchema === "object" && propSchema.default !== undefined;
 
           const required = Array.isArray(objectSchema.required)
             ? objectSchema.required.includes(key)
@@ -170,15 +166,15 @@ export function parseObject(
     ? patternProperties
       ? properties + patternProperties
       : additionalProperties
-      ? additionalProperties === "z.never()"
-        ? properties + ".strict()"
-        : properties + `.catchall(${additionalProperties})`
-      : properties
+        ? additionalProperties === "z.never()"
+          ? properties + ".strict()"
+          : properties + `.catchall(${additionalProperties})`
+        : properties
     : patternProperties
-    ? patternProperties
-    : additionalProperties
-    ? `z.record(${additionalProperties})`
-    : "z.record(z.any())";
+      ? patternProperties
+      : additionalProperties
+        ? `z.record(${additionalProperties})`
+        : "z.record(z.any())";
 
   if (its.an.anyOf(objectSchema)) {
     output += `.and(${parseAnyOf(
