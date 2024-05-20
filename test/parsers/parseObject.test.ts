@@ -212,12 +212,13 @@ suite("parseObject", (test) => {
 
       `z.object({ "a": z.string() }).and(z.any().superRefine((x, ctx) => {
     const schemas = [z.object({ "b": z.string() }), z.object({ "c": z.string() })];
-    const errors = schemas.reduce(
-      (errors: z.ZodError[], schema) =>
-        ((result) => ("error" in result ? [...errors, result.error] : errors))(
-          schema.safeParse(x)
+    const errors = schemas.reduce<z.ZodError[]>(
+      (errors, schema) =>
+        ((result) =>
+          "error" in result && typeof result.error !== 'undefined' ? [...errors, result.error] : errors)(
+          schema.safeParse(x),
         ),
-      []
+      [],
     );
     if (schemas.length - errors.length !== 1) {
       ctx.addIssue({
