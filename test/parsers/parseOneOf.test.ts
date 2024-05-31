@@ -20,7 +20,7 @@ suite("parseOneOf", (test) => {
     const errors = schemas.reduce<z.ZodError[]>(
       (errors, schema) =>
         ((result) =>
-          "error" in result && typeof result.error !== 'undefined' ? [...errors, result.error] : errors)(
+          result.error ? [...errors, result.error] : errors)(
           schema.safeParse(x),
         ),
       [],
