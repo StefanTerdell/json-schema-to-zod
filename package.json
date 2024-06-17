@@ -24,7 +24,8 @@
     "dry": "npm run build && npm pub --dry-run",
     "dev": "tsx watch test/index.ts",
     "gen": "tsx ./createIndex.ts",
-    "test": "tsx test/index.ts"
+    "test": "tsx test/index.ts",
+    "prepare": "$npm_execpath run gen && $npm_execpath run test && rimraf ./dist && $npm_execpath run build:types && $npm_execpath run build:cjs && $npm_execpath run build:esm"
   },
   "keywords": [
     "zod",
