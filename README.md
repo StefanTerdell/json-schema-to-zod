@@ -88,7 +88,8 @@ module.exports = { mySchema: z.object({ hello: z.string().optional() }) };
 z.object({ hello: z.string().optional() });
 ```
 
-#### Resolved and formatted
+### ⚠ if you have "refs" in your json:
+#### Resolved and formatted () 
 
 ```typescript
 import { z } from "zod"
