@@ -88,7 +88,7 @@ module.exports = { mySchema: z.object({ hello: z.string().optional() }) };
 z.object({ hello: z.string().optional() });
 ```
 
-#### Resolved and formatted
+#### Example with $refs resolved and output formatted
 
 ```typescript
 import { z } from "zod"
@@ -97,7 +97,7 @@ import { format } from "prettier"
 import jsonSchemaToZod from "json-schema-to-zod"
 
 async function example(jsonSchema: any) {
-  const { resolved }= await resolveRefs(jsonSchema)
+  const { resolved } = await resolveRefs(jsonSchema)
   const code = jsonSchemaToZod(resolved)
   const formatted = await format(code, { parser: "typescript" })
 
