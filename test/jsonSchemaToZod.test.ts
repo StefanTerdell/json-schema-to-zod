@@ -30,6 +30,65 @@ export default z.string()
     );
   });
 
+  test("should be possible to add types", (assert) => {
+    assert(
+      jsonSchemaToZod(
+        {
+          type: "string",
+        },
+        { name: "mySchema", module: "esm", type: true },
+      ),
+      `import { z } from "zod"
+
+export const mySchema = z.string()
+export type MySchema = z.infer<typeof mySchema>
+`,
+    );
+  });
+
+  test("should be possible to add types with a custom name template", (assert) => {
+    assert(
+      jsonSchemaToZod(
+        {
+          type: "string",
+        },
+        { name: "mySchema", module: "esm", type: "MyType" },
+      ),
+      `import { z } from "zod"
+
+export const mySchema = z.string()
+export type MyType = z.infer<typeof mySchema>
+`,
+    );
+  });
+
+  test("should throw when given module cjs and type", (assert) => {
+    let didThrow = false;
+
+    try {
+      jsonSchemaToZod(
+        { type: "string" },
+        { name: "hello", module: "cjs", type: true },
+      );
+    } catch {
+      didThrow = true;
+    }
+
+    assert(didThrow);
+  });
+
+  test("should throw when given type but no name", (assert) => {
+    let didThrow = false;
+
+    try {
+      jsonSchemaToZod({ type: "string" }, { module: "esm", type: true });
+    } catch {
+      didThrow = true;
+    }
+
+    assert(didThrow);
+  });
+
   test("should include defaults", (assert) => {
     assert(
       jsonSchemaToZod(

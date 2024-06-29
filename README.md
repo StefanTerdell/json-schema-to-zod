@@ -35,13 +35,14 @@ Since v2 the CLI supports piped JSON.
 
 #### Options
 
-| Flag       | Shorthand | Function                                                                                     |
-| ---------- | --------- | -------------------------------------------------------------------------------------------- |
-| `--input`  | `-i`      | JSON or a source file path. Required if no data is piped.                                    |
-| `--output` | `-t`      | A file path to write to. If not supplied stdout will be used.                                |
-| `--name`   | `-n`      | The name of the schema in the output                                                         |
-| `--depth`  | `-d`      | Maximum depth of recursion in schema before falling back to `z.any()`. Defaults to 0.        |
-| `--module` | `-m`      | Module syntax; `esm`, `cjs` or none. Defaults to `esm` in the CLI and `none` programmaticly. |
+| Flag       | Shorthand | Function                                                                                       |
+| ---------- | --------- | ---------------------------------------------------------------------------------------------- |
+| `--input`  | `-i`      | JSON or a source file path. Required if no data is piped.                                      |
+| `--output` | `-t`      | A file path to write to. If not supplied stdout will be used.                                  |
+| `--name`   | `-n`      | The name of the schema in the output                                                           |
+| `--depth`  | `-d`      | Maximum depth of recursion in schema before falling back to `z.any()`. Defaults to 0.          |
+| `--module` | `-m`      | Module syntax; `esm`, `cjs` or none. Defaults to `esm` in the CLI and `none` programmaticly.   |
+| `--type`   | `-t`      | Export a named type along with the schema. Requires `name` to be set and `module` to be `esm`. |
 
 ### Programmatic
 
@@ -61,9 +62,12 @@ const myObject = {
 
 const module = jsonSchemaToZod(myObject, { module: "esm" });
 
+// `type` can be either a string or - outside of the CLI - a boolean. If its `true`, the name of the type will be the name of the schema with a capitalized first letter.
+const moduleWithType = jsonSchemaToZod(myObject, { name: "mySchema", module: "esm", type: true });
+
 const cjs = jsonSchemaToZod(myObject, { module: "cjs", name: "mySchema" });
 
-const schema = jsonSchemaToZod(myObject);
+const justTheSchema = jsonSchemaToZod(myObject);
 ```
 
 ##### `module`
@@ -74,6 +78,16 @@ import { z } from "zod";
 export default z.object({ hello: z.string().optional() });
 ```
 
+##### `moduleWithType`
+
+```typescript
+import { z } from "zod";
+
+export const mySchema = z.object({ hello: z.string().optional() });
+export type MySchema = z.infer<typeof mySchema>;
+```
+
+
 ##### `cjs`
 
 ```typescript
@@ -82,7 +96,7 @@ const { z } = require("zod");
 module.exports = { mySchema: z.object({ hello: z.string().optional() }) };
 ```
 
-##### `schema`
+##### `justTheSchema`
 
 ```typescript
 z.object({ hello: z.string().optional() });

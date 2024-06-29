@@ -69,6 +69,7 @@ export type Options = {
   withoutDefaults?: boolean;
   parserOverride?: ParserOverride;
   depth?: number;
+  type?: boolean | string;
 };
 
 export type Refs = Options & {

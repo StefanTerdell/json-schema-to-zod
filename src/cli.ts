@@ -36,6 +36,10 @@ const params = {
     value: ["esm", "cjs", "none"],
     description: "Module syntax; 'esm', 'cjs' or 'none'. Defaults to 'esm'.",
   },
+  type: {
+    shortHand: "t",
+    value: "string",
+  },
 } as const;
 
 async function main() {
