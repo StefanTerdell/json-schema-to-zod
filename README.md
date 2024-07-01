@@ -35,14 +35,15 @@ Since v2 the CLI supports piped JSON.
 
 #### Options
 
-| Flag       | Shorthand | Function                                                                                       |
-| ---------- | --------- | ---------------------------------------------------------------------------------------------- |
-| `--input`  | `-i`      | JSON or a source file path. Required if no data is piped.                                      |
-| `--output` | `-t`      | A file path to write to. If not supplied stdout will be used.                                  |
-| `--name`   | `-n`      | The name of the schema in the output                                                           |
-| `--depth`  | `-d`      | Maximum depth of recursion in schema before falling back to `z.any()`. Defaults to 0.          |
-| `--module` | `-m`      | Module syntax; `esm`, `cjs` or none. Defaults to `esm` in the CLI and `none` programmaticly.   |
-| `--type`   | `-t`      | Export a named type along with the schema. Requires `name` to be set and `module` to be `esm`. |
+| Flag         | Shorthand | Function                                                                                       |
+| ------------ | --------- | ---------------------------------------------------------------------------------------------- |
+| `--input`    | `-i`      | JSON or a source file path. Required if no data is piped.                                      |
+| `--output`   | `-t`      | A file path to write to. If not supplied stdout will be used.                                  |
+| `--name`     | `-n`      | The name of the schema in the output                                                           |
+| `--depth`    | `-d`      | Maximum depth of recursion in schema before falling back to `z.any()`. Defaults to 0.          |
+| `--module`   | `-m`      | Module syntax; `esm`, `cjs` or none. Defaults to `esm` in the CLI and `none` programmaticly.   |
+| `--type`     | `-t`      | Export a named type along with the schema. Requires `name` to be set and `module` to be `esm`. |
+| `--noImport` | `-ni`     | Removes the `import { z } from 'zod';` or equivalent from the output.                          |
 
 ### Programmatic
 

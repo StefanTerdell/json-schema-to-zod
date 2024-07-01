@@ -21,6 +21,8 @@ type InferReturnType<T extends Params> = {
         ? string
         : T[name]["value"] extends { [key: number]: string }
         ? T[name]["value"][number]
+        : T[name]["value"] extends never  
+        ? boolean
         : boolean)
     | (T[name]["required"] extends string | true ? never : undefined);
 };

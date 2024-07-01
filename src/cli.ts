@@ -40,6 +40,10 @@ const params = {
     shortHand: "t",
     value: "string",
   },
+  noImport: {
+    shortHand: "ni",
+    description: "Removes the `import { z } from 'zod';` or equivalent from the output"
+  },
 } as const;
 
 async function main() {
@@ -50,6 +54,7 @@ async function main() {
     name: args.name,
     depth: args.depth,
     module: args.module || "esm",
+    noImport: args.noImport
   });
 
   if (args.output) {

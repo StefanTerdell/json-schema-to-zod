@@ -30,6 +30,19 @@ export default z.string()
     );
   });
 
+  test("should be possible to skip the import line", (assert) => {
+    assert(
+      jsonSchemaToZod(
+        {
+          type: "string",
+        },
+        { module: "esm", noImport: true },
+      ),
+      `export default z.string()
+`,
+    );
+  });
+
   test("should be possible to add types", (assert) => {
     assert(
       jsonSchemaToZod(
