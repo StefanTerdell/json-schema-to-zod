@@ -23,22 +23,30 @@ Since v2 the CLI supports piped JSON.
 
 #### Simplest example
 
-> `npm i -g json-schema-to-zod`
+```console
+npm i -g json-schema-to-zod
+```
 
-> `json-schema-to-zod -i mySchema.json -o mySchema.ts`
+```console
+json-schema-to-zod -i mySchema.json -o mySchema.ts
+```
 
-#### Example with $refs resolved and output formatted
+#### Example with `$refs` resolved and output formatted
 
-> `npm i -g json-schema-to-zod json-refs prettier`
+```console
+npm i -g json-schema-to-zod json-refs prettier
+```
 
-> `json-refs resolve mySchema.json | json-schema-to-zod | prettier --parser typescript > mySchema.ts`
+```console
+json-refs resolve mySchema.json | json-schema-to-zod | prettier --parser typescript > mySchema.ts
+```
 
 #### Options
 
 | Flag         | Shorthand | Function                                                                                       |
 | ------------ | --------- | ---------------------------------------------------------------------------------------------- |
 | `--input`    | `-i`      | JSON or a source file path. Required if no data is piped.                                      |
-| `--output`   | `-t`      | A file path to write to. If not supplied stdout will be used.                                  |
+| `--output`   | `-o`      | A file path to write to. If not supplied stdout will be used.                                  |
 | `--name`     | `-n`      | The name of the schema in the output                                                           |
 | `--depth`    | `-d`      | Maximum depth of recursion in schema before falling back to `z.any()`. Defaults to 0.          |
 | `--module`   | `-m`      | Module syntax; `esm`, `cjs` or none. Defaults to `esm` in the CLI and `none` programmaticly.   |
@@ -88,7 +96,6 @@ export const mySchema = z.object({ hello: z.string().optional() });
 export type MySchema = z.infer<typeof mySchema>;
 ```
 
-
 ##### `cjs`
 
 ```typescript
@@ -103,20 +110,20 @@ module.exports = { mySchema: z.object({ hello: z.string().optional() }) };
 z.object({ hello: z.string().optional() });
 ```
 
-#### Example with $refs resolved and output formatted
+#### Example with `$refs` resolved and output formatted
 
 ```typescript
-import { z } from "zod"
-import { resolveRefs } from "json-refs"
-import { format } from "prettier"
-import jsonSchemaToZod from "json-schema-to-zod"
+import { z } from "zod";
+import { resolveRefs } from "json-refs";
+import { format } from "prettier";
+import jsonSchemaToZod from "json-schema-to-zod";
 
-async function example(jsonSchema: any) {
-  const { resolved } = await resolveRefs(jsonSchema)
-  const code = jsonSchemaToZod(resolved)
-  const formatted = await format(code, { parser: "typescript" })
+async function example(jsonSchema: Record<string, unknown>): Promise<string>{
+  const { resolved } = await resolveRefs(jsonSchema);
+  const code = jsonSchemaToZod(resolved);
+  const formatted = await format(code, { parser: "typescript" });
 
-  return formatted
+  return formatted;
 }
 ```
 
