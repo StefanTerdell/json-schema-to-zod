@@ -18,12 +18,12 @@ type InferReturnType<T extends Params> = {
     | (T[name]["value"] extends "number"
         ? number
         : T[name]["value"] extends "string"
-        ? string
-        : T[name]["value"] extends { [key: number]: string }
-        ? T[name]["value"][number]
-        : T[name]["value"] extends never  
-        ? boolean
-        : boolean)
+          ? string
+          : T[name]["value"] extends { [key: number]: string }
+            ? T[name]["value"][number]
+            : T[name]["value"] extends never
+              ? boolean
+              : boolean)
     | (T[name]["required"] extends string | true ? never : undefined);
 };
 
@@ -112,7 +112,10 @@ export function parseArgs<T extends Params>(
 export function parseOrReadJSON(jsonOrPath: string): unknown {
   jsonOrPath = jsonOrPath.trim();
 
-  if (jsonOrPath.length < 255 && statSync(jsonOrPath, { throwIfNoEntry: false })?.isFile()) {
+  if (
+    jsonOrPath.length < 255 &&
+    statSync(jsonOrPath, { throwIfNoEntry: false })?.isFile()
+  ) {
     jsonOrPath = readFileSync(jsonOrPath, "utf-8");
   }
 
@@ -148,16 +151,22 @@ export function printParams(params: Record<string, Param>): void {
   console.log(header);
 
   for (const name in params) {
-    const { shorthand, description } = params[name];
+    let { shorthand, description } = params[name];
+
+    if (shorthand) {
+      shorthand = " -" + shorthand;
+    } else {
+      shorthand = "   ";
+    }
+
+    if (description) {
+      description = "    " + description;
+    } else {
+      description = "";
+    }
 
     console.log(
-      "--" +
-        name +
-        " ".repeat(longest - name.length) +
-        " -" +
-        shorthand +
-        "    " +
-        description ?? "",
+      "--" + name + " ".repeat(longest - name.length) + shorthand + description,
     );
   }
 }

@@ -39,10 +39,11 @@ const params = {
   type: {
     shortHand: "t",
     value: "string",
+    description: "The name of the (optional) inferred type export."
   },
   noImport: {
     shortHand: "ni",
-    description: "Removes the `import { z } from 'zod';` or equivalent from the output"
+    description: "Removes the `import { z } from 'zod';` or equivalent from the output."
   },
 } as const;
 
@@ -54,7 +55,8 @@ async function main() {
     name: args.name,
     depth: args.depth,
     module: args.module || "esm",
-    noImport: args.noImport
+    noImport: args.noImport,
+    type: args.type
   });
 
   if (args.output) {
