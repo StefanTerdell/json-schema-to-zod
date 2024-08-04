@@ -166,6 +166,38 @@ export default z.string()
     );
   });
 
+  test("should include describes", (assert) => {
+    assert(
+      jsonSchemaToZod(
+        {
+          type: "string",
+          description: "foo",
+        },
+        { module: "esm" },
+      ),
+      `import { z } from "zod"
+
+export default z.string().describe("foo")
+`,
+    );
+  });
+
+  test("can exclude describes", (assert) => {
+    assert(
+      jsonSchemaToZod(
+        {
+          type: "string",
+          description: "foo",
+        },
+        { module: "esm", withoutDescribes: true },
+      ),
+      `import { z } from "zod"
+
+export default z.string()
+`,
+    );
+  });
+
   test("will remove optionality if default is present", (assert) => {
     assert(
       jsonSchemaToZod(
