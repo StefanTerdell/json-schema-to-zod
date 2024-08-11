@@ -4,6 +4,31 @@ import { parseObject } from "../../src/parsers/parseObject";
 import { suite } from "../suite";
 
 suite("parseObject", (test) => {
+  test("should handle with missing properties", (assert) => {
+    assert(
+      parseObject(
+        {
+          type: "object"
+        },
+        { path: [], seen: new Map() },
+      ),
+      `z.record(z.any())`
+    )
+  });
+
+  test("should handle with empty properties", (assert) => {
+    assert(
+      parseObject(
+        {
+          type: "object",
+          properties: {}
+        },
+        { path: [], seen: new Map() },
+      ),
+      `z.object({})`
+    )
+  });
+
   test("With properties - should handle optional and required properties", (assert) => {
     assert(
       parseObject(
@@ -188,6 +213,35 @@ suite("parseObject", (test) => {
               type: "string",
             },
           },
+          anyOf: [
+            {
+              required: ["b"],
+              properties: {
+                b: {
+                  type: "string",
+                },
+              },
+            },
+            {
+            },
+          ],
+        },
+        { path: [], seen: new Map() },
+      ),
+
+      `z.object({ "a": z.string() }).and(z.union([z.object({ "b": z.string() }), z.any()]))`,
+    );
+
+    assert(
+      parseObject(
+        {
+          type: "object",
+          required: ["a"],
+          properties: {
+            a: {
+              type: "string",
+            },
+          },
           oneOf: [
             {
               required: ["b"],
@@ -241,6 +295,53 @@ suite("parseObject", (test) => {
               type: "string",
             },
           },
+          oneOf: [
+            {
+              required: ["b"],
+              properties: {
+                b: {
+                  type: "string",
+                },
+              },
+            },
+            {
+            },
+          ],
+        },
+        { path: [], seen: new Map() },
+      ),
+
+      `z.object({ "a": z.string() }).and(z.any().superRefine((x, ctx) => {
+    const schemas = [z.object({ "b": z.string() }), z.any()];
+    const errors = schemas.reduce<z.ZodError[]>(
+      (errors, schema) =>
+        ((result) =>
+          result.error ? [...errors, result.error] : errors)(
+          schema.safeParse(x),
+        ),
+      [],
+    );
+    if (schemas.length - errors.length !== 1) {
+      ctx.addIssue({
+        path: ctx.path,
+        code: "invalid_union",
+        unionErrors: errors,
+        message: "Invalid input: Should pass single schema",
+      });
+    }
+  }))`,
+    );
+
+    assert(
+      parseObject(
+        {
+          type: "object",
+          required: ["a"],
+          properties: {
+            a: {
+              type: "string",
+            },
+          },
           allOf: [
             {
               required: ["b"],
@@ -264,6 +365,35 @@ suite("parseObject", (test) => {
       ),
 
       'z.object({ "a": z.string() }).and(z.intersection(z.object({ "b": z.string() }), z.object({ "c": z.string() })))',
+    );
+
+    assert(
+      parseObject(
+        {
+          type: "object",
+          required: ["a"],
+          properties: {
+            a: {
+              type: "string",
+            },
+          },
+          allOf: [
+            {
+              required: ["b"],
+              properties: {
+                b: {
+                  type: "string",
+                },
+              },
+            },
+            {
+            },
+          ],
+        },
+        { path: [], seen: new Map() },
+      ),
+
+      `z.object({ "a": z.string() }).and(z.intersection(z.object({ "b": z.string() }), z.any()))`,
     );
   });
 
@@ -386,6 +516,46 @@ suite("parseObject", (test) => {
         },
       ]),
     });
+  });
+
+  test("Funcional tests - properties and single-item patternProperties", (assert) => {
+    const schema: JSONSchema7 & { type: "object" } = {
+      type: "object",
+      required: ["a"],
+      properties: {
+        a: {
+          type: "string",
+        },
+        b: {
+          type: "number",
+        },
+      },
+      patternProperties: {
+        "\\.": { type: "array" },
+      },
+    };
+
+    const expected = `z.object({ "a": z.string(), "b": z.number().optional() }).catchall(z.array(z.any())).superRefine((value, ctx) => {
+for (const key in value) {
+if (key.match(new RegExp("\\\\."))) {
+const result = z.array(z.any()).safeParse(value[key])
+if (!result.success) {
+ctx.addIssue({
+          path: [...ctx.path, key],
+          code: 'custom',
+          message: \`Invalid input: Key matching regex /\${key}/ must match schema\`,
+          params: {
+            issues: result.error.issues
+          }
+        })
+}
+}
+}
+})`;
+
+    const result = parseObject(schema, { path: [], seen: new Map() });
+
+    assert(result, expected);
   });
 
   test("Funcional tests - properties, additionalProperties and patternProperties", (assert) => {
@@ -556,6 +726,37 @@ ctx.addIssue({
         },
       ]),
     });
+  });
+
+  test("Funcional tests - single-item patternProperties", (assert) => {
+    const schema: JSONSchema7 & { type: "object" } = {
+      type: "object",
+      patternProperties: {
+        "\\.": { type: "array" },
+      },
+    };
+
+    const expected = `z.record(z.array(z.any())).superRefine((value, ctx) => {
+for (const key in value) {
+if (key.match(new RegExp("\\\\."))) {
+const result = z.array(z.any()).safeParse(value[key])
+if (!result.success) {
+ctx.addIssue({
+          path: [...ctx.path, key],
+          code: 'custom',
+          message: \`Invalid input: Key matching regex /\${key}/ must match schema\`,
+          params: {
+            issues: result.error.issues
+          }
+        })
+}
+}
+}
+})`;
+
+    const result = parseObject(schema, { path: [], seen: new Map() });
+
+    assert(result, expected);
   });
 
   test("Funcional tests - patternProperties", (assert) => {
