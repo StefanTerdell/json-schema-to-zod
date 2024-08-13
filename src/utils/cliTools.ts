@@ -31,7 +31,7 @@ export function parseArgs<T extends Params>(
   params: T,
   args: string[],
   help?: boolean | string,
-): InferReturnType<T> {
+): InferReturnType<T>|void {
   const result: Record<string, string | number | boolean> = {};
 
   if (help) {
@@ -78,14 +78,14 @@ export function parseArgs<T extends Params>(
     }
 
     if (value) {
-      const value = args[index + 1];
+      const val = args[index + 1];
 
-      if (value === undefined) {
+      if (val === undefined) {
         throw new Error(`Expected a value for argument ${name}`);
       }
 
       if (value === "number") {
-        const asNumber = Number(value);
+        const asNumber = Number(val);
 
         if (isNaN(asNumber)) {
           throw new Error(`Value of argument ${name} must be a valid number`);
@@ -96,11 +96,11 @@ export function parseArgs<T extends Params>(
         continue;
       }
 
-      if (Array.isArray(value) && !value.includes(value)) {
+      if (Array.isArray(value) && !value.includes(val)) {
         throw new Error(`Value of argument ${name} must be one of ${value}`);
       }
 
-      result[name] = value;
+      result[name] = val;
     } else {
       result[name] = true;
     }

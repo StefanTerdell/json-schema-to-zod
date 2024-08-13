@@ -1,4 +1,5 @@
 import "./jsonSchemaToZod.test.js";
+import "./cli.js";
 import "./eval.test.js";
 import "./parsers/parseAnyOf.test.js";
 import "./parsers/parseAllOf.test.js";

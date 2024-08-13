@@ -28,7 +28,11 @@
   },
   "c8": {
     "exclude": [
-      "dist", "createIndex.ts", "jest.config.js", "postcjs.js", "postesm.js",
+      "dist",
+      "createIndex.ts",
+      "jest.config.js",
+      "postcjs.js",
+      "postesm.js",
       "test"
     ]
   },
