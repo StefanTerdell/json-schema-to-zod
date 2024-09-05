@@ -1,6 +1,6 @@
 {
   "name": "json-schema-to-zod",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "Converts JSON schema objects or files into Zod schemas",
   "types": "./dist/types/index.d.ts",
   "bin": "./dist/cjs/cli.js",
@@ -54,7 +54,8 @@
     "Michel Turpin (https://github.com/grimly)",
     "David Barratt (https://github.com/davidbarratt)",
     "pevisscher (https://github.com/pevisscher)",
-    "Aidin Abedi (https://github.com/aidinabedi)"
+    "Aidin Abedi (https://github.com/aidinabedi)",
+    "Brett Zamir (https://github.com/brettz9)"
   ],
   "license": "ISC",
   "repository": {
