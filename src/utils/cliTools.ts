@@ -31,7 +31,7 @@ export function parseArgs<T extends Params>(
   params: T,
   args: string[],
   help?: boolean | string,
-): InferReturnType<T>|void {
+): InferReturnType<T> {
   const result: Record<string, string | number | boolean> = {};
 
   if (help) {
