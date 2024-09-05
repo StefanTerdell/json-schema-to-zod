@@ -23,6 +23,83 @@ suite("parseString", (test) => {
     assert(run(code, datetime), { success: true, data: datetime });
   });
 
+  test("email", (assert) => {
+    assert(
+      parseString({
+        type: "string",
+        format: "email",
+      }),
+      "z.string().email()",
+    );
+  });
+
+  test("ip", (assert) => {
+    assert(
+      parseString({
+        type: "string",
+        format: "ip",
+      }),
+      "z.string().ip()",
+    );
+    assert(
+      parseString({
+        type: "string",
+        format: "ipv6",
+      }),
+      `z.string().ip({ version: "v6" })`,
+    );
+  });
+
+  test("uri", (assert) => {
+    assert(
+      parseString({
+        type: "string",
+        format: "uri",
+      }),
+      `z.string().url()`,
+    );
+  });
+
+  test("uuid", (assert) => {
+    assert(
+      parseString({
+        type: "string",
+        format: "uuid",
+      }),
+      `z.string().uuid()`,
+    );
+  });
+
+  test("time", (assert) => {
+    assert(
+      parseString({
+        type: "string",
+        format: "time",
+      }),
+      `z.string().time()`,
+    );
+  });
+
+  test("date", (assert) => {
+    assert(
+      parseString({
+        type: "string",
+        format: "date",
+      }),
+      `z.string().date()`,
+    );
+  });
+
+  test("duration", (assert) => {
+    assert(
+      parseString({
+        type: "string",
+        format: "duration",
+      }),
+      `z.string().duration()`,
+    );
+  });
+
   test("base64", (assert) => {
     assert(
       parseString({

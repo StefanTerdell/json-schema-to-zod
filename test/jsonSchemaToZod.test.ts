@@ -281,6 +281,30 @@ export default z.null()
     );
   });
 
+  test("can output with cjs and a name", (assert) => {
+    assert(jsonSchemaToZod({
+      type: "string"
+    }, { module: "cjs", name: "someName" }), `const { z } = require("zod")
+
+module.exports = { "someName": z.string() }
+`);
+  });
+
+  test("can output with cjs and no name", (assert) => {
+    assert(jsonSchemaToZod({
+      type: "string"
+    }, { module: "cjs" }), `const { z } = require("zod")
+
+module.exports = z.string()
+`);
+  });
+
+  test("can output with name only", (assert) => {
+    assert(jsonSchemaToZod({
+      type: "string"
+    }, { name: "someName" }), "const someName = z.string()");
+  });
+
   test("can exclude name", (assert) => {
     assert(jsonSchemaToZod(true), "z.any()");
   });
