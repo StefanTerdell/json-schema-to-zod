@@ -137,6 +137,57 @@ suite("parseString", (test) => {
     );
   });
 
+  test("stringified JSON", (assert) => {
+    assert(
+      parseString({
+        type: "string",
+        contentMediaType: "application/json",
+        contentSchema: {
+          type: "object",
+          properties: {
+            name: {
+              type: "string"
+            },
+            age: {
+              type: "integer"
+            }
+          },
+          required: [
+            "name",
+            "age"
+          ]
+        }
+      }),
+      'z.string().transform((str, ctx) => { try { return JSON.parse(str); } catch (err) { ctx.addIssue({ code: "custom", message: "Invalid JSON" }); }}).pipe(z.object({ "name": z.string(), "age": z.number().int() }))',
+    );
+    assert(
+      parseString({
+        type: "string",
+        contentMediaType: "application/json",
+        contentSchema: {
+          type: "object",
+          properties: {
+            name: {
+              type: "string"
+            },
+            age: {
+              type: "integer"
+            }
+          },
+          required: [
+            "name",
+            "age"
+          ]
+        },
+        errorMessage: {
+          contentMediaType: "x",
+          contentSchema: "y",
+        },
+      }),
+      'z.string().transform((str, ctx) => { try { return JSON.parse(str); } catch (err) { ctx.addIssue({ code: "custom", message: "Invalid JSON" }); }}, "x").pipe(z.object({ "name": z.string(), "age": z.number().int() }), "y")',
+    );
+  });
+
   test("should accept errorMessage", (assert) => {
     assert(
       parseString({
