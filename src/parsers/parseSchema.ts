@@ -97,41 +97,25 @@ const addAnnotations = (schema: JsonSchemaObject, parsed: string): string => {
 };
 
 const selectParser: ParserSelector = (schema, refs) => {
-  if (its.a.nullable(schema)) {
-    return parseNullable(schema, refs);
-  } else if (its.an.object(schema)) {
-    return parseObject(schema, refs);
-  } else if (its.an.array(schema)) {
-    return parseArray(schema, refs);
-  } else if (its.an.anyOf(schema)) {
-    return parseAnyOf(schema, refs);
-  } else if (its.an.allOf(schema)) {
-    return parseAllOf(schema, refs);
-  } else if (its.a.oneOf(schema)) {
-    return parseOneOf(schema, refs);
-  } else if (its.a.not(schema)) {
-    return parseNot(schema, refs);
-  } else if (its.an.enum(schema)) {
-    return parseEnum(schema); //<-- needs to come before primitives
-  } else if (its.a.const(schema)) {
-    return parseConst(schema);
-  } else if (its.a.multipleType(schema)) {
-    return parseMultipleType(schema, refs);
-  } else if (its.a.primitive(schema, "string")) {
-    return parseString(schema);
-  } else if (
-    its.a.primitive(schema, "number") ||
-    its.a.primitive(schema, "integer")
-  ) {
-    return parseNumber(schema);
-  } else if (its.a.primitive(schema, "boolean")) {
-    return parseBoolean(schema);
-  } else if (its.a.primitive(schema, "null")) {
-    return parseNull(schema);
-  } else if (its.a.conditional(schema)) {
-    return parseIfThenElse(schema, refs);
-  } else {
-    return parseDefault(schema);
+  switch (true) {
+    case its.a.nullable(schema): return parseNullable(schema, refs);
+    case its.an.object(schema): return parseObject(schema, refs);
+    case its.an.array(schema): return parseArray(schema, refs);
+    case its.an.anyOf(schema): return parseAnyOf(schema, refs);
+    case its.an.allOf(schema): return parseAllOf(schema, refs);
+    case its.a.oneOf(schema): return parseOneOf(schema, refs);
+    case its.a.not(schema): return parseNot(schema, refs);
+    // Enum needs to come before primitives
+    case its.an.enum(schema): return parseEnum(schema);
+    case its.a.const(schema): return parseConst(schema);
+    case its.a.multipleType(schema): return parseMultipleType(schema, refs);
+    case its.a.primitive(schema, "string"): return parseString(schema);
+    case its.a.primitive(schema, "integer"): // It's a number
+    case its.a.primitive(schema, "number"): return parseNumber(schema);
+    case its.a.primitive(schema, "boolean"): return parseBoolean(schema);
+    case its.a.primitive(schema, "null"): return parseNull(schema);
+    case its.a.conditional(schema): return parseIfThenElse(schema, refs);
+    default: return parseDefault(schema);
   }
 };
 
