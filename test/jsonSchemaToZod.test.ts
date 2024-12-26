@@ -198,6 +198,60 @@ export default z.string()
     );
   });
 
+  test("can include jsdocs", (assert) => {
+    assert(
+      jsonSchemaToZod({
+        type: "object",
+        description: "Description for schema",
+        properties: {
+          prop: {
+            type: "string",
+            description: "Description for prop"
+          },
+          obj: {
+            type: "object",
+            description: "Description for object that is multiline\nMore content\n\nAnd whitespace",
+            properties: {
+              nestedProp: {
+                type: "string",
+                description: "Description for nestedProp"
+              },
+              nestedProp2: {
+                type: "string",
+                description: "Description for nestedProp2"
+              },
+            },
+          }
+        }
+      }, { module: "esm", withJsdocs: true }),
+      `import { z } from "zod"
+
+/**
+* Description for schema
+*/
+export default z.object({ 
+/**
+* Description for prop
+*/
+"prop": z.string().describe("Description for prop").optional(), 
+/**
+* Description for object that is multiline
+* More content
+* 
+* And whitespace
+*/
+"obj": z.object({ 
+/**
+* Description for nestedProp
+*/
+"nestedProp": z.string().describe("Description for nestedProp").optional(), 
+/**
+* Description for nestedProp2
+*/
+"nestedProp2": z.string().describe("Description for nestedProp2").optional() }).describe("Description for object that is multiline\\nMore content\\n\\nAnd whitespace").optional() }).describe("Description for schema")
+`);
+  });
+
   test("will remove optionality if default is present", (assert) => {
     assert(
       jsonSchemaToZod(
