@@ -37,16 +37,16 @@ const params = {
     description: "Module syntax; 'esm', 'cjs' or 'none'. Defaults to 'esm'.",
   },
   type: {
-    shortHand: "t",
+    shorthand: "t",
     value: "string",
     description: "The name of the (optional) inferred type export."
   },
   noImport: {
-    shortHand: "ni",
+    shorthand: "ni",
     description: "Removes the `import { z } from 'zod';` or equivalent from the output."
   },
   withJsdocs: {
-    shortHand: "wj",
+    shorthand: "wj",
     description: "Add jsdocs to object properties.",
   },
 } as const;
