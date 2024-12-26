@@ -45,6 +45,10 @@ const params = {
     shortHand: "ni",
     description: "Removes the `import { z } from 'zod';` or equivalent from the output."
   },
+  withJsdocs: {
+    shortHand: "wj",
+    description: "Add jsdocs to object properties.",
+  },
 } as const;
 
 async function main() {
@@ -56,7 +60,8 @@ async function main() {
     depth: args.depth,
     module: args.module || "esm",
     noImport: args.noImport,
-    type: args.type
+    type: args.type,
+    withJsdocs: args.withJsdocs,
   });
 
   if (args.output) {
