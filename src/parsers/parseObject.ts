@@ -20,10 +20,14 @@ export function parseObject(
         .map((key) => {
           const propSchema = objectSchema.properties![key];
 
-          const result = `${JSON.stringify(key)}: ${parseSchema(propSchema, {
+          let result = `${JSON.stringify(key)}: ${parseSchema(propSchema, {
             ...refs,
             path: [...refs.path, "properties", key],
           })}`;
+
+          if (refs.withJsdocs && typeof propSchema === "object") {
+            result = addJsdocs(propSchema, result)
+          }
 
           const hasDefault =
             typeof propSchema === "object" && propSchema.default !== undefined;
@@ -225,4 +229,14 @@ export function parseObject(
   }
 
   return output;
+}
+
+const addJsdocs = (schema: JsonSchemaObject, parsed: string): string => {
+  const description = schema.description as string;
+  if (!description) {
+    return parsed;
+  }
+
+  const formattedDescription = description.split("\n").map(x => `* ${x}`).join("\n");
+  return `\n/**\n${formattedDescription}\n*/\n${parsed}`;
 }
