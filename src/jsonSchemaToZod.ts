@@ -1,5 +1,6 @@
 import { Options, JsonSchema } from "./Types.js";
 import { parseSchema } from "./parsers/parseSchema.js";
+import { expandJsdocs } from "./utils/jsdocs.js";
 
 export const jsonSchemaToZod = (
   schema: JsonSchema,
@@ -19,17 +20,21 @@ export const jsonSchemaToZod = (
     ...rest,
   });
 
+  const jsdocs = rest.withJsdocs && typeof schema !== "boolean" && schema.description
+    ? expandJsdocs(schema.description)
+    : "";
+
   if (module === "cjs") {
-    result = `module.exports = ${name ? `{ ${JSON.stringify(name)}: ${result} }` : result}
+    result = `${jsdocs}module.exports = ${name ? `{ ${JSON.stringify(name)}: ${result} }` : result}
 `;
 
     if (!noImport) {
-      result = `const { z } = require("zod")
+      result = `${jsdocs}const { z } = require("zod")
 
 ${result}`;
     }
   } else if (module === "esm") {
-    result = `export ${name ? `const ${name} =` : `default`} ${result}
+    result = `${jsdocs}export ${name ? `const ${name} =` : `default`} ${result}
 `;
 
     if (!noImport) {
@@ -38,7 +43,7 @@ ${result}`;
 ${result}`;
     }
   } else if (name) {
-    result = `const ${name} = ${result}`;
+    result = `${jsdocs}const ${name} = ${result}`;
   }
 
   if (type && name) {

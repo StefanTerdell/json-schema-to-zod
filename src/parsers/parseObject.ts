@@ -3,6 +3,7 @@ import { parseAnyOf } from "./parseAnyOf.js";
 import { parseOneOf } from "./parseOneOf.js";
 import { its, parseSchema } from "./parseSchema.js";
 import { parseAllOf } from "./parseAllOf.js";
+import { addJsdocs } from "../utils/jsdocs.js";
 
 export function parseObject(
   objectSchema: JsonSchemaObject & { type: "object" },
@@ -229,14 +230,4 @@ export function parseObject(
   }
 
   return output;
-}
-
-const addJsdocs = (schema: JsonSchemaObject, parsed: string): string => {
-  const description = schema.description as string;
-  if (!description) {
-    return parsed;
-  }
-
-  const formattedDescription = description.split("\n").map(x => `* ${x}`).join("\n");
-  return `\n/**\n${formattedDescription}\n*/\n${parsed}`;
 }
