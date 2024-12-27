@@ -226,13 +226,9 @@ export default z.string()
       }, { module: "esm", withJsdocs: true }),
       `import { z } from "zod"
 
-/**
-* Description for schema
-*/
+/**Description for schema*/
 export default z.object({ 
-/**
-* Description for prop
-*/
+/**Description for prop*/
 "prop": z.string().describe("Description for prop").optional(), 
 /**
 * Description for object that is multiline
@@ -241,13 +237,9 @@ export default z.object({
 * And whitespace
 */
 "obj": z.object({ 
-/**
-* Description for nestedProp
-*/
+/**Description for nestedProp*/
 "nestedProp": z.string().describe("Description for nestedProp").optional(), 
-/**
-* Description for nestedProp2
-*/
+/**Description for nestedProp2*/
 "nestedProp2": z.string().describe("Description for nestedProp2").optional() }).describe("Description for object that is multiline\\nMore content\\n\\nAnd whitespace").optional() }).describe("Description for schema")
 `);
   });
