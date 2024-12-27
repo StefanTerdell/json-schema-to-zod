@@ -47,7 +47,7 @@ const params = {
   },
   withJsdocs: {
     shorthand: "wj",
-    description: "Add jsdocs to object properties.",
+    description: "Generate jsdocs off of the description property.",
   },
 } as const;
 
