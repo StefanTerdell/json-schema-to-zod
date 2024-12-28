@@ -1,6 +1,6 @@
 {
   "name": "json-schema-to-zod",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "description": "Converts JSON schema objects or files into Zod schemas",
   "types": "./dist/types/index.d.ts",
   "bin": "./dist/cjs/cli.js",
@@ -56,7 +56,8 @@
     "pevisscher (https://github.com/pevisscher)",
     "Aidin Abedi (https://github.com/aidinabedi)",
     "Brett Zamir (https://github.com/brettz9)",
-    "vForgeOne (https://github.com/vforgeone)"
+    "vForgeOne (https://github.com/vforgeone)",
+    "Adrian Ordonez (https://github.com/adrianord)"
   ],
   "license": "ISC",
   "repository": {
