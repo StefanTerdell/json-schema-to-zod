@@ -3,6 +3,7 @@ import { parseAnyOf } from "./parseAnyOf.js";
 import { parseOneOf } from "./parseOneOf.js";
 import { its, parseSchema } from "./parseSchema.js";
 import { parseAllOf } from "./parseAllOf.js";
+import { addJsdocs } from "../utils/jsdocs.js";
 
 export function parseObject(
   objectSchema: JsonSchemaObject & { type: "object" },
@@ -20,10 +21,14 @@ export function parseObject(
         .map((key) => {
           const propSchema = objectSchema.properties![key];
 
-          const result = `${JSON.stringify(key)}: ${parseSchema(propSchema, {
+          let result = `${JSON.stringify(key)}: ${parseSchema(propSchema, {
             ...refs,
             path: [...refs.path, "properties", key],
           })}`;
+
+          if (refs.withJsdocs && typeof propSchema === "object") {
+            result = addJsdocs(propSchema, result)
+          }
 
           const hasDefault =
             typeof propSchema === "object" && propSchema.default !== undefined;

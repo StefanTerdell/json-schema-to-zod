@@ -37,13 +37,17 @@ const params = {
     description: "Module syntax; 'esm', 'cjs' or 'none'. Defaults to 'esm'.",
   },
   type: {
-    shortHand: "t",
+    shorthand: "t",
     value: "string",
     description: "The name of the (optional) inferred type export."
   },
   noImport: {
-    shortHand: "ni",
+    shorthand: "ni",
     description: "Removes the `import { z } from 'zod';` or equivalent from the output."
+  },
+  withJsdocs: {
+    shorthand: "wj",
+    description: "Generate jsdocs off of the description property.",
   },
 } as const;
 
@@ -56,7 +60,8 @@ async function main() {
     depth: args.depth,
     module: args.module || "esm",
     noImport: args.noImport,
-    type: args.type
+    type: args.type,
+    withJsdocs: args.withJsdocs,
   });
 
   if (args.output) {

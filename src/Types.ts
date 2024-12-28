@@ -68,6 +68,7 @@ export type Options = {
   module?: "cjs" | "esm" | "none";
   withoutDefaults?: boolean;
   withoutDescribes?: boolean;
+  withJsdocs?: boolean;
   parserOverride?: ParserOverride;
   depth?: number;
   type?: boolean | string;
