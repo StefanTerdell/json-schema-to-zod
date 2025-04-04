@@ -73,7 +73,11 @@ const myObject = {
 const module = jsonSchemaToZod(myObject, { module: "esm" });
 
 // `type` can be either a string or - outside of the CLI - a boolean. If its `true`, the name of the type will be the name of the schema with a capitalized first letter.
-const moduleWithType = jsonSchemaToZod(myObject, { name: "mySchema", module: "esm", type: true });
+const moduleWithType = jsonSchemaToZod(myObject, {
+  name: "mySchema",
+  module: "esm",
+  type: true,
+});
 
 const cjs = jsonSchemaToZod(myObject, { module: "cjs", name: "mySchema" });
 
@@ -119,7 +123,7 @@ import { resolveRefs } from "json-refs";
 import { format } from "prettier";
 import jsonSchemaToZod from "json-schema-to-zod";
 
-async function example(jsonSchema: Record<string, unknown>): Promise<string>{
+async function example(jsonSchema: Record<string, unknown>): Promise<string> {
   const { resolved } = await resolveRefs(jsonSchema);
   const code = jsonSchemaToZod(resolved);
   const formatted = await format(code, { parser: "typescript" });
@@ -131,6 +135,10 @@ async function example(jsonSchema: Record<string, unknown>): Promise<string>{
 #### Overriding a parser
 
 You can pass a function to the `overrideParser` option, which represents a function that receives the current schema node and the reference object, and should return a string when it wants to replace a default output. If the default output should be used for the node just return void.
+
+#### Schema factoring
+
+Factored schemas (like object schemas with "oneOf" etc.) is only partially supported. Here be dragons.
 
 #### Use at Runtime
 
