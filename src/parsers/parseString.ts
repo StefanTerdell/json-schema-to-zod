@@ -32,20 +32,20 @@ export const parseString = (schema: JsonSchemaObject & { type: "string" }) => {
     }
   });
 
-  r += withMessage(schema, "pattern", ({ json }) => [
-    `.regex(new RegExp(${json})`,
-    ", ",
-    ")",
-  ]);
-
   r += withMessage(schema, "minLength", ({ json }) => [
     `.min(${json}`,
     ", ",
     ")",
   ]);
-
+  
   r += withMessage(schema, "maxLength", ({ json }) => [
     `.max(${json}`,
+    ", ",
+    ")",
+  ]);
+  
+  r += withMessage(schema, "pattern", ({ json }) => [
+    `.regex(new RegExp(${json})`,
     ", ",
     ")",
   ]);
