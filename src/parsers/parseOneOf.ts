@@ -23,7 +23,7 @@ export const parseOneOf = (
     const errors = schemas.reduce<z.ZodError[]>(
       (errors, schema) =>
         ((result) =>
-          result.error ? [...errors, result.error] : errors)(
+          result?.error ? [...errors, result.error] : errors)(
           schema.safeParse(x),
         ),
       [],
