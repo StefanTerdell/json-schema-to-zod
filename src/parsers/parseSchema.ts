@@ -222,14 +222,17 @@ export const its = {
           return false;
         }
 
-                const property = schema.properties[discriminatorProp];
+        const property = schema.properties[discriminatorProp];
         return (
           property &&
           typeof property === "object" &&
           property.type === "string" &&
           // Ensure discriminator has a constant value (const or single-value enum)
           (property.const !== undefined ||
-           (property.enum && Array.isArray(property.enum) && property.enum.length === 1))
+           (property.enum && Array.isArray(property.enum) && property.enum.length === 1)) &&
+          // Ensure discriminator property is required
+          Array.isArray(schema.required) &&
+          schema.required.includes(discriminatorProp)
         );
       });
     },

@@ -110,14 +110,16 @@ suite("parseSimpleDiscriminatedOneOf", (test) => {
           properties: {
             type: { type: "string" as const, const: "A" },
             value: { type: "string" as const }
-          }
+          },
+          required: ["type", "value"]
         },
         {
           type: "object" as const, 
           properties: {
             type: { type: "string" as const, const: "B" },
             count: { type: "number" as const }
-          }
+          },
+          required: ["type", "count"]
         }
       ],
       discriminator: {
@@ -135,7 +137,8 @@ suite("parseSimpleDiscriminatedOneOf", (test) => {
           properties: {
             kind: { type: "string", enum: ["person"] },
             name: { type: "string" }
-          }
+          },
+          required: ["kind", "name"]
         }
       ],
       discriminator: {
@@ -344,5 +347,81 @@ suite("parseSimpleDiscriminatedOneOf", (test) => {
     } as any; // Using any for invalid test data
     assert(its.a.simpleDiscriminatedOneOf(schema1), false);
     assert(its.a.simpleDiscriminatedOneOf(schema2), false);
+  });
+
+  test("type guard should reject discriminator not in required array", (assert) => {
+    const schema = {
+      oneOf: [
+        {
+          type: "object",
+          properties: {
+            type: { type: "string", const: "A" },
+            value: { type: "string" }
+          },
+          required: ["value"] // missing "type" in required
+        }
+      ],
+      discriminator: {
+        propertyName: "type"
+      }
+    } as JsonSchemaObject;
+    assert(its.a.simpleDiscriminatedOneOf(schema), false);
+  });
+
+  test("type guard should reject schemas without required array", (assert) => {
+    const schema = {
+      oneOf: [
+        {
+          type: "object",
+          properties: {
+            type: { type: "string", const: "A" },
+            value: { type: "string" }
+          }
+          // No required array at all
+        }
+      ],
+      discriminator: {
+        propertyName: "type"
+      }
+    } as JsonSchemaObject;
+    assert(its.a.simpleDiscriminatedOneOf(schema), false);
+  });
+
+  test("type guard should reject schemas with non-array required", (assert) => {
+    const schema = {
+      oneOf: [
+        {
+          type: "object",
+          properties: {
+            type: { type: "string", const: "A" },
+            value: { type: "string" }
+          },
+          required: true // boolean instead of array
+        }
+      ],
+      discriminator: {
+        propertyName: "type"
+      }
+    } as any; // Using any for invalid test data
+    assert(its.a.simpleDiscriminatedOneOf(schema), false);
+  });
+
+  test("type guard should accept discriminator in required array", (assert) => {
+    const schema = {
+      oneOf: [
+        {
+          type: "object",
+          properties: {
+            type: { type: "string", const: "A" },
+            value: { type: "string" }
+          },
+          required: ["type", "value"] // "type" is properly required
+        }
+      ],
+      discriminator: {
+        propertyName: "type"
+      }
+    } as JsonSchemaObject;
+    assert(its.a.simpleDiscriminatedOneOf(schema), true);
   });
 });
