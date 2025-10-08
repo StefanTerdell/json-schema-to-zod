@@ -49,7 +49,7 @@ json-refs resolve mySchema.json | json-schema-to-zod | prettier --parser typescr
 | `--output`     | `-o`      | A file path to write to. If not supplied stdout will be used.                                  |
 | `--name`       | `-n`      | The name of the schema in the output                                                           |
 | `--depth`      | `-d`      | Maximum depth of recursion in schema before falling back to `z.any()`. Defaults to 0.          |
-| `--module`     | `-m`      | Module syntax; `esm`, `cjs` or none. Defaults to `esm` in the CLI and `none` programmaticly.   |
+| `--module`     | `-m`      | Module syntax; `esm`, `cjs` or none. Defaults to `esm` in the CLI and `none` programmatically. |
 | `--type`       | `-t`      | Export a named type along with the schema. Requires `name` to be set and `module` to be `esm`. |
 | `--noImport`   | `-ni`     | Removes the `import { z } from 'zod';` or equivalent from the output.                          |
 | `--withJsdocs` | `-wj`     | Generate jsdocs off of the description property.                                               |
@@ -72,7 +72,7 @@ const myObject = {
 
 const module = jsonSchemaToZod(myObject, { module: "esm" });
 
-// `type` can be either a string or - outside of the CLI - a boolean. If its `true`, the name of the type will be the name of the schema with a capitalized first letter.
+// `type` can be either a string or - outside of the CLI - a boolean. If it's `true`, the name of the type will be the name of the schema with a capitalized first letter.
 const moduleWithType = jsonSchemaToZod(myObject, {
   name: "mySchema",
   module: "esm",
@@ -142,7 +142,7 @@ Factored schemas (like object schemas with "oneOf" etc.) is only partially suppo
 
 #### Use at Runtime
 
-The output of this package is not meant to be used at runtime. JSON Schema and Zod does not overlap 100% and the scope of the parsers are purposefully limited in order to help the author avoid a permanent state of chaotic insanity. As this may cause some details of the original schema to be lost in translation, it is instead recommended to use tools such as [Ajv](https://ajv.js.org/) to validate your runtime values directly against the original JSON Schema.
+The output of this package is not meant to be used at runtime. JSON Schema and Zod do not overlap 100% and the scope of the parsers are purposefully limited in order to help the author avoid a permanent state of chaotic insanity. As this may cause some details of the original schema to be lost in translation, it is instead recommended to use tools such as [Ajv](https://ajv.js.org/) to validate your runtime values directly against the original JSON Schema.
 
 That said, it's possible in most cases to use `eval`. Here's an example that you shouldn't use:
 
