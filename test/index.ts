@@ -10,6 +10,7 @@ import "./parsers/parseNot.test.js";
 import "./parsers/parseNullable.test.js"
 import "./parsers/parseNumber.test.js";
 import "./parsers/parseObject.test.js";
+import "./parsers/parseSimpleDiscriminatedOneOf.test.js";
 import "./parsers/parseOneOf.test.js";
 import "./parsers/parseSchema.test.js";
 import "./parsers/parseMultipleType.test.js";

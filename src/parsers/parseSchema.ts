@@ -13,6 +13,7 @@ import { parseNumber } from "./parseNumber.js";
 import { parseObject } from "./parseObject.js";
 import { parseString } from "./parseString.js";
 import { parseOneOf } from "./parseOneOf.js";
+import { parseSimpleDiscriminatedOneOf } from "./parseSimpleDiscriminatedOneOf.js";
 import { parseNullable } from "./parseNullable.js";
 import {
   ParserSelector,
@@ -20,6 +21,7 @@ import {
   JsonSchemaObject,
   JsonSchema,
   Serializable,
+  SimpleDiscriminatedOneOfSchema,
 } from "../Types.js";
 
 export const parseSchema = (
@@ -107,6 +109,8 @@ const selectParser: ParserSelector = (schema, refs) => {
     return parseAnyOf(schema, refs);
   } else if (its.an.allOf(schema)) {
     return parseAllOf(schema, refs);
+  } else if (its.a.simpleDiscriminatedOneOf(schema)) {
+    return parseSimpleDiscriminatedOneOf(schema, refs);
   } else if (its.a.oneOf(schema)) {
     return parseOneOf(schema, refs);
   } else if (its.a.not(schema)) {
@@ -189,6 +193,49 @@ export const its = {
       Boolean(
         "if" in x && x.if && "then" in x && "else" in x && x.then && x.else,
       ),
+    simpleDiscriminatedOneOf: (
+      x: JsonSchemaObject,
+    ): x is SimpleDiscriminatedOneOfSchema => {
+      if (
+        !x.oneOf ||
+        !Array.isArray(x.oneOf) ||
+        x.oneOf.length === 0 ||
+        !x.discriminator ||
+        typeof x.discriminator !== "object" ||
+        !("propertyName" in x.discriminator) ||
+        typeof x.discriminator.propertyName !== "string"
+      ) {
+        return false;
+      }
+
+      const discriminatorProp = x.discriminator.propertyName;
+
+      return x.oneOf.every((schema) => {
+        if (
+          !schema ||
+          typeof schema !== "object" ||
+          schema.type !== "object" ||
+          !schema.properties ||
+          typeof schema.properties !== "object" ||
+          !(discriminatorProp in schema.properties)
+        ) {
+          return false;
+        }
+
+        const property = schema.properties[discriminatorProp];
+        return (
+          property &&
+          typeof property === "object" &&
+          property.type === "string" &&
+          // Ensure discriminator has a constant value (const or single-value enum)
+          (property.const !== undefined ||
+           (property.enum && Array.isArray(property.enum) && property.enum.length === 1)) &&
+          // Ensure discriminator property is required
+          Array.isArray(schema.required) &&
+          schema.required.includes(discriminatorProp)
+        );
+      });
+    },
     oneOf: (
       x: JsonSchemaObject,
     ): x is JsonSchemaObject & {

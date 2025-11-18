@@ -79,3 +79,17 @@ export type Refs = Options & {
   path: (string | number)[];
   seen: Map<object | boolean, { n: number; r: string | undefined }>;
 };
+
+export type SimpleDiscriminatedOneOfSchema<D extends string = string> = JsonSchemaObject & {
+  oneOf: (JsonSchemaObject & {
+    type: "object";
+    properties: {
+      [K in D]: JsonSchemaObject & { type: "string" };
+    } & {
+      [key: string]: JsonSchemaObject
+    };
+  })[];
+  discriminator: {
+    propertyName: D;
+  };
+}
