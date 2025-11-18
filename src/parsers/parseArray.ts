@@ -30,6 +30,14 @@ export const parseArray = (
     ", ",
     ")",
   ]);
-
+  
+  if (schema.uniqueItems === true) {
+    r += withMessage(schema, "uniqueItems", () => [
+      ".unique(",
+      "",
+      ")",
+    ]);
+  }
+  
   return r;
 };

@@ -52,4 +52,20 @@ suite("parseArray", (test) => {
       "z.array(z.string()).max(2)",
     );
   });
+  
+  test("should add unique for uniqueItems", (assert) => {
+    assert(
+      parseArray(
+        {
+          type: 'array',
+          uniqueItems: true,
+          items: {
+            type: 'string'
+          }
+        },
+        { path: [], seen: new Map() },
+      ),
+      "z.array(z.string()).unique()",
+    );
+  });
 })
