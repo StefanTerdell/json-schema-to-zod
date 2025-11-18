@@ -12,7 +12,7 @@ suite("parseObject", (test) => {
         },
         { path: [], seen: new Map() },
       ),
-      `z.record(z.any())`
+      `z.record(z.string(), z.any())`
     )
   });
 
@@ -118,7 +118,7 @@ suite("parseObject", (test) => {
         },
         { path: [], seen: new Map() },
       ),
-      "z.record(z.never())",
+      "z.record(z.string(), z.never())",
     );
   });
 
@@ -131,7 +131,7 @@ suite("parseObject", (test) => {
         },
         { path: [], seen: new Map() },
       ),
-      "z.record(z.any())",
+      "z.record(z.string(), z.any())",
     );
   });
 
@@ -145,7 +145,7 @@ suite("parseObject", (test) => {
 
         { path: [], seen: new Map() },
       ),
-      "z.record(z.number())",
+      "z.record(z.string(), z.number())",
     );
   });
 
@@ -451,18 +451,16 @@ suite("parseObject", (test) => {
       success: false,
       error: new ZodError([
         {
-          code: "invalid_type",
           expected: "string",
-          received: "undefined",
+          code: "invalid_type",
           path: ["a"],
-          message: "Required",
+          message: "Invalid input: expected string, received undefined",
         },
         {
-          code: "invalid_type",
           expected: "number",
-          received: "string",
+          code: "invalid_type",
           path: ["b"],
-          message: "Expected number, received string",
+          message: "Invalid input: expected number, received string",
         },
       ]),
     });
@@ -494,25 +492,22 @@ suite("parseObject", (test) => {
       success: false,
       error: new ZodError([
         {
-          code: "invalid_type",
           expected: "string",
-          received: "undefined",
+          code: "invalid_type",
           path: ["a"],
-          message: "Required",
+          message: "Invalid input: expected string, received undefined",
         },
         {
-          code: "invalid_type",
           expected: "number",
-          received: "string",
+          code: "invalid_type",
           path: ["b"],
-          message: "Expected number, received string",
+          message: "Invalid input: expected number, received string",
         },
         {
-          code: "invalid_type",
           expected: "boolean",
-          received: "string",
+          code: "invalid_type",
           path: ["x"],
-          message: "Expected boolean, received string",
+          message: "Invalid input: expected boolean, received string",
         },
       ]),
     });
@@ -541,7 +536,7 @@ if (key.match(new RegExp("\\\\."))) {
 const result = z.array(z.any()).safeParse(value[key])
 if (!result.success) {
 ctx.addIssue({
-          path: [...ctx.path, key],
+          path: [key],
           code: 'custom',
           message: \`Invalid input: Key matching regex /\${key}/ must match schema\`,
           params: {
@@ -585,7 +580,7 @@ evaluated = true
 const result = z.array(z.any()).safeParse(value[key])
 if (!result.success) {
 ctx.addIssue({
-          path: [...ctx.path, key],
+          path: [key],
           code: 'custom',
           message: \`Invalid input: Key matching regex /\${key}/ must match schema\`,
           params: {
@@ -599,7 +594,7 @@ evaluated = true
 const result = z.array(z.any()).min(1).safeParse(value[key])
 if (!result.success) {
 ctx.addIssue({
-          path: [...ctx.path, key],
+          path: [key],
           code: 'custom',
           message: \`Invalid input: Key matching regex /\${key}/ must match schema\`,
           params: {
@@ -612,7 +607,7 @@ if (!evaluated) {
 const result = z.boolean().safeParse(value[key])
 if (!result.success) {
 ctx.addIssue({
-          path: [...ctx.path, key],
+          path: [key],
           code: 'custom',
           message: \`Invalid input: must match catchall schema\`,
           params: {
@@ -635,7 +630,7 @@ ctx.addIssue({
       additionalProperties: { type: "boolean" },
     };
 
-    const expected = "z.record(z.boolean())";
+    const expected = "z.record(z.string(), z.boolean())";
 
     const result = parseObject(schema, { path: [], seen: new Map() });
 
@@ -652,7 +647,7 @@ ctx.addIssue({
       },
     };
 
-    const expected = `z.record(z.union([z.array(z.any()), z.array(z.any()).min(1), z.boolean()])).superRefine((value, ctx) => {
+    const expected = `z.record(z.string(), z.union([z.array(z.any()), z.array(z.any()).min(1), z.boolean()])).superRefine((value, ctx) => {
 for (const key in value) {
 let evaluated = false
 if (key.match(new RegExp(\"\\\\.\"))) {
@@ -660,7 +655,7 @@ evaluated = true
 const result = z.array(z.any()).safeParse(value[key])
 if (!result.success) {
 ctx.addIssue({
-          path: [...ctx.path, key],
+          path: [key],
           code: 'custom',
           message: \`Invalid input: Key matching regex /\${key}/ must match schema\`,
           params: {
@@ -674,7 +669,7 @@ evaluated = true
 const result = z.array(z.any()).min(1).safeParse(value[key])
 if (!result.success) {
 ctx.addIssue({
-          path: [...ctx.path, key],
+          path: [key],
           code: 'custom',
           message: \`Invalid input: Key matching regex /\${key}/ must match schema\`,
           params: {
@@ -687,7 +682,7 @@ if (!evaluated) {
 const result = z.boolean().safeParse(value[key])
 if (!result.success) {
 ctx.addIssue({
-          path: [...ctx.path, key],
+          path: [key],
           code: 'custom',
           message: \`Invalid input: must match catchall schema\`,
           params: {
@@ -713,13 +708,12 @@ ctx.addIssue({
           params: {
             issues: [
               {
+                origin: "array",
                 code: "too_small",
                 minimum: 1,
-                type: "array",
                 inclusive: true,
-                exact: false,
-                message: "Array must contain at least 1 element(s)",
                 path: [],
+                message: "Too small: expected array to have >=1 items",
               },
             ],
           },
@@ -736,13 +730,13 @@ ctx.addIssue({
       },
     };
 
-    const expected = `z.record(z.array(z.any())).superRefine((value, ctx) => {
+    const expected = `z.record(z.string(), z.array(z.any())).superRefine((value, ctx) => {
 for (const key in value) {
 if (key.match(new RegExp("\\\\."))) {
 const result = z.array(z.any()).safeParse(value[key])
 if (!result.success) {
 ctx.addIssue({
-          path: [...ctx.path, key],
+          path: [key],
           code: 'custom',
           message: \`Invalid input: Key matching regex /\${key}/ must match schema\`,
           params: {
@@ -768,13 +762,13 @@ ctx.addIssue({
       },
     };
 
-    const expected = `z.record(z.union([z.array(z.any()), z.array(z.any()).min(1)])).superRefine((value, ctx) => {
+    const expected = `z.record(z.string(), z.union([z.array(z.any()), z.array(z.any()).min(1)])).superRefine((value, ctx) => {
 for (const key in value) {
 if (key.match(new RegExp(\"\\\\.\"))) {
 const result = z.array(z.any()).safeParse(value[key])
 if (!result.success) {
 ctx.addIssue({
-          path: [...ctx.path, key],
+          path: [key],
           code: 'custom',
           message: \`Invalid input: Key matching regex /\${key}/ must match schema\`,
           params: {
@@ -787,7 +781,7 @@ if (key.match(new RegExp(\"\\\\,\"))) {
 const result = z.array(z.any()).min(1).safeParse(value[key])
 if (!result.success) {
 ctx.addIssue({
-          path: [...ctx.path, key],
+          path: [key],
           code: 'custom',
           message: \`Invalid input: Key matching regex /\${key}/ must match schema\`,
           params: {
@@ -816,13 +810,12 @@ ctx.addIssue({
           params: {
             issues: [
               {
+                origin: "array",
                 code: "too_small",
                 minimum: 1,
-                type: "array",
                 inclusive: true,
-                exact: false,
-                message: "Array must contain at least 1 element(s)",
                 path: [],
+                message: "Too small: expected array to have >=1 items",
               },
             ],
           },
@@ -857,7 +850,7 @@ if (key.match(new RegExp(\"\\\\.\"))) {
 const result = z.array(z.any()).safeParse(value[key])
 if (!result.success) {
 ctx.addIssue({
-          path: [...ctx.path, key],
+          path: [key],
           code: 'custom',
           message: \`Invalid input: Key matching regex /\${key}/ must match schema\`,
           params: {
@@ -870,7 +863,7 @@ if (key.match(new RegExp(\"\\\\,\"))) {
 const result = z.array(z.any()).min(1).safeParse(value[key])
 if (!result.success) {
 ctx.addIssue({
-          path: [...ctx.path, key],
+          path: [key],
           code: 'custom',
           message: \`Invalid input: Key matching regex /\${key}/ must match schema\`,
           params: {
