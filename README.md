@@ -134,7 +134,7 @@ async function example(jsonSchema: Record<string, unknown>): Promise<string> {
 
 #### Overriding a parser
 
-You can pass a function to the `overrideParser` option, which represents a function that receives the current schema node and the reference object, and should return a string when it wants to replace a default output. If the default output should be used for the node just return void.
+You can pass a function to the `parserOverride` option, which represents a function that receives the current schema node and the reference object, and should return a string when it wants to replace a default output. If the default output should be used for the node just return void.
 
 #### Schema factoring
 
