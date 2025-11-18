@@ -3,7 +3,11 @@
 [![NPM Version](https://img.shields.io/npm/v/json-schema-to-zod.svg)](https://npmjs.org/package/json-schema-to-zod)
 [![NPM Downloads](https://img.shields.io/npm/dw/json-schema-to-zod.svg)](https://npmjs.org/package/json-schema-to-zod)
 
-_Looking for the exact opposite? Check out [zod-to-json-schema](https://npmjs.org/package/zod-to-json-schema)_
+# Notice of (pending) deprecation
+
+I'm waiting for a response regarding the Zod v4 support PR. After that has been merged, a final version of this package will be released, and this repo will be archived.
+
+_Please do not open any new issues or pull requests as I'm not likely to attend to them._
 
 ## Summary
 
@@ -12,6 +16,8 @@ A runtime package and CLI tool to convert JSON schema (draft 4+) objects or file
 Before v2 it used [`prettier`](https://www.npmjs.com/package/prettier) for formatting and [`json-refs`](https://www.npmjs.com/package/json-refs) to resolve schemas. To replicate the previous behaviour, please use their respective CLI tools.
 
 Since v2 the CLI supports piped JSON.
+
+_Looking for the exact opposite? Check out [zod-to-json-schema](https://npmjs.org/package/zod-to-json-schema)_
 
 ## Usage
 
