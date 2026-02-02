@@ -53,6 +53,36 @@ json-refs resolve mySchema.json | json-schema-to-zod | prettier --parser typescr
 | `--type`       | `-t`      | Export a named type along with the schema. Requires `name` to be set and `module` to be `esm`. |
 | `--noImport`   | `-ni`     | Removes the `import { z } from 'zod';` or equivalent from the output.                          |
 | `--withJsdocs` | `-wj`     | Generate jsdocs off of the description property.                                               |
+| `--zodVersion` | `-zv`     | Target Zod version: `3` or `4`. Defaults to `4`.                                               |
+
+### Zod Version Targeting
+
+This package supports generating code compatible with both Zod v3 and v4. By default, Zod v4 syntax is generated.
+
+**Key differences between versions:**
+
+- **`z.record()`**: Zod v4 requires an explicit key type: `z.record(z.string(), valueSchema)` vs `z.record(valueSchema)` in v3
+- **Error paths**: Zod v4 uses simplified error paths in `superRefine` callbacks
+
+**CLI:**
+
+```console
+# Generate Zod v4 compatible code (default)
+json-schema-to-zod -i schema.json -o output.ts
+
+# Generate Zod v3 compatible code
+json-schema-to-zod -i schema.json -o output.ts --zodVersion 3
+```
+
+**Programmatic:**
+
+```typescript
+// Zod v4 (default)
+jsonSchemaToZod(schema, { zodVersion: 4 });
+
+// Zod v3
+jsonSchemaToZod(schema, { zodVersion: 3 });
+```
 
 ### Programmatic
 

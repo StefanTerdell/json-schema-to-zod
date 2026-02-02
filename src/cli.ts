@@ -3,7 +3,7 @@ import { jsonSchemaToZod } from "./jsonSchemaToZod.js";
 import { writeFileSync, mkdirSync } from "fs";
 import { dirname } from "path";
 import { parseArgs, parseOrReadJSON, readPipe } from "./utils/cliTools.js";
-import { JsonSchema } from "./Types.js";
+import { JsonSchema, ZodVersion } from "./Types.js";
 
 const params = {
   input: {
@@ -49,12 +49,18 @@ const params = {
     shorthand: "wj",
     description: "Generate jsdocs off of the description property.",
   },
+  zodVersion: {
+    shorthand: "zv",
+    value: "number",
+    description: "Target Zod version: 3 or 4. Defaults to 4.",
+  },
 } as const;
 
 async function main() {
   const args = parseArgs(params, process.argv, true);
   const input = args.input || (await readPipe());
   const jsonSchema = parseOrReadJSON(input);
+  const zodVersion = (args.zodVersion === 3 ? 3 : 4) as ZodVersion;
   const zodSchema = jsonSchemaToZod(jsonSchema as JsonSchema, {
     name: args.name,
     depth: args.depth,
@@ -62,6 +68,7 @@ async function main() {
     noImport: args.noImport,
     type: args.type,
     withJsdocs: args.withJsdocs,
+    zodVersion,
   });
 
   if (args.output) {

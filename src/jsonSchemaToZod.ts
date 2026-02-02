@@ -4,7 +4,7 @@ import { expandJsdocs } from "./utils/jsdocs.js";
 
 export const jsonSchemaToZod = (
   schema: JsonSchema,
-  { module, name, type, noImport, ...rest }: Options = {},
+  { module, name, type, noImport, zodVersion = 4, ...rest }: Options = {},
 ): string => {
   if (type && (!name || module !== "esm")) {
     throw new Error(
@@ -17,6 +17,7 @@ export const jsonSchemaToZod = (
     name,
     path: [],
     seen: new Map(),
+    zodVersion,
     ...rest,
   });
 

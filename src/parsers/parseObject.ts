@@ -5,6 +5,24 @@ import { its, parseSchema } from "./parseSchema.js";
 import { parseAllOf } from "./parseAllOf.js";
 import { addJsdocs } from "../utils/jsdocs.js";
 
+// Helper for z.record() generation - Zod v4 requires explicit key type
+function emitRecord(valueSchema: string, refs: Refs): string {
+  if (refs.zodVersion === 3) {
+    return `z.record(${valueSchema})`;
+  }
+  // Default to v4 syntax
+  return `z.record(z.string(), ${valueSchema})`;
+}
+
+// Helper for error path in superRefine - Zod v4 uses simplified path
+function emitErrorPath(refs: Refs): string {
+  if (refs.zodVersion === 3) {
+    return `path: [...ctx.path, key]`;
+  }
+  // Default to v4 syntax
+  return `path: [key]`;
+}
+
 export function parseObject(
   objectSchema: JsonSchemaObject & { type: "object" },
   refs: Refs,
@@ -89,18 +107,18 @@ export function parseObject(
       }
     } else {
       if (additionalProperties) {
-        patternProperties += `z.record(z.string(), z.union([${[
+        patternProperties += emitRecord(`z.union([${[
           ...Object.values(parsedPatternProperties),
           additionalProperties,
-        ].join(", ")}]))`;
+        ].join(", ")}])`, refs);
       } else if (Object.keys(parsedPatternProperties).length > 1) {
-        patternProperties += `z.record(z.string(), z.union([${Object.values(
+        patternProperties += emitRecord(`z.union([${Object.values(
           parsedPatternProperties,
-        ).join(", ")}]))`;
+        ).join(", ")}])`, refs);
       } else {
-        patternProperties += `z.record(z.string(), ${Object.values(
+        patternProperties += emitRecord(`${Object.values(
           parsedPatternProperties,
-        )})`;
+        )}`, refs);
       }
     }
 
@@ -133,7 +151,7 @@ export function parseObject(
       patternProperties += "if (!result.success) {\n";
 
       patternProperties += `ctx.addIssue({
-          path: [key],
+          ${emitErrorPath(refs)},
           code: 'custom',
           message: \`Invalid input: Key matching regex /\${key}/ must match schema\`,
           params: {
@@ -152,7 +170,7 @@ export function parseObject(
       patternProperties += "if (!result.success) {\n";
 
       patternProperties += `ctx.addIssue({
-          path: [key],
+          ${emitErrorPath(refs)},
           code: 'custom',
           message: \`Invalid input: must match catchall schema\`,
           params: {
@@ -178,8 +196,8 @@ export function parseObject(
     : patternProperties
       ? patternProperties
       : additionalProperties
-        ? `z.record(z.string(), ${additionalProperties})`
-        : "z.record(z.string(), z.any())";
+        ? emitRecord(additionalProperties, refs)
+        : emitRecord("z.any()", refs);
 
   if (its.an.anyOf(objectSchema)) {
     output += `.and(${parseAnyOf(

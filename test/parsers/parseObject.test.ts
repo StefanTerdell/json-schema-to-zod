@@ -879,4 +879,147 @@ ctx.addIssue({
 
     assert(result, expected);
   });
+
+  // Zod v3 specific tests
+  test("Zod v3 - should handle with missing properties", (assert) => {
+    assert(
+      parseObject(
+        {
+          type: "object"
+        },
+        { path: [], seen: new Map(), zodVersion: 3 },
+      ),
+      `z.record(z.any())`
+    )
+  });
+
+  test("Zod v3 - Without properties - should handle additionalProperties when set to false", (assert) => {
+    assert(
+      parseObject(
+        {
+          type: "object",
+          additionalProperties: false,
+        },
+        { path: [], seen: new Map(), zodVersion: 3 },
+      ),
+      "z.record(z.never())",
+    );
+  });
+
+  test("Zod v3 - Without properties - should handle additionalProperties when set to true", (assert) => {
+    assert(
+      parseObject(
+        {
+          type: "object",
+          additionalProperties: true,
+        },
+        { path: [], seen: new Map(), zodVersion: 3 },
+      ),
+      "z.record(z.any())",
+    );
+  });
+
+  test("Zod v3 - Without properties - should handle additionalProperties when provided a schema", (assert) => {
+    assert(
+      parseObject(
+        {
+          type: "object",
+          additionalProperties: { type: "number" },
+        },
+        { path: [], seen: new Map(), zodVersion: 3 },
+      ),
+      "z.record(z.number())",
+    );
+  });
+
+  test("Zod v3 - Funcional tests - additionalProperties", (assert) => {
+    const schema: JSONSchema7 & { type: "object" } = {
+      type: "object",
+      additionalProperties: { type: "boolean" },
+    };
+
+    const expected = "z.record(z.boolean())";
+
+    const result = parseObject(schema, { path: [], seen: new Map(), zodVersion: 3 });
+
+    assert(result, expected);
+  });
+
+  test("Zod v3 - patternProperties should use ctx.path", (assert) => {
+    const schema: JSONSchema7 & { type: "object" } = {
+      type: "object",
+      patternProperties: {
+        "\\.": { type: "array" },
+      },
+    };
+
+    const expected = `z.record(z.array(z.any())).superRefine((value, ctx) => {
+for (const key in value) {
+if (key.match(new RegExp("\\\\."))) {
+const result = z.array(z.any()).safeParse(value[key])
+if (!result.success) {
+ctx.addIssue({
+          path: [...ctx.path, key],
+          code: 'custom',
+          message: \`Invalid input: Key matching regex /\${key}/ must match schema\`,
+          params: {
+            issues: result.error.issues
+          }
+        })
+}
+}
+}
+})`;
+
+    const result = parseObject(schema, { path: [], seen: new Map(), zodVersion: 3 });
+
+    assert(result, expected);
+  });
+
+  test("Zod v3 - additionalProperties and patternProperties", (assert) => {
+    const schema: JSONSchema7 & { type: "object" } = {
+      type: "object",
+      additionalProperties: { type: "boolean" },
+      patternProperties: {
+        "\\.": { type: "array" },
+      },
+    };
+
+    const expected = `z.record(z.union([z.array(z.any()), z.boolean()])).superRefine((value, ctx) => {
+for (const key in value) {
+let evaluated = false
+if (key.match(new RegExp("\\\\."))) {
+evaluated = true
+const result = z.array(z.any()).safeParse(value[key])
+if (!result.success) {
+ctx.addIssue({
+          path: [...ctx.path, key],
+          code: 'custom',
+          message: \`Invalid input: Key matching regex /\${key}/ must match schema\`,
+          params: {
+            issues: result.error.issues
+          }
+        })
+}
+}
+if (!evaluated) {
+const result = z.boolean().safeParse(value[key])
+if (!result.success) {
+ctx.addIssue({
+          path: [...ctx.path, key],
+          code: 'custom',
+          message: \`Invalid input: must match catchall schema\`,
+          params: {
+            issues: result.error.issues
+          }
+        })
+}
+}
+}
+})`;
+
+    const result = parseObject(schema, { path: [], seen: new Map(), zodVersion: 3 });
+
+    assert(result, expected);
+  });
 });

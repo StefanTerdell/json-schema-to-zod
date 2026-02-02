@@ -63,6 +63,8 @@ export type ParserOverride = (
   refs: Refs,
 ) => string | void;
 
+export type ZodVersion = 3 | 4;
+
 export type Options = {
   name?: string;
   module?: "cjs" | "esm" | "none";
@@ -72,7 +74,8 @@ export type Options = {
   parserOverride?: ParserOverride;
   depth?: number;
   type?: boolean | string;
-  noImport?: boolean
+  noImport?: boolean;
+  zodVersion?: ZodVersion;
 };
 
 export type Refs = Options & {
