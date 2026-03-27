@@ -13,7 +13,7 @@ suite("parseOneOf", (test) => {
             { type: "number" },
           ],
         },
-        { path: [], seen: new Map() },
+        { path: [], seen: new Map(), zodVersion: 3 },
       ),
       `z.any().superRefine((x, ctx) => {
     const schemas = [z.string(), z.number()];
@@ -26,10 +26,14 @@ suite("parseOneOf", (test) => {
       [],
     );
     if (schemas.length - errors.length !== 1) {
-      ctx.addIssue({
+      ctx.addIssue(errors.length ? {
         path: ctx.path,
         code: "invalid_union",
         unionErrors: errors,
+        message: "Invalid input: Should pass single schema",
+      } : {
+        path: ctx.path,
+        code: "custom",
         message: "Invalid input: Should pass single schema",
       });
     }

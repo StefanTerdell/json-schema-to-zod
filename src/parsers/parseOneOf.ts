@@ -29,10 +29,14 @@ export const parseOneOf = (
       [],
     );
     if (schemas.length - errors.length !== 1) {
-      ctx.addIssue({
-        path: ctx.path,
+      ctx.addIssue(errors.length ? {
+        path: ${refs.zodVersion === 3 ? 'ctx.path' : '[]' },
         code: "invalid_union",
-        unionErrors: errors,
+        ${refs.zodVersion === 3 ? 'unionErrors: ' : ''}errors,
+        message: "Invalid input: Should pass single schema",
+      } : {
+        path: ${refs.zodVersion === 3 ? 'ctx.path' : '[]' },
+        code: "custom",${refs.zodVersion === 3 ? "" : "\n        errors,"}
         message: "Invalid input: Should pass single schema",
       });
     }

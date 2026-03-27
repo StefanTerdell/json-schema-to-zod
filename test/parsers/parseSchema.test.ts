@@ -109,10 +109,15 @@ suite("parseSchema", (test) => {
       [],
     );
     if (schemas.length - errors.length !== 1) {
-      ctx.addIssue({
-        path: ctx.path,
+      ctx.addIssue(errors.length ? {
+        path: [],
         code: "invalid_union",
-        unionErrors: errors,
+        errors,
+        message: "Invalid input: Should pass single schema",
+      } : {
+        path: [],
+        code: "custom",
+        errors,
         message: "Invalid input: Should pass single schema",
       });
     }
