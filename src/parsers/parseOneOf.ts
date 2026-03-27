@@ -5,6 +5,8 @@ export const parseOneOf = (
   schema: JsonSchemaObject & { oneOf: JsonSchema[] },
   refs: Refs,
 ) => {
+  let is3 = refs.zodVersion === 3;
+
   return schema.oneOf.length
     ? schema.oneOf.length === 1
       ? parseSchema(schema.oneOf[0], {
@@ -20,24 +22,25 @@ export const parseOneOf = (
         }),
       )
       .join(", ")}];
-    const errors = schemas.reduce<z.ZodError[]>(
+    const errors = schemas.reduce<z.${is3 ? "ZodError" : "core.$ZodIssue"}[]>(
       (errors, schema) =>
         ((result) =>
-          result.error ? [...errors, result.error] : errors)(
+          result.error ? [...errors, ${is3 ? "result.error" : "...result.error.issues"}] : errors)(
           schema.safeParse(x),
         ),
       [],
     );
-    if (schemas.length - errors.length !== 1) {
+    const passed = schemas.length - errors.length;
+    if (passed !== 1) {
       ctx.addIssue(errors.length ? {
-        path: ${refs.zodVersion === 3 ? 'ctx.path' : '[]' },
+        path: ${is3 ? "ctx.path" : "[]"},
         code: "invalid_union",
-        ${refs.zodVersion === 3 ? 'unionErrors: ' : ''}errors,
-        message: "Invalid input: Should pass single schema",
+        ${is3 ? "unionErrors: errors" : "errors: [errors]"},
+        message: "Invalid input: Should pass single schema. Passed " + passed,
       } : {
-        path: ${refs.zodVersion === 3 ? 'ctx.path' : '[]' },
-        code: "custom",${refs.zodVersion === 3 ? "" : "\n        errors,"}
-        message: "Invalid input: Should pass single schema",
+        path: ${is3 ? "ctx.path" : "[]"},
+        code: "custom",${is3 ? "" : "\n        errors: [errors],"}
+        message: "Invalid input: Should pass single schema. Passed " + passed,
       });
     }
   })`

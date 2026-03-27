@@ -25,16 +25,17 @@ suite("parseOneOf", (test) => {
         ),
       [],
     );
-    if (schemas.length - errors.length !== 1) {
+    const passed = schemas.length - errors.length;
+    if (passed !== 1) {
       ctx.addIssue(errors.length ? {
         path: ctx.path,
         code: "invalid_union",
         unionErrors: errors,
-        message: "Invalid input: Should pass single schema",
+        message: "Invalid input: Should pass single schema. Passed " + passed,
       } : {
         path: ctx.path,
         code: "custom",
-        message: "Invalid input: Should pass single schema",
+        message: "Invalid input: Should pass single schema. Passed " + passed,
       });
     }
   })`,

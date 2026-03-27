@@ -100,25 +100,26 @@ suite("parseSchema", (test) => {
       ] }),
       `z.any().superRefine((x, ctx) => {
     const schemas = [z.string(), z.number()];
-    const errors = schemas.reduce<z.ZodError[]>(
+    const errors = schemas.reduce<z.core.$ZodIssue[]>(
       (errors, schema) =>
         ((result) =>
-          result.error ? [...errors, result.error] : errors)(
+          result.error ? [...errors, ...result.error.issues] : errors)(
           schema.safeParse(x),
         ),
       [],
     );
-    if (schemas.length - errors.length !== 1) {
+    const passed = schemas.length - errors.length;
+    if (passed !== 1) {
       ctx.addIssue(errors.length ? {
         path: [],
         code: "invalid_union",
-        errors,
-        message: "Invalid input: Should pass single schema",
+        errors: [errors],
+        message: "Invalid input: Should pass single schema. Passed " + passed,
       } : {
         path: [],
         code: "custom",
-        errors,
-        message: "Invalid input: Should pass single schema",
+        errors: [errors],
+        message: "Invalid input: Should pass single schema. Passed " + passed,
       });
     }
   })`,
