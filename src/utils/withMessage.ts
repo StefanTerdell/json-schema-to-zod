@@ -10,6 +10,7 @@ export function withMessage(
   schema: JsonSchemaObject,
   key: string,
   get: (props: { value: unknown; json: string }) => Builder | void,
+  fallbackMessage?: string,
 ) {
   const value = schema[key as keyof typeof schema];
 
@@ -25,8 +26,10 @@ export function withMessage(
 
       r += opener;
 
-      if (schema.errorMessage?.[key] !== undefined) {
-        r += prefix + JSON.stringify(schema.errorMessage[key]);
+      const message = schema.errorMessage?.[key] ?? fallbackMessage;
+
+      if (message !== undefined) {
+        r += prefix + JSON.stringify(message);
       }
       r;
       r += closer;

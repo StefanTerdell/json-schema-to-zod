@@ -32,11 +32,16 @@ export const parseArray = (
   ]);
   
   if (schema.uniqueItems === true) {
-    r += withMessage(schema, "uniqueItems", () => [
-      ".unique(",
-      "",
-      ")",
-    ]);
+    r += withMessage(
+      schema,
+      "uniqueItems",
+      () => [
+        ".refine((arr) => arr.every((item, i) => arr.indexOf(item) == i)",
+        ", ",
+        ")",
+      ],
+      "All items must be unique!",
+    );
   }
   
   return r;

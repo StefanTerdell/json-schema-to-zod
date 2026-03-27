@@ -65,7 +65,7 @@ suite("parseArray", (test) => {
         },
         { path: [], seen: new Map() },
       ),
-      "z.array(z.string()).unique()",
+      'z.array(z.string()).refine((arr) => arr.every((item, i) => arr.indexOf(item) == i), "All items must be unique!")',
     );
   });
 })
