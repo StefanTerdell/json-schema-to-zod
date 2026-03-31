@@ -3,11 +3,11 @@
 [![NPM Version](https://img.shields.io/npm/v/json-schema-to-zod.svg)](https://npmjs.org/package/json-schema-to-zod)
 [![NPM Downloads](https://img.shields.io/npm/dw/json-schema-to-zod.svg)](https://npmjs.org/package/json-schema-to-zod)
 
-# Notice of (pending) deprecation
+# Notice of deprecation
 
-I'm waiting for a response regarding the Zod v4 support PR. After that has been merged, a final version of this package will be released, and this repo will be archived.
+As of March 2026, this project will no longer be actively maintained.
 
-_Please do not open any new issues or pull requests as I'm not likely to attend to them._
+_Thank you to all the contributors and sponsors throughout the years! So long, and thanks for all the fish._
 
 ## Summary
 
