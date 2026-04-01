@@ -22,15 +22,23 @@ export const parseOneOf = (
         }),
       )
       .join(", ")}];
-    const errors = schemas.reduce<z.${is3 ? "ZodError" : "core.$ZodIssue"}[]>(
-      (errors, schema) =>
+    const { errors, failed } = schemas.reduce<{
+      errors: z.${is3 ? "ZodError" : "core.$ZodIssue"}[];
+      failed: number;
+    }>(
+      ({ errors, failed }, schema) =>
         ((result) =>
-          result.error ? [...errors, ${is3 ? "result.error" : "...result.error.issues"}] : errors)(
+          result.error
+            ? {
+                errors: [...errors, ${is3 ? "result.error" : "...result.error.issues"}],
+                failed: failed + 1,
+              }
+            : { errors, failed })(
           schema.safeParse(x),
         ),
-      [],
+      { errors: [], failed: 0 },
     );
-    const passed = schemas.length - errors.length;
+    const passed = schemas.length - failed;
     if (passed !== 1) {
       ctx.addIssue(errors.length ? {
         path: ${is3 ? "ctx.path" : "[]"},

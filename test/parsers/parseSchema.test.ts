@@ -100,15 +100,23 @@ suite("parseSchema", (test) => {
       ] }),
       `z.any().superRefine((x, ctx) => {
     const schemas = [z.string(), z.number()];
-    const errors = schemas.reduce<z.core.$ZodIssue[]>(
-      (errors, schema) =>
+    const { errors, failed } = schemas.reduce<{
+      errors: z.core.$ZodIssue[];
+      failed: number;
+    }>(
+      ({ errors, failed }, schema) =>
         ((result) =>
-          result.error ? [...errors, ...result.error.issues] : errors)(
+          result.error
+            ? {
+                errors: [...errors, ...result.error.issues],
+                failed: failed + 1,
+              }
+            : { errors, failed })(
           schema.safeParse(x),
         ),
-      [],
+      { errors: [], failed: 0 },
     );
-    const passed = schemas.length - errors.length;
+    const passed = schemas.length - failed;
     if (passed !== 1) {
       ctx.addIssue(errors.length ? {
         path: [],
